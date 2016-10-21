@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tawsili</string>
-    <string name="action_settings" translatable="false">Settings</string>
     <string name="call_driver">Call Driver</string>
     <string name="signup">Sign Up</string>
     <string name="login">Login</string>
