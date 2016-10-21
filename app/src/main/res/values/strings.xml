@@ -7,7 +7,7 @@
     <string name="lorem_ipsum_dolor">Lorem ipsum Dolor Sign \nText is gonna here</string>
     <string name="title_activity_login">Login</string>
     <string name="or">OR</string>
-    <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="title_activity_sign_up" translatable="false">SignUpActivity</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="forget_your_password">Forget your password?</string>
@@ -16,4 +16,9 @@
     <string name="mobile">Mobile</string>
     <string name="promo_code_optional">Promo Code (Optional)</string>
     <string name="i_agree_to_terms_and_conditions">I agree to terms and conditions</string>
+    <string name="title_activity_ask_for_email" translatable="false">AskForEmailActivity</string>
+    <string name="title_activity_ask_for_verification_code" translatable="false">AskForVerificationCodeActivity</string>
+    <string name="sign_up_using_facebook">Sign up using facebook</string>
+    <string name="verification_code">Verification Code</string>
+    <string name="submit">Submit</string>
 </resources>

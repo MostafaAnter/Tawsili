@@ -25,6 +25,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/signUpUsingFacebook"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
@@ -48,7 +49,7 @@
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:text="@string/login_using_facebook"
+                    android:text="@string/sign_up_using_facebook"
                     android:textAllCaps="true"
                     android:textColor="@color/white" />
 

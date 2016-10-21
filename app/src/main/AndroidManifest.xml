@@ -35,6 +35,14 @@
         <activity
             android:name=".activities.SignUpActivity"
             android:label="@string/title_activity_sign_up"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.AskForEmailActivity"
+            android:label="@string/title_activity_ask_for_email"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.AskForVerificationCodeActivity"
+            android:label="@string/title_activity_ask_for_verification_code"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

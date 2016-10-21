@@ -6,4 +6,16 @@
     <string name="login">تسجيل دخول</string>
     <string name="lorem_ipsum_dolor">بعض النصوص هنا</string>
     <string name="title_activity_login">تسجيل دخول</string>
+    <string name="forget_your_password">هل نسيت كلمة المرور؟</string>
+    <string name="full_name">الأسم الكامل</string>
+    <string name="i_agree_to_terms_and_conditions">أوافق على الشروط والأحكام</string>
+    <string name="login_using_facebook">الدخول بواسطة فيسبوك</string>
+    <string name="mobile">الهاتف</string>
+    <string name="or">أو</string>
+    <string name="password">الرقم السري</string>
+    <string name="promo_code_optional">الكود المبدئي(أختيارى)</string>
+    <string name="sign_up_using_facebook">التسجيل بواسطة فيسبوك</string>
+    <string name="submit">التأكيد</string>
+    <string name="verification_code">كود التأكيد</string>
+    <string name="email">البريد الالكترونى</string>
 </resources>

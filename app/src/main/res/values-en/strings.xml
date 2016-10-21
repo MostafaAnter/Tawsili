@@ -15,4 +15,7 @@
     <string name="mobile">Mobile</string>
     <string name="promo_code_optional">Promo Code (Optional)</string>
     <string name="i_agree_to_terms_and_conditions">I agree to terms and conditions</string>
+    <string name="sign_up_using_facebook">Sign up using facebook</string>
+    <string name="verification_code">Verification Code</string>
+    <string name="submit">Submit</string>
 </resources>
