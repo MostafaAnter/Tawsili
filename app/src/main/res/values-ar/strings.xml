@@ -5,4 +5,5 @@
     <string name="signup">تسجيل عضوية</string>
     <string name="login">تسجيل دخول</string>
     <string name="lorem_ipsum_dolor">بعض النصوص هنا</string>
+    <string name="title_activity_login">تسجيل دخول</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.perfect_apps.tawsili.fragments;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.activities.LoginActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,7 +21,7 @@ import butterknife.ButterKnife;
  * Created by mostafa_anter on 10/21/16.
  */
 
-public class SplashFragment extends Fragment {
+public class SplashFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.button1) Button button1;
     @BindView(R.id.button2) Button button2;
     @BindView(R.id.button3) Button button3;
@@ -42,6 +44,8 @@ public class SplashFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         changeFontOfText();
+
+        button3.setOnClickListener(this);
     }
 
     private void changeFontOfText(){
@@ -51,6 +55,15 @@ public class SplashFragment extends Fragment {
         button2.setTypeface(font);
         button3.setTypeface(font);
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.button3:
+                getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+                break;
+        }
     }
 }
 
