@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4d489e</color>
+    <color name="colorPrimaryDark">#151256</color>
+    <color name="colorAccent">#a7a3ea</color>
+    <color name="colorAccent2">#d3d1f4</color>
+
+    <color name="background">#F0EEEF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="textPrimary">#6798D3</color>
+    <color name="red">#E43C18</color>
+    <color name="dark_gray">#4d4d4d</color>
+
+
+
+    <color name="swipe_color_1">#6798D3</color>
+    <color name="swipe_color_2">#4d489e</color>
+    <color name="swipe_color_3">#35C881</color>
+    <color name="swipe_color_4">#4d4d4d</color>
+</resources>
