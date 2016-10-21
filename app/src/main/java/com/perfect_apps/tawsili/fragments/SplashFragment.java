@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.activities.LoginActivity;
+import com.perfect_apps.tawsili.activities.SignUpActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +46,7 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
         changeFontOfText();
 
+        button2.setOnClickListener(this);
         button3.setOnClickListener(this);
     }
 
@@ -62,6 +64,9 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()){
             case R.id.button3:
                 getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+                break;
+            case R.id.button2:
+                getActivity().startActivity(new Intent(getActivity(), SignUpActivity.class));
                 break;
         }
     }
