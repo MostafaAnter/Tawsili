@@ -21,4 +21,12 @@
     <string name="sign_up_using_facebook">Sign up using facebook</string>
     <string name="verification_code">Verification Code</string>
     <string name="submit">Submit</string>
+    <string name="title_activity_pick_location">Pickup Location</string>
+
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="business">Business</string>
+    <string name="economy">Economy</string>
+    <string name="vip">VIP</string>
+    <string name="family">Family</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.perfect_apps.tawsili.activities;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -71,6 +72,7 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
 
     @Override
     public void onClick(View v) {
+        startActivity(new Intent(AskForVerificationCodeActivity.this, PickLocationActivity.class));
 
     }
 }

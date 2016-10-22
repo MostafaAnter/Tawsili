@@ -18,4 +18,9 @@
     <string name="submit">التأكيد</string>
     <string name="verification_code">كود التأكيد</string>
     <string name="email">البريد الالكترونى</string>
+    <string name="title_activity_pick_location">Pickup Location</string>
+    <string name="business">عمل</string>
+    <string name="economy">أقتصادى</string>
+    <string name="family">عائلى</string>
+    <string name="vip">VIP</string>
 </resources>
