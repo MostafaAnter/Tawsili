@@ -1,5 +1,7 @@
 package com.perfect_apps.tawsili.activities;
 
+import android.app.Dialog;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,19 +14,48 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.utils.MapHelper;
+import com.perfect_apps.tawsili.utils.MapStateManager;
+import com.vipul.hp_hp.library.Layout_to_Image;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PickLocationActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        TabLayout.OnTabSelectedListener{
+        TabLayout.OnTabSelectedListener, OnMapReadyCallback{
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tabs) TabLayout tabLayout;
+    @BindView(R.id.text1) TextView textView1;
+    @BindView(R.id.text2) TextView textView2;
+    @BindView(R.id.text3) TextView textView3;
+    @BindView(R.id.text4) TextView textView4;
+    @BindView(R.id.text5) TextView textView5;
+    @BindView(R.id.button1)Button button1;
+    @BindView(R.id.button2) Button button2;
+
+    private GoogleMap mMap;
+    private static final int GPS_ERRORDIALOG_REQUEST = 9001;
 
     private int[] tabIcons = {
             R.drawable.economy,
@@ -39,6 +70,12 @@ public class PickLocationActivity extends LocalizationActivity
         setContentView(R.layout.activity_pick_location);
         ButterKnife.bind(this);
         setToolbar();
+        changeFontOfText();
+
+        // for map
+        if (servicesOK()) {
+            initMap();
+        }
 
         onCreateTabLayout();
         setupTabIcons();
@@ -53,6 +90,19 @@ public class PickLocationActivity extends LocalizationActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void changeFontOfText(){
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
+        Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
+        textView1.setTypeface(font);
+        textView2.setTypeface(font);
+        textView3.setTypeface(font);
+        textView4.setTypeface(font);
+        textView5.setTypeface(fontBold);
+        button1.setTypeface(font);
+        button2.setTypeface(font);
+
     }
 
     private void setToolbar() {
@@ -157,5 +207,93 @@ public class PickLocationActivity extends LocalizationActivity
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    // setup map
+    public boolean servicesOK() {
+        int isAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+
+        if (isAvailable == ConnectionResult.SUCCESS) {
+            return true;
+        }
+        else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(isAvailable, this, GPS_ERRORDIALOG_REQUEST);
+            dialog.show();
+        }
+        else {
+            Toast.makeText(this, "Can't connect to Google Play services", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    private void initMap() {
+        if (mMap == null) {
+            SupportMapFragment mapFrag =
+                    (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mapFrag.getMapAsync(this);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mMap != null) {
+            MapStateManager mgr = new MapStateManager(this);
+            mgr.saveMapState(mMap);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MapStateManager mgr = new MapStateManager(this);
+        CameraPosition position = mgr.getSavedCameraPosition();
+        if (position != null && mMap != null) {
+            CameraUpdate update = CameraUpdateFactory.newCameraPosition(position);
+            mMap.moveCamera(update);
+            mMap.setMapType(mgr.getSavedMapType());
+        }
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        setUpMarker(mMap, new LatLng(30.044091, 31.236086));
+    }
+
+    private void setUpMarker(GoogleMap mMap, LatLng latLng) {
+
+        Layout_to_Image layout_to_image;  //Create Object of Layout_to_Image Class
+        FrameLayout relativeLayout;   //Define Any Layout
+        Bitmap mbitmap;                  //Bitmap for holding Image of layout
+
+        //provide layout with its id in Xml
+        relativeLayout = (FrameLayout) findViewById(R.id.orign_marker);
+        TextView tv = (TextView) findViewById(R.id.time);
+        tv.setText("16\nMin");
+
+        //initialise layout_to_image object with its parent class and pass parameters as (<Current Activity>,<layout object>)
+        layout_to_image = new Layout_to_Image(PickLocationActivity.this, relativeLayout);
+        //now call the main working function ;) and hold the returned image in bitmap
+        mbitmap = layout_to_image.convert_layout();
+
+
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng);
+        options.icon(BitmapDescriptorFactory.fromBitmap(mbitmap));
+        Marker marker = mMap.addMarker(options);
+
+        marker.showInfoWindow();
+        //animate camera
+        updateZoom(mMap, latLng);
+    }
+
+    /*
+     * Zooms the map to show the area of interest based on the search radius
+     */
+    private void updateZoom(GoogleMap mMap, LatLng myLatLng) {
+        // Zoom to the given bounds
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 14));
     }
 }
