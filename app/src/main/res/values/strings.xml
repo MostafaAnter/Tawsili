@@ -29,4 +29,6 @@
     <string name="economy">Economy</string>
     <string name="vip">VIP</string>
     <string name="family">Family</string>
+    <string name="max_no_of_bags">Max No. of bags:</string>
+    <string name="max_no_of_persons">Max No. of Persons:</string>
 </resources>
