@@ -1,5 +1,7 @@
 package com.perfect_apps.tawsili.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -14,17 +16,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.store.TawsiliPrefStore;
+import com.perfect_apps.tawsili.utils.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SettingsActivity extends LocalizationActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener
+, View.OnClickListener{
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.change_language) LinearLayout linearLayout1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +49,8 @@ public class SettingsActivity extends LocalizationActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        linearLayout1.setOnClickListener(this);
     }
 
     private void setToolbar() {
@@ -89,5 +98,58 @@ public class SettingsActivity extends LocalizationActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.change_language:
+                showSingleChoiceListLangaugeAlertDialog();
+                break;
+        }
+    }
+
+    // change language
+    private String mCheckedItem;
+
+    public void showSingleChoiceListLangaugeAlertDialog() {
+        final String[] list = new String[]{getString(R.string.language_arabic), getString(R.string.language_en)};
+        int checkedItemIndex;
+
+        switch (getLanguage()) {
+            case "en":
+                checkedItemIndex = 1;
+                break;
+            default:
+                checkedItemIndex = 0;
+
+        }
+        mCheckedItem = list[checkedItemIndex];
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.language))
+                .setSingleChoiceItems(list,
+                        checkedItemIndex,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mCheckedItem = list[which];
+                                if (which == 0) {
+                                    setLanguage("ar");
+                                    changeFirstTimeOpenAppState(4);
+                                    dialog.dismiss();
+                                } else if (which == 1) {
+                                    setLanguage("en");
+                                    changeFirstTimeOpenAppState(5);
+                                    dialog.dismiss();
+                                }
+                            }
+                        })
+                .show();
+    }
+
+    private void changeFirstTimeOpenAppState(int language) {
+        new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_FIRST_TIME_OPEN_APP_STATE, 1);
+        new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_LANGUAGE, language);
     }
 }

@@ -23,4 +23,9 @@
     <string name="economy">أقتصادى</string>
     <string name="family">عائلى</string>
     <string name="vip">VIP</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="google">Google+</string>
+    <string name="sms">SMS</string>
+    <string name="email1">Email</string>
 </resources>
