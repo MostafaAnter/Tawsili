@@ -73,4 +73,9 @@
     <string name="select_time">Select Time</string>
     <string name="title_activity_your_ride">YourRideActivity</string>
     <string name="your_ride">Your Ride</string>
+    <string name="title_activity_favorite_places">FavoritePlacesActivity</string>
+    <string name="title_activity_select_time">SelectTimeActivity</string>
+    <string name="favorite_places">Favorite Places</string>
+    <string name="search">Search...</string>
+    <string name="title_activity_search_results">SearchResultsActivity</string>
 </resources>

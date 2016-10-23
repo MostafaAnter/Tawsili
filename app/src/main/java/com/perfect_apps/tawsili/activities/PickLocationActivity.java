@@ -22,6 +22,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,6 +65,7 @@ public class PickLocationActivity extends LocalizationActivity
     @BindView(R.id.text5) TextView textView5;
     @BindView(R.id.button1)Button button1;
     @BindView(R.id.button2) Button button2;
+    @BindView(R.id.search_button)ImageView searchImageView;
 
     @BindView(R.id.nav_view)NavigationView navigationView;
 
@@ -109,6 +111,7 @@ public class PickLocationActivity extends LocalizationActivity
 
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
+        searchImageView.setOnClickListener(this);
     }
 
     private void animateView(LinearLayout frameLayout){
@@ -361,6 +364,12 @@ public class PickLocationActivity extends LocalizationActivity
                 startActivity(intent2);
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
+            case R.id.search_button:
+                Intent intent3 = new Intent(this, FavoritePlacesActivity.class);
+                startActivity(intent3);
+                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                break;
+
         }
     }
 }

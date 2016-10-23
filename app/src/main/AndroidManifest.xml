@@ -67,7 +67,27 @@
         <activity
             android:name=".activities.YourRideActivity"
             android:label="@string/title_activity_your_ride"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.FavoritePlacesActivity"
+            android:label="@string/title_activity_favorite_places"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".activities.SelectTimeActivity"
+            android:label="@string/title_activity_select_time"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SearchResultsActivity"
+            android:label="@string/title_activity_search_results"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
