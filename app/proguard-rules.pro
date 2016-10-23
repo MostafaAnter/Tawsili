@@ -31,3 +31,9 @@
 # for squer libs
 -dontwarn okio.**
 -dontwarn retrofit2.Platform$Java8
+#event bus
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }

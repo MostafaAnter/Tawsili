@@ -191,14 +191,14 @@ public class SelectTimeActivity extends LocalizationActivity
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe
     public void onMessageEvent(PickDateEvent event) {
         String s = event.getYear() + "/" + event.getMonth() + "/" + event.getDay();
         button1.setText(s);
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe
     public void onMessageEvent(PickTimeEvent event) {
         String s = event.getHourOfDay() + ":" + event.getMinute();
         button2.setText(s);
