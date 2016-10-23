@@ -28,3 +28,6 @@
 -keepattributes Exceptions
 # keep search view
 -keep class android.support.v7.widget.SearchView { *; }
+# for squer libs
+-dontwarn okio.**
+-dontwarn retrofit2.Platform$Java8
