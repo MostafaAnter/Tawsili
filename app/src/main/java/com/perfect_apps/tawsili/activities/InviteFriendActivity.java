@@ -5,6 +5,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +35,8 @@ public class InviteFriendActivity extends LocalizationActivity
     @BindView(R.id.text4)TextView textView4;
     @BindView(R.id.text5)TextView textView5;
     @BindView(R.id.text6)TextView textView6;
+
+    @BindView(R.id.nav_view) NavigationView navigationView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,8 +52,9 @@ public class InviteFriendActivity extends LocalizationActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        changeFontOfNavigation();
     }
 
     private void setToolbar() {
@@ -106,4 +113,32 @@ public class InviteFriendActivity extends LocalizationActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    //change font of drawer
+    private void changeFontOfNavigation(){
+        Menu m = navigationView.getMenu();
+        for (int i=0;i<m.size();i++) {
+            MenuItem mi = m.getItem(i);
+
+            //for aapplying a font to subMenu ...
+            SubMenu subMenu = mi.getSubMenu();
+            if (subMenu!=null && subMenu.size() >0 ) {
+                for (int j=0; j <subMenu.size();j++) {
+                    MenuItem subMenuItem = subMenu.getItem(j);
+                    applyFontToMenuItem(subMenuItem);
+                }
+            }
+
+            //the method we have create in activity
+            applyFontToMenuItem(mi);
+        }
+    }
+
+    private void applyFontToMenuItem(MenuItem mi) {
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
+        SpannableString mNewTitle = new SpannableString(mi.getTitle());
+        mNewTitle.setSpan(new CustomTypefaceSpan("" , font), 0 , mNewTitle.length(),  Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        mi.setTitle(mNewTitle);
+    }
+
 }
