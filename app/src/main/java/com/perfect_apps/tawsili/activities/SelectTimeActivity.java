@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,20 +14,34 @@ import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.fragments.DatePickerFragment;
+import com.perfect_apps.tawsili.fragments.TimePickerFragment;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SelectTimeActivity extends LocalizationActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        AdapterView.OnItemSelectedListener , View.OnClickListener{
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.nav_view)NavigationView navigationView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.choose_iteration)
+    Spinner spinner;
+    @BindView(R.id.pick_date)Button button1;
+    @BindView(R.id.pick_time)Button button2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +59,19 @@ public class SelectTimeActivity extends LocalizationActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         changeFontOfNavigation();
+
+        setSpinner();
+        button1.setOnClickListener(this);
+        button2.setOnClickListener(this);
+    }
+
+    private void setSpinner() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.options_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(this);
     }
 
     private void setToolbar() {
@@ -63,15 +91,15 @@ public class SelectTimeActivity extends LocalizationActivity
     }
 
     //change font of drawer
-    private void changeFontOfNavigation(){
+    private void changeFontOfNavigation() {
         Menu m = navigationView.getMenu();
-        for (int i=0;i<m.size();i++) {
+        for (int i = 0; i < m.size(); i++) {
             MenuItem mi = m.getItem(i);
 
             //for aapplying a font to subMenu ...
             SubMenu subMenu = mi.getSubMenu();
-            if (subMenu!=null && subMenu.size() >0 ) {
-                for (int j=0; j <subMenu.size();j++) {
+            if (subMenu != null && subMenu.size() > 0) {
+                for (int j = 0; j < subMenu.size(); j++) {
                     MenuItem subMenuItem = subMenu.getItem(j);
                     applyFontToMenuItem(subMenuItem);
                 }
@@ -85,7 +113,7 @@ public class SelectTimeActivity extends LocalizationActivity
     private void applyFontToMenuItem(MenuItem mi) {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         SpannableString mNewTitle = new SpannableString(mi.getTitle());
-        mNewTitle.setSpan(new CustomTypefaceSpan("" , font), 0 , mNewTitle.length(),  Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        mNewTitle.setSpan(new CustomTypefaceSpan("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         mi.setTitle(mNewTitle);
     }
 
@@ -119,5 +147,29 @@ public class SelectTimeActivity extends LocalizationActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.pick_date:
+                DialogFragment newFragment1 = new DatePickerFragment();
+                newFragment1.show(getSupportFragmentManager(), "datePicker");
+                break;
+            case R.id.pick_time:
+                DialogFragment newFragment = new TimePickerFragment();
+                newFragment.show(getSupportFragmentManager(), "timePicker");
+                break;
+        }
     }
 }
