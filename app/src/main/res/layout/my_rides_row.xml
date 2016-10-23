@@ -47,6 +47,8 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp"
                 android:src="@drawable/location"/>
             <View
                 android:layout_width="8dp"
@@ -82,6 +84,8 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp"
                 android:src="@drawable/flag"/>
             <View
                 android:layout_width="8dp"

@@ -74,6 +74,8 @@ public class MyRidesActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        setmRecyclerView(savedInstanceState);
     }
 
     private void setmRecyclerView(Bundle savedInstanceState){
