@@ -123,7 +123,7 @@
                 android:layout_marginLeft="@dimen/activity_vertical_margin"
                 android:layout_marginRight="@dimen/activity_vertical_margin"
                 android:layout_weight="1"
-                android:text="Location is gonna be here"
+                android:text="@string/location_is_gonna_be_here"
                 android:textStyle="bold" />
 
             <ImageView
@@ -149,7 +149,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_weight="1"
                 android:background="@drawable/border_shape_button"
-                android:text="Ride now" />
+                android:text="@string/ride_now" />
 
             <View
                 android:layout_width="@dimen/activity_horizontal_margin"
@@ -162,7 +162,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_weight="1"
                 android:background="@drawable/border_shape_button_dark"
-                android:text="Ride later"
+                android:text="@string/ride_later"
                 android:textColor="@color/white" />
         </LinearLayout>
 

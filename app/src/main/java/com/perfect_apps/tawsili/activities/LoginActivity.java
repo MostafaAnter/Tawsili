@@ -1,5 +1,6 @@
 package com.perfect_apps.tawsili.activities;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +15,7 @@ import com.perfect_apps.tawsili.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends LocalizationActivity {
+public class LoginActivity extends LocalizationActivity  implements View.OnClickListener{
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.text1) TextView textView1;
     @BindView(R.id.text2) TextView textView2;
@@ -37,6 +38,7 @@ public class LoginActivity extends LocalizationActivity {
         setToolbar();
         changeFontOfText();
 
+        button1.setOnClickListener(this);
     }
 
     private void changeFontOfText(){
@@ -75,4 +77,10 @@ public class LoginActivity extends LocalizationActivity {
 
     }
 
+    @Override
+    public void onClick(View v) {
+        startActivity(new Intent(LoginActivity.this, PickLocationActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+        overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+    }
 }

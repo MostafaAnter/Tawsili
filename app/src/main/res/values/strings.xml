@@ -59,4 +59,7 @@
     <string name="sms">SMS</string>
     <string name="email1">Email</string>
     <string name="your_personal_invite_link">Your personal invite link</string>
+    <string name="location_is_gonna_be_here">Location is gonna be here</string>
+    <string name="ride_now">Ride now</string>
+    <string name="ride_later">Ride later</string>
 </resources>

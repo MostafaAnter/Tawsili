@@ -84,6 +84,8 @@ public class SettingsActivity extends LocalizationActivity
 
     }
 
+
+
     private void setToolbar() {
         setSupportActionBar(toolbar);
         /*
@@ -105,8 +107,16 @@ public class SettingsActivity extends LocalizationActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+
+            startActivity(new Intent(SettingsActivity.this, PickLocationActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+            overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+
         } else {
             super.onBackPressed();
+            startActivity(new Intent(SettingsActivity.this, PickLocationActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+            overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
         }
     }
 
@@ -183,4 +193,6 @@ public class SettingsActivity extends LocalizationActivity
         new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_FIRST_TIME_OPEN_APP_STATE, 1);
         new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_LANGUAGE, language);
     }
+
+
 }
