@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,6 +33,17 @@ public class SettingsActivity extends LocalizationActivity
 , View.OnClickListener{
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.change_language) LinearLayout linearLayout1;
+    @BindView(R.id.button1)Button button1;
+    @BindView(R.id.text1)TextView textView1;
+    @BindView(R.id.text2)TextView textView2;
+    @BindView(R.id.text3)TextView textView3;
+    @BindView(R.id.text4)TextView textView4;
+    @BindView(R.id.text5)TextView textView5;
+    @BindView(R.id.text6)TextView textView6;
+    @BindView(R.id.text7)TextView textView7;
+    @BindView(R.id.text8)TextView textView8;
+    @BindView(R.id.text9)TextView textView9;
+    @BindView(R.id.text10)TextView textView10;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +51,7 @@ public class SettingsActivity extends LocalizationActivity
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         setToolbar();
+        changeFontOfText();
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -51,6 +64,24 @@ public class SettingsActivity extends LocalizationActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         linearLayout1.setOnClickListener(this);
+    }
+
+    private void changeFontOfText(){
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
+        Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
+        textView1.setTypeface(fontBold);
+        textView2.setTypeface(font);
+        textView3.setTypeface(fontBold);
+        textView4.setTypeface(font);
+        textView5.setTypeface(fontBold);
+        textView6.setTypeface(font);
+        textView7.setTypeface(font);
+        textView8.setTypeface(font);
+        textView9.setTypeface(font);
+        textView10.setTypeface(font);
+
+        button1.setTypeface(font);
+
     }
 
     private void setToolbar() {

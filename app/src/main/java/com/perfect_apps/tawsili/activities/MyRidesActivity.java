@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.adapters.MyRidesItemsAdapter;
 import com.perfect_apps.tawsili.models.MyRidesItem;
@@ -34,7 +35,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MyRidesActivity extends AppCompatActivity
+public class MyRidesActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recyclerView)
@@ -59,7 +60,7 @@ public class MyRidesActivity extends AppCompatActivity
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_rides);
         ButterKnife.bind(this);

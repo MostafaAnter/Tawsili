@@ -35,6 +35,7 @@
                     android:src="@drawable/facebook"/>
 
                 <TextView
+                    android:id="@+id/text1"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -69,6 +70,7 @@
                     android:src="@drawable/twitter"/>
 
                 <TextView
+                    android:id="@+id/text2"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -103,6 +105,7 @@
                     android:src="@drawable/google"/>
 
                 <TextView
+                    android:id="@+id/text3"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -136,6 +139,7 @@
                     android:src="@drawable/sms"/>
 
                 <TextView
+                    android:id="@+id/text4"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -170,6 +174,7 @@
                     android:src="@drawable/mail"/>
 
                 <TextView
+                    android:id="@+id/text5"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -202,6 +207,7 @@
                     android:src="@drawable/ic_link_black_24dp"
                     android:rotation="20"/>
                 <TextView
+                    android:id="@+id/text6"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"

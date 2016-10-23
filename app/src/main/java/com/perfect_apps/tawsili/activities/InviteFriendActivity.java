@@ -16,21 +16,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class InviteFriendActivity extends AppCompatActivity
+public class InviteFriendActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.text1)TextView textView1;
+    @BindView(R.id.text2)TextView textView2;
+    @BindView(R.id.text3)TextView textView3;
+    @BindView(R.id.text4)TextView textView4;
+    @BindView(R.id.text5)TextView textView5;
+    @BindView(R.id.text6)TextView textView6;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friend);
         ButterKnife.bind(this);
         setToolbar();
+        changeFontOfText();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -58,6 +66,16 @@ public class InviteFriendActivity extends AppCompatActivity
 
     }
 
+    private void changeFontOfText(){
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
+        textView1.setTypeface(font);
+        textView2.setTypeface(font);
+        textView3.setTypeface(font);
+        textView4.setTypeface(font);
+        textView5.setTypeface(font);
+        textView6.setTypeface(font);
+
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
