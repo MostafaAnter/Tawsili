@@ -1,6 +1,7 @@
 package com.perfect_apps.tawsili.activities;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -137,18 +138,14 @@ public class PickLocationActivity extends LocalizationActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.my_rides_history) {
+            startActivity(new Intent(PickLocationActivity.this, MyRidesActivity.class));
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.invite_friends) {
+            startActivity(new Intent(PickLocationActivity.this, InviteFriendActivity.class));
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.settings) {
+            startActivity(new Intent(PickLocationActivity.this, SettingsActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -47,6 +47,18 @@
         <activity
             android:name=".activities.PickLocationActivity"
             android:label="@string/title_activity_pick_location"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.MyRidesActivity"
+            android:label="@string/title_activity_my_rides"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.InviteFriendActivity"
+            android:label="@string/title_activity_invite_friend"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -31,4 +31,16 @@
     <string name="family">Family</string>
     <string name="max_no_of_bags">Max No. of bags:</string>
     <string name="max_no_of_persons">Max No. of Persons:</string>
+    <string name="book_a_ride">Book A Ride</string>
+    <string name="my_rides_history">My Rides History</string>
+    <string name="my_scheduled_rides">My Scheduled Rides</string>
+    <string name="payment">Payment</string>
+    <string name="invite_friends">Invite Friends</string>
+    <string name="call_us">Call Us</string>
+    <string name="more_options">More Options</string>
+    <string name="english_speaking_drivers_only">English Speaking Drivers Only!</string>
+    <string name="title_activity_my_rides">MyRidesActivity</string>
+    <string name="title_activity_invite_friend">InviteFriendActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="my_rides">My Rides</string>
 </resources>
