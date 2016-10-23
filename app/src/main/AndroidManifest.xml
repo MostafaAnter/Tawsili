@@ -64,6 +64,10 @@
             android:name=".activities.BookABusinessCarActivity"
             android:label="@string/title_activity_book_abusiness_car"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.YourRideActivity"
+            android:label="@string/title_activity_your_ride"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

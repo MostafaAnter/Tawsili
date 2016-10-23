@@ -30,6 +30,18 @@ public class MapHelper {
         marker.showInfoWindow();
     }
 
+    public static Marker setUpMarkerAndReturnMarker(GoogleMap mMap, LatLng latLng, int resID) {
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng);
+        //   options.title();
+        options.icon(BitmapDescriptorFactory.fromResource(resID));
+        Marker marker = mMap.addMarker(options);
+
+        marker.showInfoWindow();
+
+        return marker;
+    }
+
     /*
      * Zooms the map to show the area of interest based on the search radius
      */
@@ -52,7 +64,7 @@ public class MapHelper {
     public static void animateMarkerTo(final Marker marker, final double lat, final double lng) {
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
-        final long DURATION_MS = 3000;
+        final long DURATION_MS = 4000;
         final Interpolator interpolator = new AccelerateDecelerateInterpolator();
         final LatLng startPosition = marker.getPosition();
         handler.post(new Runnable() {

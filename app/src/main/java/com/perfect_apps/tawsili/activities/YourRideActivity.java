@@ -4,23 +4,23 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.view.SubMenu;
+import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,23 +47,20 @@ import com.vipul.hp_hp.library.Layout_to_Image;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BookABusinessCarActivity extends LocalizationActivity
+public class YourRideActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        OnMapReadyCallback, View.OnClickListener{
-
-    @BindView(R.id.nav_view)NavigationView navigationView;
+        OnMapReadyCallback{
     @BindView(R.id.toolbar)Toolbar toolbar;
-    @BindView(R.id.linearLayout1)
-    LinearLayout linearLayout1;
-    @BindView(R.id.button1)Button button1;
+    @BindView(R.id.nav_view)NavigationView navigationView;
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_abusiness_car);
+        setContentView(R.layout.activity_your_ride);
         ButterKnife.bind(this);
         setToolbar();
 
@@ -72,27 +69,30 @@ public class BookABusinessCarActivity extends LocalizationActivity
             initMap();
         }
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         changeFontOfNavigation();
-        animateView(linearLayout1);
-
-        if (!getIntent().getBooleanExtra("now", false)){
-            button1.setText(getString(R.string.select_time));
-        }
-        button1.setOnClickListener(this);
     }
 
-    private void animateView(LinearLayout frameLayout){
-        Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(this, R.anim.push_up_enter_long);
-        frameLayout.startAnimation(hyperspaceJumpAnimation);
+    private void setToolbar() {
+        setSupportActionBar(toolbar);
+        /*
+        * hide title
+        * */
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //toolbar.setNavigationIcon(R.drawable.ic_toolbar);
+        toolbar.setTitle("");
+        toolbar.setSubtitle("");
+
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
+        TextView tv = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        tv.setTypeface(font);
 
     }
 
@@ -123,23 +123,6 @@ public class BookABusinessCarActivity extends LocalizationActivity
         mi.setTitle(mNewTitle);
     }
 
-
-    private void setToolbar() {
-        setSupportActionBar(toolbar);
-        /*
-        * hide title
-        * */
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        //toolbar.setNavigationIcon(R.drawable.ic_toolbar);
-        toolbar.setTitle("");
-        toolbar.setSubtitle("");
-
-        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
-        TextView tv = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        tv.setTypeface(font);
-
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -157,13 +140,13 @@ public class BookABusinessCarActivity extends LocalizationActivity
         int id = item.getItemId();
 
         if (id == R.id.my_rides_history) {
-            startActivity(new Intent(BookABusinessCarActivity.this, MyRidesActivity.class));
+            startActivity(new Intent(YourRideActivity.this, MyRidesActivity.class));
 
         } else if (id == R.id.invite_friends) {
-            startActivity(new Intent(BookABusinessCarActivity.this, InviteFriendActivity.class));
+            startActivity(new Intent(YourRideActivity.this, InviteFriendActivity.class));
 
         } else if (id == R.id.settings) {
-            startActivity(new Intent(BookABusinessCarActivity.this, SettingsActivity.class));
+            startActivity(new Intent(YourRideActivity.this, SettingsActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -226,56 +209,64 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
     private void setUpMarker(GoogleMap mMap, LatLng latLng, LatLng secLatLang) {
 
-        Layout_to_Image layout_to_image;  //Create Object of Layout_to_Image Class
-        FrameLayout relativeLayout;   //Define Any Layout
-        Bitmap mbitmap;                  //Bitmap for holding Image of layout
-
-        //provide layout with its id in Xml
-        relativeLayout = (FrameLayout) findViewById(R.id.orign_marker);
-        TextView tv = (TextView) findViewById(R.id.time);
-        tv.setText("16\nMin");
-
-        //initialise layout_to_image object with its parent class and pass parameters as (<Current Activity>,<layout object>)
-        layout_to_image = new Layout_to_Image(BookABusinessCarActivity.this, relativeLayout);
-        //now call the main working function ;) and hold the returned image in bitmap
-        mbitmap = layout_to_image.convert_layout();
-
-
-        MarkerOptions options = new MarkerOptions();
-        options.position(latLng);
-        options.icon(BitmapDescriptorFactory.fromBitmap(mbitmap));
-        Marker marker = mMap.addMarker(options);
-
-        marker.showInfoWindow();
+        Marker marker1 = MapHelper.setUpMarkerAndReturnMarker(mMap, latLng, R.drawable.car_marker);
         // for second location
-
-        MapHelper.setUpMarker(mMap, secLatLang, R.drawable.flag_marker);
-
+        Marker marker2 = MapHelper.setUpMarkerAndReturnMarker(mMap, secLatLang, R.drawable.person_marker);
 
         //animate camera
         updateZoom(mMap, latLng, secLatLang);
+
+        new FakeTask().execute(new MarkersModel(marker1, marker2));
     }
 
     /*
      * Zooms the map to show the area of interest based on the search radius
      */
     private void updateZoom(GoogleMap mMap, LatLng myLatLng, LatLng secLatLang) {
-         LatLngBounds egypt = new LatLngBounds(
+        LatLngBounds egypt = new LatLngBounds(
                 myLatLng, secLatLang);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(egypt.southwest, 16));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(egypt.southwest, 17));
+    }
+    // for animate marker to another marker
+    private void animateAfterSeconds(Marker marker1, Marker marker2){
+        MapHelper.animateMarkerTo(marker1, marker2.getPosition().latitude, marker2.getPosition().longitude);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.button1:
-                if (!getIntent().getBooleanExtra("now", false)){
-                    // go to select date and time
-                }else {
-                    // let go
-                    startActivity(new Intent(this, YourRideActivity.class));
-                }
-                break;
+    private class FakeTask extends AsyncTask<MarkersModel, Void, MarkersModel>{
+
+
+        @Override
+        protected MarkersModel doInBackground(MarkersModel... params) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(MarkersModel markersModel) {
+            super.onPostExecute(markersModel);
+            animateAfterSeconds(markersModel.getMarker1(), markersModel.getMarker2());
+        }
+    }
+
+    private class MarkersModel{
+        private Marker marker1;
+        private Marker marker2;
+
+        public MarkersModel(Marker marker1, Marker marker2) {
+            this.marker1 = marker1;
+            this.marker2 = marker2;
+        }
+
+        public Marker getMarker1() {
+            return marker1;
+        }
+
+        public Marker getMarker2() {
+            return marker2;
         }
     }
 }
