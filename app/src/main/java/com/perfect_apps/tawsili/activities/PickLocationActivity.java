@@ -18,8 +18,11 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +54,8 @@ public class PickLocationActivity extends LocalizationActivity
         TabLayout.OnTabSelectedListener, OnMapReadyCallback{
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tabs) TabLayout tabLayout;
+    @BindView(R.id.linearLayout1)
+    LinearLayout linearLayout1;
     @BindView(R.id.text1) TextView textView1;
     @BindView(R.id.text2) TextView textView2;
     @BindView(R.id.text3) TextView textView3;
@@ -98,7 +103,16 @@ public class PickLocationActivity extends LocalizationActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         changeFontOfNavigation();
+
+        animateView(linearLayout1);
     }
+
+    private void animateView(LinearLayout frameLayout){
+        Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(this, R.anim.push_up_enter_long);
+        frameLayout.startAnimation(hyperspaceJumpAnimation);
+
+    }
+
 
     //change font of drawer
     private void changeFontOfNavigation(){
