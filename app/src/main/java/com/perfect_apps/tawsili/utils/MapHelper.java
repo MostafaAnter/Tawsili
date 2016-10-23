@@ -28,9 +28,6 @@ public class MapHelper {
         Marker marker = mMap.addMarker(options);
 
         marker.showInfoWindow();
-
-        //animate camera
-        updateZoom(mMap, latLng);
     }
 
     /*

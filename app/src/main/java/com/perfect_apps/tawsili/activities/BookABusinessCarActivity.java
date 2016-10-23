@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -37,6 +35,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.perfect_apps.tawsili.R;
@@ -47,53 +46,32 @@ import com.vipul.hp_hp.library.Layout_to_Image;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
-public class PickLocationActivity extends LocalizationActivity
+public class BookABusinessCarActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        TabLayout.OnTabSelectedListener, OnMapReadyCallback,
-        View.OnClickListener{
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.tabs) TabLayout tabLayout;
-    @BindView(R.id.linearLayout1)
-    LinearLayout linearLayout1;
-    @BindView(R.id.text1) TextView textView1;
-    @BindView(R.id.text2) TextView textView2;
-    @BindView(R.id.text3) TextView textView3;
-    @BindView(R.id.text4) TextView textView4;
-    @BindView(R.id.text5) TextView textView5;
-    @BindView(R.id.button1)Button button1;
-    @BindView(R.id.button2) Button button2;
+        OnMapReadyCallback, View.OnClickListener{
 
     @BindView(R.id.nav_view)NavigationView navigationView;
+    @BindView(R.id.toolbar)Toolbar toolbar;
+    @BindView(R.id.linearLayout1)
+    LinearLayout linearLayout1;
+    @BindView(R.id.button1)Button button1;
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
 
-    private int[] tabIcons = {
-            R.drawable.economy,
-            R.drawable.business,
-            R.drawable.vip,
-            R.drawable.family
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pick_location);
+        setContentView(R.layout.activity_book_abusiness_car);
         ButterKnife.bind(this);
         setToolbar();
-        changeFontOfText();
 
         // for map
         if (servicesOK()) {
             initMap();
         }
 
-        onCreateTabLayout();
-        setupTabIcons();
-        setTabLayoutColor();
-        changeTabsFont();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -101,14 +79,14 @@ public class PickLocationActivity extends LocalizationActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         changeFontOfNavigation();
-
         animateView(linearLayout1);
 
-        button1.setOnClickListener(this);
-        button2.setOnClickListener(this);
+        if (!getIntent().getBooleanExtra("now", false)){
+            button1.setText(getString(R.string.select_time));
+        }
     }
 
     private void animateView(LinearLayout frameLayout){
@@ -116,7 +94,6 @@ public class PickLocationActivity extends LocalizationActivity
         frameLayout.startAnimation(hyperspaceJumpAnimation);
 
     }
-
 
     //change font of drawer
     private void changeFontOfNavigation(){
@@ -145,18 +122,6 @@ public class PickLocationActivity extends LocalizationActivity
         mi.setTitle(mNewTitle);
     }
 
-    private void changeFontOfText(){
-        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
-        Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
-        textView1.setTypeface(font);
-        textView2.setTypeface(font);
-        textView3.setTypeface(font);
-        textView4.setTypeface(font);
-        textView5.setTypeface(fontBold);
-        button1.setTypeface(font);
-        button2.setTypeface(font);
-
-    }
 
     private void setToolbar() {
         setSupportActionBar(toolbar);
@@ -191,71 +156,18 @@ public class PickLocationActivity extends LocalizationActivity
         int id = item.getItemId();
 
         if (id == R.id.my_rides_history) {
-            startActivity(new Intent(PickLocationActivity.this, MyRidesActivity.class));
+            startActivity(new Intent(BookABusinessCarActivity.this, MyRidesActivity.class));
 
         } else if (id == R.id.invite_friends) {
-            startActivity(new Intent(PickLocationActivity.this, InviteFriendActivity.class));
+            startActivity(new Intent(BookABusinessCarActivity.this, InviteFriendActivity.class));
 
         } else if (id == R.id.settings) {
-            startActivity(new Intent(PickLocationActivity.this, SettingsActivity.class));
+            startActivity(new Intent(BookABusinessCarActivity.this, SettingsActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-
-    private void onCreateTabLayout() {
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.economy));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.business));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.vip));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.family));
-        tabLayout.setOnTabSelectedListener(this);
-    }
-
-    private void setupTabIcons() {
-        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
-        tabLayout.getTabAt(3).setIcon(tabIcons[3]);
-    }
-
-    // set tab bar indicator height
-    private void setTabLayoutColor(){
-        tabLayout.setSelectedTabIndicatorHeight(0);
-    }
-
-    private void changeTabsFont() {
-
-        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
-        int tabsCount = vg.getChildCount();
-        for (int j = 0; j < tabsCount; j++) {
-            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
-            int tabChildsCount = vgTab.getChildCount();
-            for (int i = 0; i < tabChildsCount; i++) {
-                View tabViewChild = vgTab.getChildAt(i);
-                if (tabViewChild instanceof TextView) {
-                    Typeface makOnWayFont = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
-                    ((TextView) tabViewChild).setTypeface(makOnWayFont);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
     }
 
     // setup map
@@ -308,10 +220,10 @@ public class PickLocationActivity extends LocalizationActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        setUpMarker(mMap, new LatLng(30.044091, 31.236086));
+        setUpMarker(mMap, new LatLng(30.066649, 31.254493), new LatLng(30.067114, 31.253077));
     }
 
-    private void setUpMarker(GoogleMap mMap, LatLng latLng) {
+    private void setUpMarker(GoogleMap mMap, LatLng latLng, LatLng secLatLang) {
 
         Layout_to_Image layout_to_image;  //Create Object of Layout_to_Image Class
         FrameLayout relativeLayout;   //Define Any Layout
@@ -323,7 +235,7 @@ public class PickLocationActivity extends LocalizationActivity
         tv.setText("16\nMin");
 
         //initialise layout_to_image object with its parent class and pass parameters as (<Current Activity>,<layout object>)
-        layout_to_image = new Layout_to_Image(PickLocationActivity.this, relativeLayout);
+        layout_to_image = new Layout_to_Image(BookABusinessCarActivity.this, relativeLayout);
         //now call the main working function ;) and hold the returned image in bitmap
         mbitmap = layout_to_image.convert_layout();
 
@@ -334,33 +246,30 @@ public class PickLocationActivity extends LocalizationActivity
         Marker marker = mMap.addMarker(options);
 
         marker.showInfoWindow();
+        // for second location
+
+        MapHelper.setUpMarker(mMap, secLatLang, R.drawable.flag_marker);
+
+
         //animate camera
-        updateZoom(mMap, latLng);
+        updateZoom(mMap, latLng, secLatLang);
     }
 
     /*
      * Zooms the map to show the area of interest based on the search radius
      */
-    private void updateZoom(GoogleMap mMap, LatLng myLatLng) {
-        // Zoom to the given bounds
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 14));
+    private void updateZoom(GoogleMap mMap, LatLng myLatLng, LatLng secLatLang) {
+         LatLngBounds egypt = new LatLngBounds(
+                myLatLng, secLatLang);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(egypt.southwest, 16));
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.button1:
-                Intent intent = new Intent(this, BookABusinessCarActivity.class);
-                intent.putExtra("now", true);
-                startActivity(intent);
-                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
-                break;
-            case R.id.button2:
-                Intent intent2 = new Intent(this, BookABusinessCarActivity.class);
-                intent2.putExtra("now", false);
-                startActivity(intent2);
-                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
-                break;
+        if (!getIntent().getBooleanExtra("now", false)){
+            // go to select date and time
+        }else {
+            // let go
         }
     }
 }
