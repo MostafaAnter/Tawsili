@@ -50,4 +50,5 @@
     <string name="sms">SMS</string>
     <string name="email1">Email</string>
     <string name="your_personal_invite_link">Your personal invite link</string>
+    <string name="action_settings" translatable="false">Settings</string>
 </resources>
