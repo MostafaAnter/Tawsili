@@ -61,4 +61,17 @@
         <item>كل شهر</item>
         <item>كل سنة</item>
     </string-array>
+    <string name="cash">الدفع</string>
+    <string name="current_location_is_gonna_be_here">سوف يظهر الموقع الحالى هنا</string>
+    <string name="drop_off_location_is_gonna_be_here">المكان الذى ستذهب إليه</string>
+    <string name="fair_estimate">بالتقدير</string>
+    <string name="favorite_places">أماكن مفضلة</string>
+    <string name="let_s_go">هيا نبدأ</string>
+    <string name="penalty">غرامة</string>
+    <string name="pick_date">اختر تاريخ</string>
+    <string name="pick_time">أختر وقت</string>
+    <string name="save">حفظ</string>
+    <string name="search">أبحث..</string>
+    <string name="select_time">أختر وقت</string>
+    <string name="your_ride">Your Ride</string>
 </resources>

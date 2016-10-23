@@ -25,7 +25,13 @@ import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.fragments.DatePickerFragment;
 import com.perfect_apps.tawsili.fragments.TimePickerFragment;
+import com.perfect_apps.tawsili.models.PickDateEvent;
+import com.perfect_apps.tawsili.models.PickTimeEvent;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,6 +69,18 @@ public class SelectTimeActivity extends LocalizationActivity
         setSpinner();
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     private void setSpinner() {
@@ -171,5 +189,19 @@ public class SelectTimeActivity extends LocalizationActivity
                 newFragment.show(getSupportFragmentManager(), "timePicker");
                 break;
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(PickDateEvent event) {
+        String s = event.getYear() + "/" + event.getMonth() + "/" + event.getDay();
+        button1.setText(s);
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(PickTimeEvent event) {
+        String s = event.getHourOfDay() + ":" + event.getMinute();
+        button2.setText(s);
+
     }
 }

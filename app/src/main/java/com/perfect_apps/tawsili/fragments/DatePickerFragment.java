@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 
+import com.perfect_apps.tawsili.models.PickDateEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Calendar;
 
 /**
@@ -29,5 +33,6 @@ public class DatePickerFragment extends DialogFragment
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // Do something with the date chosen by the user
+        EventBus.getDefault().post(new PickDateEvent(year, month, day));
     }
 }
