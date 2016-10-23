@@ -271,10 +271,23 @@ public class BookABusinessCarActivity extends LocalizationActivity
             case R.id.button1:
                 if (!getIntent().getBooleanExtra("now", false)){
                     // go to select date and time
+                    Intent intent1 = new Intent(this, SelectTimeActivity.class);
+                    startActivity(intent1);
+                    overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 }else {
                     // let go
                     startActivity(new Intent(this, YourRideActivity.class));
                 }
+                break;
+            case R.id.linearLayout2:
+                Intent intent3 = new Intent(this, FavoritePlacesActivity.class);
+                startActivity(intent3);
+                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                break;
+            case R.id.linearLayout3:
+                Intent intent4 = new Intent(this, FavoritePlacesActivity.class);
+                startActivity(intent4);
+                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
         }
     }
