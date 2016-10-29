@@ -74,4 +74,9 @@
     <string name="search">أبحث..</string>
     <string name="select_time">أختر وقت</string>
     <string name="your_ride">Your Ride</string>
+    <string name="enter_name">قم بأدخال الأسم .</string>
+    <string name="phone_not_valid">رقم الهاتف غير صالح.</string>
+    <string name="email_not_valid">البريد الالكترونى غير صالح</string>
+    <string name="password_not_valid">يجب ان يكون الرقم السرى مكون من 6 خانات على الاقل</string>
+    <string name="terms_and_conditions_not_valid">يجب الموافقة على الشروط والاحكام</string>
 </resources>

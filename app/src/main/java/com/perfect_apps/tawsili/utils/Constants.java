@@ -10,12 +10,13 @@ public class Constants {
      */
     public static final String PREFERENCE_FIRST_TIME_OPEN_APP_STATE = "first_time_open_app";
     public static final String PREFERENCE_LANGUAGE = "language";
+    public static final String comingFrom = "comingFrom";
 
     /**
      * belong login with facebook
      */
-    public static final String userEmail = "userEmail";
-    public static final String userName = "userName";
+    public static final String fbuserEmail = "userEmail";
+    public static final String fbuserName = "userName";
 
     /**
      * tawsili api
@@ -30,5 +31,14 @@ public class Constants {
     public static final String statusDeactive = "Deactive";
     public static final String statusClosedByClient = "Closed by Client";
     public static final String statusClosedBySystem = "Closed by System";
+
+    /**
+     * registration data
+     */
+    public static final String register_fullName = "register_full_name";
+    public static final String register_mobile = "register_mobile";
+    public static final String register_email = "register_email";
+    public static final String register_password = "register_password";
+
 
 }

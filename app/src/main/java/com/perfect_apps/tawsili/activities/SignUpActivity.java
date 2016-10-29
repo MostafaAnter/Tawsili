@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -20,22 +26,30 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 import com.perfect_apps.tawsili.utils.Utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class SignUpActivity extends LocalizationActivity implements View.OnClickListener {
+
+    public static final String TAG = "SignUpActivity";
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.text1) TextView textView1;
@@ -49,13 +63,18 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
     @BindView(R.id.editText3) EditText editText3;
     @BindView(R.id.editText4) EditText editText4;
     @BindView(R.id.editText5) EditText editText5;
-    @BindView(R.id.editText6) EditText editText6;
 
     @BindView(R.id.checkbox1)
     CheckBox checkBox1;
 
     @BindView(R.id.signUpUsingFacebook)
     LinearLayout linearLayout1;
+
+    // post parameters
+    private String fullName;
+    private String mobile;
+    private String email;
+    private String password;
 
     // variables belong to login with facebook
     private List<String> permissions = new ArrayList<String>() {{
@@ -74,6 +93,9 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
         ButterKnife.bind(this);
         setToolbar();
         changeFontOfText();
+        // set login with Facebook
+        setLoginWithFacebook();
+        
         linearLayout1.setOnClickListener(this);
         button1.setOnClickListener(this);
     }
@@ -89,7 +111,6 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
         editText3.setTypeface(font);
         editText4.setTypeface(font);
         editText5.setTypeface(font);
-        editText6.setTypeface(font);
         checkBox1.setTypeface(font);
 
     }
@@ -116,9 +137,6 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
         TextView tv = (TextView) toolbar.findViewById(R.id.toolbar_title);
         tv.setTypeface(font);
 
-    }
-
-    public void onCheckboxClicked(View view) {
     }
 
     // set login with facebook
@@ -151,6 +169,7 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
                                             GraphResponse response) {
                                         // Application code
                                         Log.d("graph respon", response.getJSONObject().toString());
+
                                         parseGraph(response.getJSONObject().toString());
                                         sdh.dismissDialog();
                                     }
@@ -191,12 +210,145 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
         String userId = graphObject.optString("id");
         String userMail = graphObject.optString("email");
         String userName = graphObject.optString("name");
+        // here checkUser
+        if (userMail != null || !userMail.trim().isEmpty()) {
+            new TawsiliPrefStore(this).addPreference(Constants.fbuserEmail, userMail);
+            new TawsiliPrefStore(this).addPreference(Constants.fbuserName, userName);
+            checkUser(userMail);
+        } else {
+            new TawsiliPrefStore(this).addPreference(Constants.fbuserEmail, userId);
+            new TawsiliPrefStore(this).addPreference(Constants.fbuserName, userName);
+            checkUser(userId);
+        }
+    }
 
-        new TawsiliPrefStore(this).addPreference(Constants.userId, userId);
-        new TawsiliPrefStore(this).addPreference(Constants.userEmail, userMail);
-        new TawsiliPrefStore(this).addPreference(Constants.userName, userName);
+    /**
+     * check user if active go to main if existing and  not active go to verification code
+     * if not exist go to enter email and mobile
+     * if blocked show message to call company
+     */
+    private void checkUser(String userMail) {
 
-        startActivity(new Intent(SignUpActivity.this, AskForEmailActivity.class));
+        String url = BuildConfig.API_BASE_URL + "checkuser.php?mail=" + userMail + "&mobile = null";
+        // here should show dialog
+        final SweetDialogHelper sdh = new SweetDialogHelper(this);
+        sdh.showMaterialProgress(getString(R.string.loading));
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, response.toString());
+                sdh.dismissDialog();
+
+                parseUserCheckParseFeed(response);
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                sdh.dismissDialog();
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+
+    }
+
+    private void checkUserToRegister(String userMail, String mMobile) {
+
+        String url = BuildConfig.API_BASE_URL + "checkuser.php?mail=" + userMail + "&mobile =" + mMobile;
+        // here should show dialog
+        final SweetDialogHelper sdh = new SweetDialogHelper(this);
+        sdh.showMaterialProgress(getString(R.string.loading));
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, response.toString());
+                sdh.dismissDialog();
+
+                parseUserCheckParseFeedToRegister(response);
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                sdh.dismissDialog();
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+
+    }
+
+    private void parseUserCheckParseFeed(String response) {
+        try {
+            JSONArray jsonArray = new JSONArray(response);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String result = jsonObject.optString("result");
+                String userId = jsonObject.optString("id");
+                String mobile = jsonObject.optString("mobile");
+                String email = jsonObject.optString("mail");
+                String status = jsonObject.optString("status");
+                if (result != null && !result.trim().isEmpty() && result.equalsIgnoreCase(Constants.statusEmpty)) {
+                    startActivity(new Intent(SignUpActivity.this, AskForEmailActivity.class));
+                } else if (status.equalsIgnoreCase(Constants.statusActive)) {
+                    new TawsiliPrefStore(this).addPreference(Constants.userId, userId);
+                    startActivity(new Intent(SignUpActivity.this, PickLocationActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                    overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                } else if (status.equalsIgnoreCase(Constants.statusDeactive)) {
+                    new TawsiliPrefStore(this).addPreference(Constants.register_mobile, mobile);
+                    new TawsiliPrefStore(this).addPreference(Constants.register_email, email);
+                    startActivity(new Intent(SignUpActivity.this, AskForVerificationCodeActivity.class));
+                } else if (status.equalsIgnoreCase(Constants.statusClosedByClient) ||
+                        status.equalsIgnoreCase(Constants.statusClosedBySystem)) {
+                    new SweetDialogHelper(SignUpActivity.this).showErrorMessage(getString(R.string.error),
+                            "You seem Blocked from system, plz contact Tawsili team");
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseUserCheckParseFeedToRegister(String response) {
+        try {
+            JSONArray jsonArray = new JSONArray(response);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String result = jsonObject.optString("result");
+                String userId = jsonObject.optString("id");
+                String status = jsonObject.optString("status");
+                if (result != null && !result.trim().isEmpty() && result.equalsIgnoreCase(Constants.statusEmpty)) {
+                    Intent intent = new Intent(SignUpActivity.this, AskForVerificationCodeActivity.class);
+                    intent.putExtra(Constants.comingFrom, TAG);
+                    startActivity(intent);
+                } else if (status.equalsIgnoreCase(Constants.statusActive)) {
+                    new SweetDialogHelper(SignUpActivity.this)
+                            .showBasicMessage("هذا المستخدم موجود بالفعل , حاول التسجيل ببيانات مختلفة");
+                } else if (status.equalsIgnoreCase(Constants.statusDeactive)) {
+                    Intent intent = new Intent(SignUpActivity.this, AskForVerificationCodeActivity.class);
+                    intent.putExtra(Constants.comingFrom, TAG);
+                    startActivity(intent);
+                } else if (status.equalsIgnoreCase(Constants.statusClosedByClient) ||
+                        status.equalsIgnoreCase(Constants.statusClosedBySystem)) {
+                    new SweetDialogHelper(SignUpActivity.this)
+                            .showBasicMessage("هذا المستخدم موجود بالفعل , حاول التسجيل ببيانات مختلفة");
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -209,5 +361,59 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
                 loginWithFacebook();
                 break;
         }
+    }
+
+    private void signUpUser(){
+        if (Utils.isOnline(this)){
+
+            if (checkUserValidData()) {
+                new TawsiliPrefStore(this).addPreference(Constants.register_fullName, fullName);
+                new TawsiliPrefStore(this).addPreference(Constants.register_email, email);
+                new TawsiliPrefStore(this).addPreference(Constants.register_mobile, mobile);
+                new TawsiliPrefStore(this).addPreference(Constants.register_password, password);
+                checkUserToRegister(email, mobile);
+            }
+        }else {
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.check_network_connection));
+        }
+
+    }
+
+    private boolean checkUserValidData(){
+        try {
+            fullName = URLEncoder.encode(editText1.getText().toString().trim(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        mobile = editText2.getText().toString().trim() + editText3.getText().toString().trim();
+        email = editText4.getText().toString().trim();
+        password = editText5.getText().toString().trim();
+
+        if (fullName == null || fullName.isEmpty()){
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.enter_name));
+            return false;
+        }
+        if (editText2.getText().toString().trim().isEmpty() ||
+                editText3.getText().toString().trim().isEmpty() ||
+                !PhoneNumberUtils.isGlobalPhoneNumber(mobile)){
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.phone_not_valid));
+            return false;
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.email_not_valid));
+            return false;
+        }
+        if (password == null || password.isEmpty() || password.length() < 6){
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.password_not_valid));
+            return false;
+        }
+        if (!checkBox1.isChecked()){
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.terms_and_conditions_not_valid));
+            return false;
+        }
+
+        return true;
+
     }
 }

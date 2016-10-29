@@ -106,7 +106,7 @@
                     android:layout_weight="1"
                     android:hint="+20"
                     android:textColorHint="#000"
-                    android:inputType="text" />
+                    android:inputType="phone" />
 
                 <EditText
                     android:id="@+id/editText3"
@@ -115,7 +115,7 @@
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:layout_weight="5"
                     android:hint="@string/mobile"
-                    android:inputType="textPersonName" />
+                    android:inputType="phone" />
 
             </LinearLayout>
 
@@ -134,12 +134,6 @@
                 android:hint="@string/password"
                 android:inputType="textPassword" />
 
-            <EditText
-                android:id="@+id/editText6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/promo_code_optional"
-                android:inputType="text" />
 
             <CheckBox
                 android:id="@+id/checkbox1"
@@ -147,7 +141,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:onClick="onCheckboxClicked"
                 android:text="@string/i_agree_to_terms_and_conditions"
                 android:textColor="@android:color/darker_gray" />
         </LinearLayout>

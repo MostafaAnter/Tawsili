@@ -198,16 +198,14 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
         String userId = graphObject.optString("id");
         String userMail = graphObject.optString("email");
         String userName = graphObject.optString("name");
-
-
-        new TawsiliPrefStore(this).addPreference(Constants.userEmail, userMail);
-        new TawsiliPrefStore(this).addPreference(Constants.userName, userName);
-
-
         // here checkUser
         if (userMail != null || !userMail.trim().isEmpty()) {
+            new TawsiliPrefStore(this).addPreference(Constants.fbuserEmail, userMail);
+            new TawsiliPrefStore(this).addPreference(Constants.fbuserName, userName);
             checkUser(userMail);
         } else {
+            new TawsiliPrefStore(this).addPreference(Constants.fbuserEmail, userId);
+            new TawsiliPrefStore(this).addPreference(Constants.fbuserName, userName);
             checkUser(userId);
         }
     }
@@ -273,6 +271,8 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String result = jsonObject.optString("result");
                 String userId = jsonObject.optString("id");
+                String mobile = jsonObject.optString("mobile");
+                String email = jsonObject.optString("mail");
                 String status = jsonObject.optString("status");
                 if (result != null && !result.trim().isEmpty() && result.equalsIgnoreCase(Constants.statusEmpty)) {
                     startActivity(new Intent(LoginActivity.this, AskForEmailActivity.class));
@@ -282,6 +282,8 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                     overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 } else if (status.equalsIgnoreCase(Constants.statusDeactive)) {
+                    new TawsiliPrefStore(this).addPreference(Constants.register_mobile, mobile);
+                    new TawsiliPrefStore(this).addPreference(Constants.register_email, email);
                     startActivity(new Intent(LoginActivity.this, AskForVerificationCodeActivity.class));
                 } else if (status.equalsIgnoreCase(Constants.statusClosedByClient) ||
                         status.equalsIgnoreCase(Constants.statusClosedBySystem)) {
@@ -297,50 +299,54 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
 
     private void loginUser(String email, String password) {
 
-        String url = BuildConfig.API_BASE_URL + "loginuser.php?mail=" + email + "&password =" + password;
-        // here should show dialog
-        final SweetDialogHelper sdh = new SweetDialogHelper(this);
-        sdh.showMaterialProgress(getString(R.string.loading));
-        StringRequest strReq = new StringRequest(Request.Method.GET,
-                url, new Response.Listener<String>() {
+        if (Utils.isOnline(this)) {
+            String url = BuildConfig.API_BASE_URL + "loginuser.php?mail=" + email + "&password =" + password;
+            // here should show dialog
+            final SweetDialogHelper sdh = new SweetDialogHelper(this);
+            sdh.showMaterialProgress(getString(R.string.loading));
+            StringRequest strReq = new StringRequest(Request.Method.GET,
+                    url, new Response.Listener<String>() {
 
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, response.toString());
-                sdh.dismissDialog();
+                @Override
+                public void onResponse(String response) {
+                    Log.d(TAG, response.toString());
+                    sdh.dismissDialog();
 
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String result = jsonObject.optString("error");
-                        String userId = jsonObject.optString("id");
-                        if (!result.equalsIgnoreCase("") && userId.equalsIgnoreCase("")){
-                            new SweetDialogHelper(LoginActivity.this).showBasicMessage(result);
-                        }else {
-                            new TawsiliPrefStore(LoginActivity.this).addPreference(Constants.userId, userId);
-                            startActivity(new Intent(LoginActivity.this, PickLocationActivity.class)
-                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                            overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                    try {
+                        JSONArray jsonArray = new JSONArray(response);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String result = jsonObject.optString("error");
+                            String userId = jsonObject.optString("id");
+                            if (!result.equalsIgnoreCase("") && userId.equalsIgnoreCase("")){
+                                new SweetDialogHelper(LoginActivity.this).showBasicMessage(result);
+                            }else {
+                                new TawsiliPrefStore(LoginActivity.this).addPreference(Constants.userId, userId);
+                                startActivity(new Intent(LoginActivity.this, PickLocationActivity.class)
+                                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                            }
+
                         }
-
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+
+
                 }
+            }, new Response.ErrorListener() {
 
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                sdh.dismissDialog();
-            }
-        });
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq);
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    sdh.dismissDialog();
+                }
+            });
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(strReq);
+        } else {
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.check_network_connection));
+        }
 
     }
 
