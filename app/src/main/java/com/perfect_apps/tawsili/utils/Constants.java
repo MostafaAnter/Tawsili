@@ -14,9 +14,21 @@ public class Constants {
     /**
      * belong login with facebook
      */
-
-    public static final String userId = "userId";
     public static final String userEmail = "userEmail";
     public static final String userName = "userName";
+
+    /**
+     * tawsili api
+     */
+    public static final String userId = "userId";
+
+    /**
+     * for check user
+     */
+    public static final String statusEmpty = "Empty Data";
+    public static final String statusActive = "Active";
+    public static final String statusDeactive = "Deactive";
+    public static final String statusClosedByClient = "Closed by Client";
+    public static final String statusClosedBySystem = "Closed by System";
 
 }
