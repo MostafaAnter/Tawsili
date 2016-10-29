@@ -27,6 +27,16 @@ android {
             signingConfig signingConfigs.config
         }
     }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'API_BASE_URL', '"http://tawsely.com/webservice/"'
+        it.resValue 'string', 'facebook_app_id', '"1160097964000902"'
+        it.resValue 'string', 'fb_login_protocol_scheme', '"fb1160097964000902"'
+    }
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -58,4 +68,6 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     //sweet dialog
     compile 'cn.pedant.sweetalert:library:1.3'
+    //facebook
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 }

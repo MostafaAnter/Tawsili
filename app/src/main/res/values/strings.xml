@@ -81,6 +81,9 @@
     <string name="save">Save</string>
     <string name="pick_time">Pick Time</string>
     <string name="pick_date">Pick Date</string>
+    <string name="check_network_connection">check network connection</string>
+    <string name="error">Error</string>
+    <string name="loading">Loading...</string>
     <string-array name="options_array">
         <item>Every day</item>
         <item>Every week</item>
