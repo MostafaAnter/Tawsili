@@ -20,9 +20,12 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.store.TawsiliPrefStore;
+import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 import com.perfect_apps.tawsili.utils.Utils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -143,6 +146,7 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
                                             GraphResponse response) {
                                         // Application code
                                         Log.d("graph respon", response.toString());
+                                        parseGraph(response.toString());
                                         sdh.dismissDialog();
                                     }
                                 });
@@ -172,6 +176,22 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void parseGraph(String graph) {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(graph);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JSONObject graphObject = jsonObject.optJSONObject("graphObject");
+        String userId = graphObject.optString("id");
+        String userMail = graphObject.optString("email");
+        String userName = graphObject.optString("name");
+
+        new TawsiliPrefStore(this).addPreference(Constants.userId, userId);
+        new TawsiliPrefStore(this).addPreference(Constants.userEmail, userMail);
+        new TawsiliPrefStore(this).addPreference(Constants.userName, userName);
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()){
