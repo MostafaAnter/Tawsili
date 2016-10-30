@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.perfect_apps.tawsili.models.ReceiveSMSEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by mostafa_anter on 10/30/16.
@@ -38,13 +41,7 @@ public class IncomingSms extends BroadcastReceiver {
                     String message = currentMessage.getDisplayMessageBody();
 
                     Log.i("SmsReceiver", "senderNum: "+ senderNum + "; message: " + message);
-
-
-                    // Show Alert
-                    int duration = Toast.LENGTH_LONG;
-                    Toast toast = Toast.makeText(context,
-                            "senderNum: "+ senderNum + ", message: " + message, duration);
-                    toast.show();
+                    EventBus.getDefault().post(new ReceiveSMSEvent(message));
 
                 } // end for loop
             } // bundle is null

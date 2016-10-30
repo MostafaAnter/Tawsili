@@ -25,10 +25,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.app.AppController;
+import com.perfect_apps.tawsili.models.PickTimeEvent;
+import com.perfect_apps.tawsili.models.ReceiveSMSEvent;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -323,5 +327,24 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
 
 
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe
+    public void onMessageEvent(ReceiveSMSEvent event) {
+        String s = event.getMessage();
+        editText1.setText(s);
+
     }
 }
