@@ -206,12 +206,28 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
         final SweetDialogHelper sdh = new SweetDialogHelper(this);
         sdh.showMaterialProgress(getString(R.string.loading));
 
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                url, new Response.Listener<String>() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("name", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                    .getPreferenceValue(Constants.register_fullName));
+            params.put("mobile", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                    .getPreferenceValue(Constants.register_mobile));
+            params.put("mail", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                    .getPreferenceValue(Constants.register_email));
+            params.put("password", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                    .getPreferenceValue(Constants.register_password));
+            params.put("from", "Android");
+            params.put("udid", "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest strReq = new JsonObjectRequest(Request.Method.POST,
+                url, params, new Response.Listener<JSONObject>() {
 
             @Override
-            public void onResponse(String response) {
-
+            public void onResponse(JSONObject response1) {
+                String response = response1.toString();
                 Log.d(TAG, response.toString());
                 sdh.dismissDialog();
 
@@ -243,26 +259,7 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 sdh.dismissDialog();
             }
-        }) {
-
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("name", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
-                        .getPreferenceValue(Constants.register_fullName));
-                params.put("mobile", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
-                        .getPreferenceValue(Constants.register_mobile));
-                params.put("mail", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
-                        .getPreferenceValue(Constants.register_email));
-                params.put("password", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
-                        .getPreferenceValue(Constants.register_password));
-                params.put("from", "Android");
-                params.put("udid", "");
-                return params;
-
-            }
-        };
+        });
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
@@ -274,12 +271,29 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
         // here should show dialog
         final SweetDialogHelper sdh = new SweetDialogHelper(this);
         sdh.showMaterialProgress(getString(R.string.loading));
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                url, new Response.Listener<String>() {
+
+        JSONObject params = new JSONObject();
+        try {
+            params.put("name", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                    .getPreferenceValue(Constants.fbuserName));
+            params.put("mobile", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                    .getPreferenceValue(Constants.register_mobile));
+            params.put("mail", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                    .getPreferenceValue(Constants.fbuserEmail));
+            params.put("password", "");
+            params.put("from", "Android");
+            params.put("udid", "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest strReq = new JsonObjectRequest(Request.Method.POST,
+                url, params, new Response.Listener<JSONObject>() {
 
             @Override
-            public void onResponse(String response) {
+            public void onResponse(JSONObject response1) {
 
+                String response = response1.toString();
                 Log.d(TAG, response.toString());
                 sdh.dismissDialog();
 
@@ -308,28 +322,10 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                VolleyLog.d(TAG, "Error: " + error.toString());
                 sdh.dismissDialog();
             }
-        }) {
-
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("name", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
-                        .getPreferenceValue(Constants.fbuserName));
-                params.put("mobile", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
-                        .getPreferenceValue(Constants.register_mobile));
-                params.put("mail", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
-                        .getPreferenceValue(Constants.fbuserEmail));
-                params.put("password", "");
-                params.put("from", "Android");
-                params.put("udid", "");
-                return params;
-
-            }
-        };
+        });
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
