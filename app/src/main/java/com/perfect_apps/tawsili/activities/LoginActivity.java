@@ -236,7 +236,7 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
      */
     private void checkUser(String userMail) {
 
-        String url = BuildConfig.API_BASE_URL + "checkuser.php?mail=" + userMail + "&mobile = null";
+        String url = BuildConfig.API_BASE_URL + "checkuser.php?mail=" + userMail + "&mobile=null";
         // here should show dialog
         final SweetDialogHelper sdh = new SweetDialogHelper(this);
         sdh.showMaterialProgress(getString(R.string.loading));

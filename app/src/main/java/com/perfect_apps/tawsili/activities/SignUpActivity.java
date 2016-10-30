@@ -229,7 +229,7 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
      */
     private void checkUser(String userMail) {
 
-        String url = BuildConfig.API_BASE_URL + "checkuser.php?mail=" + userMail + "&mobile = null";
+        String url = BuildConfig.API_BASE_URL + "checkuser.php?mail=" + userMail + "&mobile=null";
         // here should show dialog
         final SweetDialogHelper sdh = new SweetDialogHelper(this);
         sdh.showMaterialProgress(getString(R.string.loading));
@@ -259,7 +259,7 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
 
     private void checkUserToRegister(String userMail, String mMobile) {
 
-        String url = BuildConfig.API_BASE_URL + "checkuser.php?mail=" + userMail + "&mobile =" + mMobile;
+        String url = BuildConfig.API_BASE_URL + "checkuser.php?mail=" + userMail + "&mobile=" + mMobile;
         // here should show dialog
         final SweetDialogHelper sdh = new SweetDialogHelper(this);
         sdh.showMaterialProgress(getString(R.string.loading));
