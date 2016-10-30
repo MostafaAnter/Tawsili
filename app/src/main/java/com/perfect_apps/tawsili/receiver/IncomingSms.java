@@ -41,7 +41,9 @@ public class IncomingSms extends BroadcastReceiver {
                     String message = currentMessage.getDisplayMessageBody();
 
                     Log.i("SmsReceiver", "senderNum: "+ senderNum + "; message: " + message);
-                    EventBus.getDefault().post(new ReceiveSMSEvent(message));
+                    message = message.replace("Verification Code:", "");
+                    message = message.replace(" ", "");
+                    EventBus.getDefault().post(new ReceiveSMSEvent(message.trim()));
 
                 } // end for loop
             } // bundle is null

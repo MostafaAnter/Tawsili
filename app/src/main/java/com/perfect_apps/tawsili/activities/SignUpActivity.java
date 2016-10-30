@@ -355,7 +355,7 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button1:
-                startActivity(new Intent(SignUpActivity.this, AskForVerificationCodeActivity.class));
+                signUpUser();
                 break;
             case R.id.signUpUsingFacebook:
                 loginWithFacebook();

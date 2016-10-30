@@ -33,6 +33,8 @@ import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -147,21 +149,23 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
                 }
                 break;
         }
-        startActivity(new Intent(AskForVerificationCodeActivity.this, PickLocationActivity.class));
 
     }
 
 
     private void sendConfirmationCode() {
-        String mCode;
+        String url;
+
         if (code.trim().isEmpty()) {
-            mCode = null;
+            url = BuildConfig.API_BASE_URL + "send.php?number=" + new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                    .getPreferenceValue(Constants.register_mobile);
+
         } else {
-            mCode = code;
+            url = BuildConfig.API_BASE_URL + "send.php?number=" + new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                    .getPreferenceValue(Constants.register_mobile) + "&code=" + code;
         }
 
-        String url = BuildConfig.API_BASE_URL + "send.php?number=" + new TawsiliPrefStore(AskForVerificationCodeActivity.this)
-                .getPreferenceValue(Constants.register_mobile) + "&code=" + mCode;
+
         // here should show dialog
         StringRequest strReq = new StringRequest(Request.Method.GET,
                 url, new Response.Listener<String>() {
@@ -170,6 +174,16 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
             public void onResponse(String response) {
                 Log.d(TAG, response.toString());
 
+                try {
+                    JSONArray jsonArray = new JSONArray(response);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        code = jsonObject.optString("Code");
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
         }, new Response.ErrorListener() {
@@ -190,17 +204,16 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
         // here should show dialog
         final SweetDialogHelper sdh = new SweetDialogHelper(this);
         sdh.showMaterialProgress(getString(R.string.loading));
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                url, null,
-                new Response.Listener<JSONObject>() {
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                url, new Response.Listener<String>() {
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                        sdh.dismissDialog();
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, response.toString());
+                sdh.dismissDialog();
 
-                    }
-                }, new Response.ErrorListener() {
+            }
+        }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -222,14 +235,13 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
                         .getPreferenceValue(Constants.register_mobile));
                 params.put("from", "Android");
 
-
                 return params;
             }
 
         };
 
         // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 
     private void registerFaceBookNewUser() {
@@ -238,17 +250,16 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
         // here should show dialog
         final SweetDialogHelper sdh = new SweetDialogHelper(this);
         sdh.showMaterialProgress(getString(R.string.loading));
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                url, null,
-                new Response.Listener<JSONObject>() {
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                url, new Response.Listener<String>() {
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                        sdh.dismissDialog();
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, response.toString());
+                sdh.dismissDialog();
 
-                    }
-                }, new Response.ErrorListener() {
+            }
+        }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -274,7 +285,7 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
         };
 
         // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 
     private void hideButton() {
