@@ -42,6 +42,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class AskForVerificationCodeActivity extends LocalizationActivity implements View.OnClickListener {
 
@@ -204,11 +205,13 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
         // here should show dialog
         final SweetDialogHelper sdh = new SweetDialogHelper(this);
         sdh.showMaterialProgress(getString(R.string.loading));
+
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
+
                 Log.d(TAG, response.toString());
                 sdh.dismissDialog();
 
@@ -232,7 +235,6 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
                     e.printStackTrace();
                 }
 
-
             }
         }, new Response.ErrorListener() {
 
@@ -243,22 +245,23 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
             }
         }) {
 
+
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("name", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
                         .getPreferenceValue(Constants.register_fullName));
+                params.put("mobile", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                        .getPreferenceValue(Constants.register_mobile));
                 params.put("mail", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
                         .getPreferenceValue(Constants.register_email));
                 params.put("password", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
                         .getPreferenceValue(Constants.register_password));
-                params.put("mobile", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
-                        .getPreferenceValue(Constants.register_mobile));
                 params.put("from", "Android");
-
+                params.put("udid", "");
                 return params;
-            }
 
+            }
         };
 
         // Adding request to request queue
@@ -276,6 +279,7 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
 
             @Override
             public void onResponse(String response) {
+
                 Log.d(TAG, response.toString());
                 sdh.dismissDialog();
 
@@ -309,20 +313,22 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
             }
         }) {
 
+
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("name", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
                         .getPreferenceValue(Constants.fbuserName));
-                params.put("mail", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
-                        .getPreferenceValue(Constants.fbuserEmail));
                 params.put("mobile", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
                         .getPreferenceValue(Constants.register_mobile));
+                params.put("mail", new TawsiliPrefStore(AskForVerificationCodeActivity.this)
+                        .getPreferenceValue(Constants.fbuserEmail));
+                params.put("password", "");
                 params.put("from", "Android");
-
+                params.put("udid", "");
                 return params;
-            }
 
+            }
         };
 
         // Adding request to request queue

@@ -51,18 +51,26 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
 
     public static final String TAG = "SignUpActivity";
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.text1) TextView textView1;
-    @BindView(R.id.text2) TextView textView2;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.text1)
+    TextView textView1;
+    @BindView(R.id.text2)
+    TextView textView2;
 
     @BindView(R.id.button1)
     Button button1;
 
-    @BindView(R.id.editText1) EditText editText1;
-    @BindView(R.id.editText2) EditText editText2;
-    @BindView(R.id.editText3) EditText editText3;
-    @BindView(R.id.editText4) EditText editText4;
-    @BindView(R.id.editText5) EditText editText5;
+    @BindView(R.id.editText1)
+    EditText editText1;
+    @BindView(R.id.editText2)
+    EditText editText2;
+    @BindView(R.id.editText3)
+    EditText editText3;
+    @BindView(R.id.editText4)
+    EditText editText4;
+    @BindView(R.id.editText5)
+    EditText editText5;
 
     @BindView(R.id.checkbox1)
     CheckBox checkBox1;
@@ -95,12 +103,12 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
         changeFontOfText();
         // set login with Facebook
         setLoginWithFacebook();
-        
+
         linearLayout1.setOnClickListener(this);
         button1.setOnClickListener(this);
     }
 
-    private void changeFontOfText(){
+    private void changeFontOfText() {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         textView1.setTypeface(font);
         textView2.setTypeface(font);
@@ -353,7 +361,7 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button1:
                 signUpUser();
                 break;
@@ -363,8 +371,8 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
         }
     }
 
-    private void signUpUser(){
-        if (Utils.isOnline(this)){
+    private void signUpUser() {
+        if (Utils.isOnline(this)) {
 
             if (checkUserValidData()) {
                 new TawsiliPrefStore(this).addPreference(Constants.register_fullName, fullName);
@@ -373,30 +381,25 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
                 new TawsiliPrefStore(this).addPreference(Constants.register_password, password);
                 checkUserToRegister(email, mobile);
             }
-        }else {
+        } else {
             new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.check_network_connection));
         }
 
     }
 
-    private boolean checkUserValidData(){
-        try {
-            fullName = URLEncoder.encode(editText1.getText().toString().trim(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
+    private boolean checkUserValidData() {
+        fullName = editText1.getText().toString().trim();
         mobile = editText2.getText().toString().trim() + editText3.getText().toString().trim();
         email = editText4.getText().toString().trim();
         password = editText5.getText().toString().trim();
 
-        if (fullName == null || fullName.isEmpty()){
+        if (fullName == null || fullName.isEmpty()) {
             new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.enter_name));
             return false;
         }
         if (editText2.getText().toString().trim().isEmpty() ||
                 editText3.getText().toString().trim().isEmpty() ||
-                !PhoneNumberUtils.isGlobalPhoneNumber(mobile)){
+                !PhoneNumberUtils.isGlobalPhoneNumber(mobile)) {
             new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.phone_not_valid));
             return false;
         }
@@ -404,11 +407,11 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
             new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.email_not_valid));
             return false;
         }
-        if (password == null || password.isEmpty() || password.length() < 6){
+        if (password == null || password.isEmpty() || password.length() < 6) {
             new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.password_not_valid));
             return false;
         }
-        if (!checkBox1.isChecked()){
+        if (!checkBox1.isChecked()) {
             new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.terms_and_conditions_not_valid));
             return false;
         }
