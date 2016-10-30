@@ -81,4 +81,12 @@
         <item>Every month</item>
         <item>Every year</item>
     </string-array>
+    <string name="complete_your_data">Complete your data</string>
+    <string name="email_invalide">email not valid</string>
+    <string name="email_not_valid">email not valid</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_your_mail">Enter valid mail</string>
+    <string name="password_not_valid">enter 6 digits password</string>
+    <string name="phone_not_valid">invalid phone number</string>
+    <string name="terms_and_conditions_not_valid">must confirm terms and conditions</string>
 </resources>

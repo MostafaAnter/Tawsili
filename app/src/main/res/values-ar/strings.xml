@@ -82,4 +82,10 @@
     <string name="email_invalide">البريد الالكترونى غير صالح</string>
     <string name="complete_your_data">قم بإكمال تسجيل البيانات</string>
     <string name="enter_your_mail">يجب عليك إدخال البريد الإلكتروني</string>
+    <string name="check_network_connection">تأكد من النتورك</string>
+    <string name="error">خطأ</string>
+    <string name="invalid_code">كود غير صالح!</string>
+    <string name="loading">جارى التحميل..</string>
+    <string name="resend">إعادة ارسال</string>
+    <string name="resend_code_after">سيتم إعادة ارسال الكود بعد..</string>
 </resources>
