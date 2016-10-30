@@ -1,5 +1,6 @@
 package com.perfect_apps.tawsili.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -75,11 +76,20 @@ public class SplashActivity extends LocalizationActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 // do some thing
-                SplashFragment splashFragment = new SplashFragment();
-                getSupportFragmentManager().
-                        beginTransaction()
-                        .add(R.id.container,
-                                splashFragment).commit();
+                if (!new TawsiliPrefStore(SplashActivity.this).getPreferenceValue(Constants.userId).trim().isEmpty()){
+                    startActivity(new Intent(SplashActivity.this, PickLocationActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                    overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                }else {
+                    SplashFragment splashFragment = new SplashFragment();
+                    getSupportFragmentManager().
+                            beginTransaction()
+                            .add(R.id.container,
+                                    splashFragment).commit();
+                }
+
+
+
             }
 
             @Override
