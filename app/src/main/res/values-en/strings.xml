@@ -71,6 +71,9 @@
     <string name="check_network_connection">check network connection</string>
     <string name="error">Error</string>
     <string name="loading">Loading...</string>
+    <string name="resend_code_after">Resend code after..</string>
+    <string name="resend">Resend</string>
+    <string name="invalid_code">invalid code!</string>
 
     <string-array name="options_array">
         <item>Every day</item>

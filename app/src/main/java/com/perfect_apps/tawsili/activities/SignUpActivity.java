@@ -305,6 +305,7 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                     overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 } else if (status.equalsIgnoreCase(Constants.statusDeactive)) {
+                    new TawsiliPrefStore(this).addPreference(Constants.userId, userId);
                     new TawsiliPrefStore(this).addPreference(Constants.register_mobile, mobile);
                     new TawsiliPrefStore(this).addPreference(Constants.register_email, email);
                     startActivity(new Intent(SignUpActivity.this, AskForVerificationCodeActivity.class));
@@ -334,15 +335,14 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
                     startActivity(intent);
                 } else if (status.equalsIgnoreCase(Constants.statusActive)) {
                     new SweetDialogHelper(SignUpActivity.this)
-                            .showBasicMessage("هذا المستخدم موجود بالفعل , حاول التسجيل ببيانات مختلفة");
+                            .showBasicMessage("هذا الهاتف مستخدم من قبل , حاول التسجيل ببيانات مختلفة");
                 } else if (status.equalsIgnoreCase(Constants.statusDeactive)) {
-                    Intent intent = new Intent(SignUpActivity.this, AskForVerificationCodeActivity.class);
-                    intent.putExtra(Constants.comingFrom, TAG);
-                    startActivity(intent);
+                    new SweetDialogHelper(SignUpActivity.this)
+                            .showBasicMessage("هذا الهاتف مستخدم من قبل , حاول التسجيل ببيانات مختلفة");
                 } else if (status.equalsIgnoreCase(Constants.statusClosedByClient) ||
                         status.equalsIgnoreCase(Constants.statusClosedBySystem)) {
                     new SweetDialogHelper(SignUpActivity.this)
-                            .showBasicMessage("هذا المستخدم موجود بالفعل , حاول التسجيل ببيانات مختلفة");
+                            .showBasicMessage("هذا الهاتف مستخدم من قبل , حاول التسجيل ببيانات مختلفة");
                 }
 
             }

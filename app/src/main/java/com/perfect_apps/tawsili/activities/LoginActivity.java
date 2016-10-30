@@ -282,6 +282,7 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                     overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 } else if (status.equalsIgnoreCase(Constants.statusDeactive)) {
+                    new TawsiliPrefStore(this).addPreference(Constants.userId, userId);
                     new TawsiliPrefStore(this).addPreference(Constants.register_mobile, mobile);
                     new TawsiliPrefStore(this).addPreference(Constants.register_email, email);
                     startActivity(new Intent(LoginActivity.this, AskForVerificationCodeActivity.class));
@@ -401,7 +402,7 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText(getString(R.string.error))
-                        .setContentText("البريد الالكترونى غير صالح")
+                        .setContentText(getString(R.string.email_invalide))
                         .show();
                 return false;
             }
@@ -411,7 +412,7 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
             // show error message
             new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                     .setTitleText(getString(R.string.error))
-                    .setContentText("قم بإكمال تسجيل البيانات")
+                    .setContentText(getString(R.string.complete_your_data))
                     .show();
             return false;
         }
@@ -425,7 +426,7 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText(getString(R.string.error))
-                        .setContentText("البريد الالكترونى غير صالح")
+                        .setContentText(getString(R.string.email_invalide))
                         .show();
                 return false;
             }
@@ -436,7 +437,7 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
             // show error message
             new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                     .setTitleText(getString(R.string.error))
-                    .setContentText("يجب عليك إدخال البريد الإلكتروني")
+                    .setContentText(getString(R.string.enter_your_mail))
                     .show();
             return false;
         }
