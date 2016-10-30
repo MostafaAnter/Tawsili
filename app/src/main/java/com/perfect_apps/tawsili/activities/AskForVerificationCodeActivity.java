@@ -212,6 +212,27 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
                 Log.d(TAG, response.toString());
                 sdh.dismissDialog();
 
+                try {
+                    JSONArray jsonArray = new JSONArray(response);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String result = jsonObject.optString("error");
+                        String userId = jsonObject.optString("id");
+                        if (!result.equalsIgnoreCase("") && userId.equalsIgnoreCase("")){
+                            new SweetDialogHelper(AskForVerificationCodeActivity.this).showBasicMessage(result);
+                        }else {
+                            new TawsiliPrefStore(AskForVerificationCodeActivity.this).addPreference(Constants.userId, userId);
+                            startActivity(new Intent(AskForVerificationCodeActivity.this, PickLocationActivity.class)
+                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                            overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
             }
         }, new Response.ErrorListener() {
 
@@ -257,6 +278,26 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
             public void onResponse(String response) {
                 Log.d(TAG, response.toString());
                 sdh.dismissDialog();
+
+                try {
+                    JSONArray jsonArray = new JSONArray(response);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String result = jsonObject.optString("error");
+                        String userId = jsonObject.optString("id");
+                        if (!result.equalsIgnoreCase("") && userId.equalsIgnoreCase("")){
+                            new SweetDialogHelper(AskForVerificationCodeActivity.this).showBasicMessage(result);
+                        }else {
+                            new TawsiliPrefStore(AskForVerificationCodeActivity.this).addPreference(Constants.userId, userId);
+                            startActivity(new Intent(AskForVerificationCodeActivity.this, PickLocationActivity.class)
+                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                            overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
         }, new Response.ErrorListener() {
