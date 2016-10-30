@@ -29,6 +29,7 @@ import com.perfect_apps.tawsili.models.PickTimeEvent;
 import com.perfect_apps.tawsili.models.ReceiveSMSEvent;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
+import com.perfect_apps.tawsili.utils.CustomRequest;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -222,11 +223,11 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
             e.printStackTrace();
         }
 
-        JsonObjectRequest strReq = new JsonObjectRequest(Request.Method.POST,
-                url, params, new Response.Listener<JSONObject>() {
+        CustomRequest strReq = new CustomRequest(Request.Method.POST,
+                url, params, new Response.Listener<JSONArray>() {
 
             @Override
-            public void onResponse(JSONObject response1) {
+            public void onResponse(JSONArray response1) {
                 String response = response1.toString();
                 Log.d(TAG, response.toString());
                 sdh.dismissDialog();
@@ -287,11 +288,11 @@ public class AskForVerificationCodeActivity extends LocalizationActivity impleme
             e.printStackTrace();
         }
 
-        JsonObjectRequest strReq = new JsonObjectRequest(Request.Method.POST,
-                url, params, new Response.Listener<JSONObject>() {
+        CustomRequest strReq = new CustomRequest(Request.Method.POST,
+                url, params, new Response.Listener<JSONArray>() {
 
             @Override
-            public void onResponse(JSONObject response1) {
+            public void onResponse(JSONArray response1) {
 
                 String response = response1.toString();
                 Log.d(TAG, response.toString());
