@@ -22,6 +22,8 @@ public class Constants {
      * tawsili api
      */
     public static final String userId = "userId";
+    public static final String userLastLocationLat = "userLastLocationLat";
+    public static final String userLastLocationLng = "userLastLocationLng";
 
     /**
      * for check user

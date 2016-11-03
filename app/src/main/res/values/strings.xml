@@ -101,4 +101,7 @@
         <item>Every year</item>
     </string-array>
     <string name="complete_your_data">Complete your data</string>
+    <string name="open_gps">Open GPS!</string>
+    <string name="why_open_gps">Should open GPS to detect your location</string>
+    <string name="yes_open_gps">Yes, Active</string>
 </resources>

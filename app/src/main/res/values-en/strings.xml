@@ -89,4 +89,7 @@
     <string name="password_not_valid">enter 6 digits password</string>
     <string name="phone_not_valid">invalid phone number</string>
     <string name="terms_and_conditions_not_valid">must confirm terms and conditions</string>
+    <string name="open_gps">Open GPS!</string>
+    <string name="why_open_gps">Should open GPS to detect your location</string>
+    <string name="yes_open_gps">Yes, Active</string>
 </resources>
