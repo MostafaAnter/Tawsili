@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId "com.perfect_apps.tawsili"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -30,6 +30,7 @@ android {
 
     buildTypes.each {
         it.buildConfigField 'String', 'API_BASE_URL', '"http://tawsely.com/webservice/"'
+        it.buildConfigField 'String', 'MATRIX_API', '"AIzaSyBJpifwJmzAhyEH-vkdDazfsSIy-Ii7ueE"'
         it.resValue 'string', 'facebook_app_id', '"1160097964000902"'
         it.resValue 'string', 'fb_login_protocol_scheme', '"fb1160097964000902"'
     }

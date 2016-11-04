@@ -88,4 +88,7 @@
     <string name="loading">جارى التحميل..</string>
     <string name="resend">إعادة ارسال</string>
     <string name="resend_code_after">سيتم إعادة ارسال الكود بعد..</string>
+    <string name="open_gps">فعل ال GPS!</string>
+    <string name="why_open_gps">تحتاج تفعيل GPS لتحديد مكانك</string>
+    <string name="yes_open_gps">نعم, فعل</string>
 </resources>
