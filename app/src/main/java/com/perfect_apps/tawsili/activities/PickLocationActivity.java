@@ -63,6 +63,7 @@ import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
+import com.perfect_apps.tawsili.utils.TawsiliPublicFunc;
 import com.perfect_apps.tawsili.utils.Utils;
 import com.vipul.hp_hp.library.Layout_to_Image;
 
@@ -172,6 +173,9 @@ public class PickLocationActivity extends LocalizationActivity
                     .addApi(LocationServices.API)
                     .build();
         }
+
+        // download priceList
+        TawsiliPublicFunc.getPriceList(this);
     }
 
     @Override
@@ -556,4 +560,6 @@ public class PickLocationActivity extends LocalizationActivity
         Log.e("address info", sb.toString());
 
     }
+
+
 }
