@@ -55,13 +55,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.models.NetworkEvent;
+import com.perfect_apps.tawsili.models.PickTimeEvent;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
+import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 import com.perfect_apps.tawsili.utils.Utils;
 import com.vipul.hp_hp.library.Layout_to_Image;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.util.List;
@@ -146,14 +152,24 @@ public class PickLocationActivity extends LocalizationActivity
 
         // Create an instance of GoogleAPIClient.
         if (Utils.isOnline(this)) {
-            if (mGoogleApiClient == null) {
-                mGoogleApiClient = new GoogleApiClient.Builder(this)
-                        .addConnectionCallbacks(this)
-                        .addOnConnectionFailedListener(this)
-                        .addApi(LocationServices.API)
-                        .build();
-            }
+            initGoogleApiClient();
         }
+    }
+
+    private void initGoogleApiClient() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
     }
 
     private void animateView(LinearLayout frameLayout){
@@ -326,6 +342,7 @@ public class PickLocationActivity extends LocalizationActivity
 
     @Override
     protected void onStop() {
+        EventBus.getDefault().unregister(this);
         super.onStop();
         if (mMap != null) {
             MapStateManager mgr = new MapStateManager(this);
@@ -335,6 +352,14 @@ public class PickLocationActivity extends LocalizationActivity
             mGoogleApiClient.disconnect();
 
         originalMarker.setVisibility(View.GONE);
+
+    }
+
+    @Subscribe
+    public void onMessageEvent(NetworkEvent event) {
+        initGoogleApiClient();
+        new ReconnectTask().execute();
+
     }
 
     @Override
@@ -349,6 +374,12 @@ public class PickLocationActivity extends LocalizationActivity
         }
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
+        }
+
+        // if user is offline show message to active network
+        if (!Utils.isOnline(this)){
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error),
+                    getString(R.string.check_network_connection));
         }
     }
 
@@ -466,7 +497,7 @@ public class PickLocationActivity extends LocalizationActivity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        new ReconnectTask().execute();
     }
 
     private void buildAlertMessageNoGps() {

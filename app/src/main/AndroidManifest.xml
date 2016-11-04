@@ -133,6 +133,16 @@
             </intent-filter>
         </receiver>
 
+        <!-- for network connection -->
+
+        <service android:name=".services.ReconnectGoogleApiClient" />
+        <!-- Broadcast Receiver to handle changes in Network state -->
+        <receiver android:name=".services.ReconnectGoogleApiClient$AlarmReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
