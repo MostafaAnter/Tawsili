@@ -1,5 +1,7 @@
 package com.perfect_apps.tawsili.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -30,6 +32,8 @@ import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.adapters.MyRidesItemsAdapter;
 import com.perfect_apps.tawsili.models.MyRidesItem;
+import com.perfect_apps.tawsili.store.TawsiliPrefStore;
+import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.DividerItemDecoration;
 
@@ -176,6 +180,8 @@ public class MyRidesActivity extends LocalizationActivity
 
         } else if (id == R.id.settings) {
             startActivity(new Intent(MyRidesActivity.this, SettingsActivity.class));
+        }else if (id == R.id.english_speaking){
+            showSingleChoiceListDrivereLangaugeAlertDialog();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -270,5 +276,59 @@ public class MyRidesActivity extends LocalizationActivity
 
             onRefreshComplete();
         }
+    }
+
+    // change driver language
+    private String mCheckedDriverLanguageItem;
+
+    public void showSingleChoiceListDrivereLangaugeAlertDialog() {
+        final String[] list = new String[]{getString(R.string.language_arabic), getString(R.string.language_en)};
+        int checkedItemIndex;
+
+        switch (getDriverLanguage()) {
+            case "1":
+                checkedItemIndex = 1;
+                break;
+            default:
+                checkedItemIndex = 0;
+
+        }
+        mCheckedDriverLanguageItem = list[checkedItemIndex];
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.language))
+                .setSingleChoiceItems(list,
+                        checkedItemIndex,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mCheckedDriverLanguageItem = list[which];
+                                if (which == 0) {
+                                    setDriverLanguage("ar");
+                                    dialog.dismiss();
+                                } else if (which == 1) {
+                                    setDriverLanguage("en");
+                                    dialog.dismiss();
+                                }
+                            }
+                        })
+                .show();
+    }
+
+    private void setDriverLanguage(String langauge){
+        switch (langauge){
+            case "en":
+                new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 1);
+                break;
+            case "ar":
+                new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 0);
+                break;
+        }
+
+    }
+
+    private String getDriverLanguage(){
+        return String.valueOf(new TawsiliPrefStore(this)
+                .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
     }
 }
