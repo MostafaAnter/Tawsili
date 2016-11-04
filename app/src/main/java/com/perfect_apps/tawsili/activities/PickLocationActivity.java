@@ -81,19 +81,27 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PickLocationActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         TabLayout.OnTabSelectedListener, OnMapReadyCallback,
-        View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.tabs) TabLayout tabLayout;
+        View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.tabs)
+    TabLayout tabLayout;
     @BindView(R.id.linearLayout1)
     LinearLayout linearLayout1;
 
-    @BindView(R.id.text5) TextView textView5;
-    @BindView(R.id.button1)Button button1;
-    @BindView(R.id.button2) Button button2;
-    @BindView(R.id.search_button)ImageView searchImageView;
-    @BindView(R.id.orign_marker)FrameLayout originalMarker;
+    @BindView(R.id.text5)
+    TextView textView5;
+    @BindView(R.id.button1)
+    Button button1;
+    @BindView(R.id.button2)
+    Button button2;
+    @BindView(R.id.search_button)
+    ImageView searchImageView;
+    @BindView(R.id.orign_marker)
+    FrameLayout originalMarker;
 
-    @BindView(R.id.nav_view)NavigationView navigationView;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
@@ -172,7 +180,7 @@ public class PickLocationActivity extends LocalizationActivity
         EventBus.getDefault().register(this);
     }
 
-    private void animateView(LinearLayout frameLayout){
+    private void animateView(LinearLayout frameLayout) {
         Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(this, R.anim.push_up_enter_long);
         frameLayout.startAnimation(hyperspaceJumpAnimation);
 
@@ -180,15 +188,15 @@ public class PickLocationActivity extends LocalizationActivity
 
 
     //change font of drawer
-    private void changeFontOfNavigation(){
+    private void changeFontOfNavigation() {
         Menu m = navigationView.getMenu();
-        for (int i=0;i<m.size();i++) {
+        for (int i = 0; i < m.size(); i++) {
             MenuItem mi = m.getItem(i);
 
             //for aapplying a font to subMenu ...
             SubMenu subMenu = mi.getSubMenu();
-            if (subMenu!=null && subMenu.size() >0 ) {
-                for (int j=0; j <subMenu.size();j++) {
+            if (subMenu != null && subMenu.size() > 0) {
+                for (int j = 0; j < subMenu.size(); j++) {
                     MenuItem subMenuItem = subMenu.getItem(j);
                     applyFontToMenuItem(subMenuItem);
                 }
@@ -202,11 +210,11 @@ public class PickLocationActivity extends LocalizationActivity
     private void applyFontToMenuItem(MenuItem mi) {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         SpannableString mNewTitle = new SpannableString(mi.getTitle());
-        mNewTitle.setSpan(new CustomTypefaceSpan("" , font), 0 , mNewTitle.length(),  Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        mNewTitle.setSpan(new CustomTypefaceSpan("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         mi.setTitle(mNewTitle);
     }
 
-    private void changeFontOfText(){
+    private void changeFontOfText() {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
         textView5.setTypeface(fontBold);
@@ -279,7 +287,7 @@ public class PickLocationActivity extends LocalizationActivity
     }
 
     // set tab bar indicator height
-    private void setTabLayoutColor(){
+    private void setTabLayoutColor() {
         tabLayout.setSelectedTabIndicatorHeight(0);
     }
 
@@ -321,12 +329,10 @@ public class PickLocationActivity extends LocalizationActivity
 
         if (isAvailable == ConnectionResult.SUCCESS) {
             return true;
-        }
-        else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
+        } else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(isAvailable, this, GPS_ERRORDIALOG_REQUEST);
             dialog.show();
-        }
-        else {
+        } else {
             Toast.makeText(this, "Can't connect to Google Play services", Toast.LENGTH_SHORT).show();
         }
         return false;
@@ -377,7 +383,7 @@ public class PickLocationActivity extends LocalizationActivity
         }
 
         // if user is offline show message to active network
-        if (!Utils.isOnline(this)){
+        if (!Utils.isOnline(this)) {
             new SweetDialogHelper(this).showErrorMessage(getString(R.string.error),
                     getString(R.string.check_network_connection));
         }
@@ -399,7 +405,7 @@ public class PickLocationActivity extends LocalizationActivity
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button1:
                 Intent intent = new Intent(this, BookABusinessCarActivity.class);
                 intent.putExtra("now", true);
@@ -462,7 +468,7 @@ public class PickLocationActivity extends LocalizationActivity
     }
 
     private void setMapWithCurrentLocation() {
-        if (mLastLocation != null && mMap != null){
+        if (mLastLocation != null && mMap != null) {
             updateZoom(mMap, new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
             originalMarker.setVisibility(View.VISIBLE);
             try {
@@ -474,14 +480,14 @@ public class PickLocationActivity extends LocalizationActivity
             // save location inside preference
             new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLat, String.valueOf(mLastLocation.getLatitude()));
             new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLng, String.valueOf(mLastLocation.getLongitude()));
-        }else if(mMap != null) {
+        } else if (mMap != null) {
             String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
             String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
             if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
-                updateZoom(mMap, new LatLng(Double.valueOf(lat),  Double.valueOf(lng)));
+                updateZoom(mMap, new LatLng(Double.valueOf(lat), Double.valueOf(lng)));
                 originalMarker.setVisibility(View.VISIBLE);
                 try {
-                    getAddressInfo(new LatLng( Double.valueOf(lat),  Double.valueOf(lng)));
+                    getAddressInfo(new LatLng(Double.valueOf(lat), Double.valueOf(lng)));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
