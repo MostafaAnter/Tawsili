@@ -109,7 +109,7 @@ public class PickLocationActivity extends LocalizationActivity
     @BindView(R.id.button2)
     Button button2;
     @BindView(R.id.search_button)
-    ImageView searchImageView;
+    LinearLayout searchImageView;
     @BindView(R.id.orign_marker)
     FrameLayout originalMarker;
     @BindView(R.id.time)

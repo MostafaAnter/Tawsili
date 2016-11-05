@@ -95,4 +95,5 @@
     <string name="regular">Regular</string>
     <string name="special">Special</string>
     <string name="category">Category</string>
+    <string name="confirm_pickup">Confirm PickUp</string>
 </resources>
