@@ -42,6 +42,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -56,9 +61,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.app.AppController;
+import com.perfect_apps.tawsili.models.DriverModel;
 import com.perfect_apps.tawsili.models.NetworkEvent;
 import com.perfect_apps.tawsili.models.PickTimeEvent;
+import com.perfect_apps.tawsili.parser.JsonParser;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
@@ -120,6 +129,8 @@ public class PickLocationActivity extends LocalizationActivity
     GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
+    // driver object
+    private DriverModel driverModel;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -318,7 +329,20 @@ public class PickLocationActivity extends LocalizationActivity
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-
+        switch (tab.getPosition()){
+            case 0:
+                getDriversList("1");
+                break;
+            case 1:
+                getDriversList("2");
+                break;
+            case 2:
+                getDriversList("3");
+                break;
+            case 3:
+                showSingleChoiceFamilyTypeAlertDialog();
+                break;
+        }
     }
 
     @Override
@@ -328,7 +352,20 @@ public class PickLocationActivity extends LocalizationActivity
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-
+        switch (tab.getPosition()){
+            case 0:
+                getDriversList("1");
+                break;
+            case 1:
+                getDriversList("2");
+                break;
+            case 2:
+                getDriversList("3");
+                break;
+            case 3:
+                showSingleChoiceFamilyTypeAlertDialog();
+                break;
+        }
     }
 
     // setup map
@@ -488,6 +525,9 @@ public class PickLocationActivity extends LocalizationActivity
             // save location inside preference
             new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLat, String.valueOf(mLastLocation.getLatitude()));
             new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLng, String.valueOf(mLastLocation.getLongitude()));
+            // load driverData
+            TabLayout.Tab tab = tabLayout.getTabAt(0);
+            tab.select();
         } else if (mMap != null) {
             String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
             String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
@@ -500,6 +540,10 @@ public class PickLocationActivity extends LocalizationActivity
                     e.printStackTrace();
                 }
             }
+
+            // load driverData
+            TabLayout.Tab tab = tabLayout.getTabAt(0);
+            tab.select();
         }
     }
 
@@ -619,4 +663,69 @@ public class PickLocationActivity extends LocalizationActivity
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
     }
 
+    // set up family
+    private String mCheckedFamilyTypeItem;
+
+    public void showSingleChoiceFamilyTypeAlertDialog() {
+        final String[] list = new String[]{getString(R.string.regular), getString(R.string.special)};
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.category))
+                .setSingleChoiceItems(list,
+                        -1,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mCheckedFamilyTypeItem = list[which];
+                                if (which == 0) {
+                                    dialog.dismiss();
+                                    getDriversList("4");
+                                } else if (which == 1) {
+                                    dialog.dismiss();
+                                    getDriversList("5");
+                                }
+                            }
+                        })
+                .show();
+    }
+
+    private void getDriversList(String category) {
+        String requestTag = "driversRequest";
+        AppController.getInstance().getRequestQueue().cancelAll(requestTag);
+
+        final String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
+        final String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
+        if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
+            final SweetDialogHelper sdh = new SweetDialogHelper(this);
+            sdh.showMaterialProgress(getString(R.string.loading));
+            String url = BuildConfig.API_BASE_URL + "drivers.php?category=" + category + "&language=" +
+                    String.valueOf(new TawsiliPrefStore(this)
+                            .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
+            StringRequest strReq = new StringRequest(Request.Method.GET,
+                    url, new Response.Listener<String>() {
+
+                @Override
+                public void onResponse(String response) {
+                    Log.d("Drivers", response.toString());
+                    driverModel = JsonParser.parseDriversList(lat, lng, response);
+                    if (driverModel != null){
+                        // get duration with matrix api
+
+                    }else {
+                        sdh.dismissDialog();
+                    }
+
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d("Error drivers", "Error: " + error.getMessage());
+                    sdh.dismissDialog();
+                }
+            });
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(strReq, requestTag);
+        }
+
+    }
 }
