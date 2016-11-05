@@ -50,6 +50,7 @@ public class FavoritePlacesStore {
             note.setVicinity(vicinity);
             note.setLat(lat);
             note.setLng(lng);
+            note.setFav(true);
             noteList.add(note);
         }
 

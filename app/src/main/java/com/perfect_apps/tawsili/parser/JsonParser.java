@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.perfect_apps.tawsili.models.DriverDurationAndDistance;
 import com.perfect_apps.tawsili.models.DriverModel;
+import com.perfect_apps.tawsili.models.FavoritePlaceItem;
 import com.perfect_apps.tawsili.utils.TawsiliPublicFunc;
 
 import org.json.JSONArray;
@@ -127,5 +128,31 @@ public class JsonParser {
         }
 
         return null;
+    }
+
+    public static List<FavoritePlaceItem> parseFavoritePlaces(String response){
+        JSONObject rootObject = null;
+        try {
+            rootObject = new JSONObject(response);
+            JSONArray jsonArray = rootObject.optJSONArray("results");
+            List<FavoritePlaceItem> favoritePlaceItems = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject placeObject = jsonArray.optJSONObject(i);
+                JSONObject geometryObject = placeObject.optJSONObject("geometry");
+                JSONObject locationObject = geometryObject.optJSONObject("location");
+                String lat = locationObject.optString("lat");
+                String lng = locationObject.optString("lng");
+                String name = placeObject.optString("name");
+                String vicinity = placeObject.optString("vicinity");
+
+                favoritePlaceItems.add(new FavoritePlaceItem(name, vicinity, lat, lng, false));
+
+            }
+            return favoritePlaceItems;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 }

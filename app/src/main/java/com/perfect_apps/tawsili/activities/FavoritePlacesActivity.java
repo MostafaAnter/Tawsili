@@ -3,7 +3,6 @@ package com.perfect_apps.tawsili.activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,9 +18,18 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.adapters.FavoritePlacesItemsAdapter;
+import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.models.FavoritePlaceItem;
+import com.perfect_apps.tawsili.parser.JsonParser;
+import com.perfect_apps.tawsili.store.TawsiliPrefStore;
+import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.DividerItemDecoration;
 
 import java.util.ArrayList;
@@ -196,7 +204,11 @@ public class FavoritePlacesActivity extends LocalizationActivity {
     }
 
     private void initiateRefresh(){
-        new FakTask().execute();
+        if (!mSwipeRefresh.isRefreshing()) {
+            mSwipeRefresh.setRefreshing(true);
+        }
+
+        getNearPlaces();
     }
 
     private void onRefreshComplete(){
@@ -205,29 +217,44 @@ public class FavoritePlacesActivity extends LocalizationActivity {
         }
     }
 
-    private class FakTask extends AsyncTask<Void, Void, Void> {
+    private void getNearPlaces(){
+        String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
+        String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                "location=" + lat + "," + lng +
+                "&radius=1000&type=establishment&rankby=prominence&key=AIzaSyAiT5rjXpzq0N7-ibpjq-QW5_pDfFPElRw";
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, response.toString());
+                List<FavoritePlaceItem> favoritePlaceItems =  JsonParser.parseFavoritePlaces(response);
+
+                if (favoritePlaceItems != null) {
+                    for (FavoritePlaceItem item :
+                            favoritePlaceItems) {
+                        mDataset.add(item);
+                        mAdapter.notifyDataSetChanged();
+
+                    }
+                }
+
+                onRefreshComplete();
+
+
             }
-            return null;
-        }
+        }, new Response.ErrorListener() {
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            FavoritePlaceItem inboxItem = new FavoritePlaceItem();
-            for (int i = 0;  i < 20; i++){
-                mDataset.add(inboxItem);
-                mAdapter.notifyDataSetChanged();
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onRefreshComplete();
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-
-            onRefreshComplete();
-        }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 
 }

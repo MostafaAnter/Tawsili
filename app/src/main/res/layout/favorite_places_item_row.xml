@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:background="?android:attr/selectableItemBackground"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:paddingLeft="8dp"
+    android:gravity="center_vertical"
+    android:paddingRight="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,15 +23,19 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text=""
+            android:textAlignment="viewStart"
             android:textColor="@color/colorPrimary"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="RtlCompat" />
 
         <ImageView
             android:id="@+id/favImage"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:contentDescription="@null"
-            android:src="@drawable/ic_grade_gray" />
+            android:textAlignment="viewStart"
+            android:src="@drawable/ic_grade_gray"
+            tools:ignore="RtlCompat" />
     </LinearLayout>
 
 
@@ -36,8 +45,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text=""
-        android:textStyle="bold" />
+        android:text="" />
 
 
 </LinearLayout>
