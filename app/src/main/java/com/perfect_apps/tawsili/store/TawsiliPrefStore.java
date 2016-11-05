@@ -15,6 +15,11 @@ public class TawsiliPrefStore {
         tawsiliPreferences = context.getSharedPreferences(PREFKEY, Context.MODE_PRIVATE);
     }
 
+    public void clearPreference(){
+        SharedPreferences.Editor editor = tawsiliPreferences.edit();
+        editor.clear().apply();
+    }
+
     public void addPreference(String key, String value){
         SharedPreferences.Editor editor = tawsiliPreferences.edit();
         editor.putString(key, value);

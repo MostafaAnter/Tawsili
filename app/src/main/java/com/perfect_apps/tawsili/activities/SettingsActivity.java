@@ -71,6 +71,7 @@ public class SettingsActivity extends LocalizationActivity
         changeFontOfNavigation();
 
         linearLayout1.setOnClickListener(this);
+        button1.setOnClickListener(this);
     }
 
     //change font of drawer
@@ -182,6 +183,12 @@ public class SettingsActivity extends LocalizationActivity
         switch (v.getId()){
             case R.id.change_language:
                 showSingleChoiceListLangaugeAlertDialog();
+                break;
+            case R.id.button1:
+                new TawsiliPrefStore(this).clearPreference();
+                startActivity(new Intent(this, SplashActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
         }
     }
