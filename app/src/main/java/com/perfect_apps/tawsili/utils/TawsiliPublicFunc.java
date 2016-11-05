@@ -69,4 +69,18 @@ public class TawsiliPublicFunc {
 
         return Radius * c * 1000;//result in meters
     }
+
+    public static String createUri(String userLat, String userLng, String driverLat, String driverLng){
+
+        // currentLocation coordinates
+        double lastLatitude = Double.valueOf(userLat);
+        double lastLongitude = Double.valueOf(userLng);
+        double targetLatitude = Double.valueOf(driverLat);
+        double targetLongitude = Double.valueOf(driverLng);
+        String uri = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
+                lastLatitude + "," + lastLongitude + "&destinations=" + targetLatitude + "," +
+                targetLongitude + "&mode=driving&language=en-EN&key=AIzaSyANwq1jlh0_Q9eINnenCTzGdVh1EBM3pcs";
+        return uri;
+
+    }
 }
