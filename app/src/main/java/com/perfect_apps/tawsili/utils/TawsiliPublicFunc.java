@@ -77,10 +77,9 @@ public class TawsiliPublicFunc {
         double lastLongitude = Double.valueOf(userLng);
         double targetLatitude = Double.valueOf(driverLat);
         double targetLongitude = Double.valueOf(driverLng);
-        String uri = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
+        return "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
                 lastLatitude + "," + lastLongitude + "&destinations=" + targetLatitude + "," +
                 targetLongitude + "&mode=driving&language=en-EN&key=AIzaSyANwq1jlh0_Q9eINnenCTzGdVh1EBM3pcs";
-        return uri;
 
     }
 }
