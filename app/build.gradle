@@ -30,7 +30,6 @@ android {
 
     buildTypes.each {
         it.buildConfigField 'String', 'API_BASE_URL', '"http://tawsely.com/webservice/"'
-        it.buildConfigField 'String', 'MATRIX_API', '"AIzaSyBJpifwJmzAhyEH-vkdDazfsSIy-Ii7ueE"'
         it.resValue 'string', 'facebook_app_id', '"1160097964000902"'
         it.resValue 'string', 'fb_login_protocol_scheme', '"fb1160097964000902"'
     }

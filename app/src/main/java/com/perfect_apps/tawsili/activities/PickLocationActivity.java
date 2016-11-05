@@ -64,6 +64,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.app.AppController;
+import com.perfect_apps.tawsili.models.DriverDurationAndDistance;
 import com.perfect_apps.tawsili.models.DriverModel;
 import com.perfect_apps.tawsili.models.NetworkEvent;
 import com.perfect_apps.tawsili.models.PickTimeEvent;
@@ -111,9 +112,12 @@ public class PickLocationActivity extends LocalizationActivity
     ImageView searchImageView;
     @BindView(R.id.orign_marker)
     FrameLayout originalMarker;
+    @BindView(R.id.time)
+    TextView textTime;
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
+
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
@@ -131,6 +135,7 @@ public class PickLocationActivity extends LocalizationActivity
 
     // driver object
     private DriverModel driverModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -280,7 +285,7 @@ public class PickLocationActivity extends LocalizationActivity
 
         } else if (id == R.id.settings) {
             startActivity(new Intent(PickLocationActivity.this, SettingsActivity.class));
-        } else if (id == R.id.english_speaking){
+        } else if (id == R.id.english_speaking) {
             showSingleChoiceListDrivereLangaugeAlertDialog();
         }
 
@@ -329,7 +334,7 @@ public class PickLocationActivity extends LocalizationActivity
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-        switch (tab.getPosition()){
+        switch (tab.getPosition()) {
             case 0:
                 getDriversList("1");
                 break;
@@ -352,7 +357,7 @@ public class PickLocationActivity extends LocalizationActivity
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-        switch (tab.getPosition()){
+        switch (tab.getPosition()) {
             case 0:
                 getDriversList("1");
                 break;
@@ -646,8 +651,8 @@ public class PickLocationActivity extends LocalizationActivity
                 .show();
     }
 
-    private void setDriverLanguage(String langauge){
-        switch (langauge){
+    private void setDriverLanguage(String langauge) {
+        switch (langauge) {
             case "en":
                 new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 1);
                 break;
@@ -658,7 +663,7 @@ public class PickLocationActivity extends LocalizationActivity
 
     }
 
-    private String getDriverLanguage(){
+    private String getDriverLanguage() {
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
     }
@@ -707,10 +712,11 @@ public class PickLocationActivity extends LocalizationActivity
                 public void onResponse(String response) {
                     Log.d("Drivers", response.toString());
                     driverModel = JsonParser.parseDriversList(lat, lng, response);
-                    if (driverModel != null){
+                    if (driverModel != null) {
                         // get duration with matrix api
-
-                    }else {
+                        getDriverDurationFromUser(sdh, lat, lng, driverModel.getCurrent_location_lat(),
+                                driverModel.getCurrent_location_lng());
+                    } else {
                         sdh.dismissDialog();
                     }
 
@@ -727,5 +733,41 @@ public class PickLocationActivity extends LocalizationActivity
             AppController.getInstance().addToRequestQueue(strReq, requestTag);
         }
 
+    }
+
+    private void getDriverDurationFromUser(final SweetDialogHelper sdh, String userLat, String userLng, String driverLat, String driverLng) {
+        String url = TawsiliPublicFunc.createMatrixUri(userLat, userLng, driverLat, driverLng);
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("duration", response.toString());
+                List<DriverDurationAndDistance> driverDurationAndDistanceList =
+                        JsonParser.parseDistanceAndDuration(response);
+
+                if (driverDurationAndDistanceList != null && driverDurationAndDistanceList.size() > 0) {
+                    DriverDurationAndDistance mDriverDurationAndDistance = driverDurationAndDistanceList.get(0);
+
+                    if ((Double.valueOf(mDriverDurationAndDistance.getDurationValue()) / 60) > 9) {
+                        textTime.setText("9\nmin");
+                    } else {
+                        int dur = Double.valueOf(mDriverDurationAndDistance.getDurationValue()).intValue();
+                        textTime.setText(dur + "\n min");
+                    }
+                }
+
+                sdh.dismissDialog();
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                sdh.dismissDialog();
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 }

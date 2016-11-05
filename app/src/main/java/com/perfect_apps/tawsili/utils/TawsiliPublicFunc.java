@@ -70,7 +70,7 @@ public class TawsiliPublicFunc {
         return Radius * c * 1000;//result in meters
     }
 
-    public static String createUri(String userLat, String userLng, String driverLat, String driverLng){
+    public static String createMatrixUri(String userLat, String userLng, String driverLat, String driverLng){
 
         // currentLocation coordinates
         double lastLatitude = Double.valueOf(userLat);
@@ -80,7 +80,9 @@ public class TawsiliPublicFunc {
         return "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
                 lastLatitude + "," + lastLongitude + "&destinations=" + targetLatitude + "," +
                 targetLongitude + "&mode=driving&language=en-EN&key="
-                + BuildConfig.MATRIX_API;
+                + "AIzaSyAiT5rjXpzq0N7-ibpjq-QW5_pDfFPElRw";
 
     }
+
+
 }
