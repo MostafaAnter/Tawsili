@@ -68,4 +68,6 @@ public class Utils {
         }
     }
 
+    // get latLang object of center
+    //mMap.getCameraPosition().target
 }
