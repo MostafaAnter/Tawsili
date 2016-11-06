@@ -53,100 +53,87 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/current_location_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?actionBarSize"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="4dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical">
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:paddingBottom="2dp"
-                android:paddingTop="2dp"
-                android:src="@drawable/location"/>
-            <View
-                android:layout_width="8dp"
-                android:layout_height="1dp"/>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:contentDescription="@null"
+                android:padding="8dp"
+                android:src="@drawable/location" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/current_location_is_gonna_be_here"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Assuit city" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/current_location_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:textAlignment="viewStart"
+                android:layout_weight="1"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:text=""
+                android:textStyle="bold"
+                tools:ignore="RtlCompat" />
 
             <ImageView
                 android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:paddingBottom="2dp"
-                android:paddingTop="2dp"
-                android:src="@drawable/ic_grade_black_24dp"/>
-
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:padding="5dp"
+                android:src="@drawable/ic_grade_gray" />
         </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/dark_gray"/>
         <LinearLayout
-            android:id="@+id/linearLayout3"
+            android:id="@+id/drop_off_location_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?actionBarSize"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="4dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical">
+            android:paddingLeft="4dp"
+            android:visibility="gone"
+            android:paddingRight="4dp">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:paddingBottom="3dp"
-                android:paddingTop="3dp"
-                android:src="@drawable/flag"/>
-            <View
-                android:layout_width="8dp"
-                android:layout_height="1dp"/>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:contentDescription="@null"
+                android:padding="8dp"
+                android:src="@drawable/flag" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/drop_off_location_is_gonna_be_here"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Assuit - El ryad" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/drop_off_location_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:textAlignment="viewStart"
+                android:layout_weight="1"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:text=""
+                android:textStyle="bold"
+                tools:ignore="RtlCompat" />
 
             <ImageView
                 android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:paddingBottom="2dp"
-                android:paddingTop="2dp"
-                android:src="@drawable/ic_grade_gray"/>
-
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:padding="5dp"
+                android:src="@drawable/ic_grade_gray" />
         </LinearLayout>
         <View
+            android:id="@+id/drop_off_line"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/dark_gray"/>
@@ -248,6 +235,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/add_promo_code"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"

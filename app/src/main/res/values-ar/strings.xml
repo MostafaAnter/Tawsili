@@ -54,7 +54,7 @@
     <string name="location_is_gonna_be_here">المكان سوف يكون هنا</string>
     <string name="ride_later">فى وقت أخر</string>
     <string name="ride_now">بدء الرحلة</string>
-    <string name="book_a_business_car">Book A Business Car</string>
+    <string name="book_a_business_car">Book A Car</string>
     <string-array name="options_array">
         <item>كل يوم</item>
         <item>كل اسبوع</item>
@@ -91,4 +91,10 @@
     <string name="open_gps">فعل ال GPS!</string>
     <string name="why_open_gps">تحتاج تفعيل GPS لتحديد مكانك</string>
     <string name="yes_open_gps">نعم, فعل</string>
+    <string name="category">النوع</string>
+    <string name="confirm_pickup">تأكيد ,المكان</string>
+    <string name="iwill_guid">سأقوم بأرشاد السائق</string>
+    <string name="regular">عادى</string>
+    <string name="select_location_from_map">أختر مكان من الخريطة</string>
+    <string name="special">خاص</string>
 </resources>

@@ -53,13 +53,25 @@ import butterknife.ButterKnife;
 
 public class BookABusinessCarActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        OnMapReadyCallback, View.OnClickListener{
+        OnMapReadyCallback, View.OnClickListener {
 
-    @BindView(R.id.nav_view)NavigationView navigationView;
-    @BindView(R.id.toolbar)Toolbar toolbar;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.linearLayout1)
     LinearLayout linearLayout1;
-    @BindView(R.id.button1)Button button1;
+    @BindView(R.id.button1)
+    Button button1;
+
+    @BindView(R.id.current_location_button) LinearLayout pickCurrentLocation;
+    @BindView(R.id.drop_off_location_button) LinearLayout pickDropOffLocation;
+    @BindView(R.id.drop_off_line)View lineSeperator;
+
+    @BindView(R.id.add_promo_code)TextView addPromoCode;
+
+    @BindView(R.id.current_location_text)TextView curentLocationText;
+    @BindView(R.id.drop_off_location_text)TextView dropOffLocationText;
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
@@ -88,28 +100,31 @@ public class BookABusinessCarActivity extends LocalizationActivity
         changeFontOfNavigation();
         animateView(linearLayout1);
 
-        if (!getIntent().getBooleanExtra("now", false)){
+        if (!getIntent().getBooleanExtra("now", false)) {
             button1.setText(getString(R.string.select_time));
         }
         button1.setOnClickListener(this);
+        pickCurrentLocation.setOnClickListener(this);
+        pickDropOffLocation.setOnClickListener(this);
+        addPromoCode.setOnClickListener(this);
     }
 
-    private void animateView(LinearLayout frameLayout){
+    private void animateView(LinearLayout frameLayout) {
         Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(this, R.anim.push_up_enter_long);
         frameLayout.startAnimation(hyperspaceJumpAnimation);
 
     }
 
     //change font of drawer
-    private void changeFontOfNavigation(){
+    private void changeFontOfNavigation() {
         Menu m = navigationView.getMenu();
-        for (int i=0;i<m.size();i++) {
+        for (int i = 0; i < m.size(); i++) {
             MenuItem mi = m.getItem(i);
 
             //for aapplying a font to subMenu ...
             SubMenu subMenu = mi.getSubMenu();
-            if (subMenu!=null && subMenu.size() >0 ) {
-                for (int j=0; j <subMenu.size();j++) {
+            if (subMenu != null && subMenu.size() > 0) {
+                for (int j = 0; j < subMenu.size(); j++) {
                     MenuItem subMenuItem = subMenu.getItem(j);
                     applyFontToMenuItem(subMenuItem);
                 }
@@ -123,7 +138,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
     private void applyFontToMenuItem(MenuItem mi) {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         SpannableString mNewTitle = new SpannableString(mi.getTitle());
-        mNewTitle.setSpan(new CustomTypefaceSpan("" , font), 0 , mNewTitle.length(),  Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        mNewTitle.setSpan(new CustomTypefaceSpan("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         mi.setTitle(mNewTitle);
     }
 
@@ -168,7 +183,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
         } else if (id == R.id.settings) {
             startActivity(new Intent(BookABusinessCarActivity.this, SettingsActivity.class));
-        }else if (id == R.id.english_speaking){
+        } else if (id == R.id.english_speaking) {
             showSingleChoiceListDrivereLangaugeAlertDialog();
         }
 
@@ -183,12 +198,10 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
         if (isAvailable == ConnectionResult.SUCCESS) {
             return true;
-        }
-        else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
+        } else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(isAvailable, this, GPS_ERRORDIALOG_REQUEST);
             dialog.show();
-        }
-        else {
+        } else {
             Toast.makeText(this, "Can't connect to Google Play services", Toast.LENGTH_SHORT).show();
         }
         return false;
@@ -227,6 +240,8 @@ public class BookABusinessCarActivity extends LocalizationActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        // set draggable false done
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
         setUpMarker(mMap, new LatLng(30.066649, 31.254493), new LatLng(30.067114, 31.253077));
     }
 
@@ -266,21 +281,21 @@ public class BookABusinessCarActivity extends LocalizationActivity
      * Zooms the map to show the area of interest based on the search radius
      */
     private void updateZoom(GoogleMap mMap, LatLng myLatLng, LatLng secLatLang) {
-         LatLngBounds egypt = new LatLngBounds(
+        LatLngBounds egypt = new LatLngBounds(
                 myLatLng, secLatLang);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(egypt.southwest, 16));
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button1:
-                if (!getIntent().getBooleanExtra("now", false)){
+                if (!getIntent().getBooleanExtra("now", false)) {
                     // go to select date and time
                     Intent intent1 = new Intent(this, SelectTimeActivity.class);
                     startActivity(intent1);
                     overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
-                }else {
+                } else {
                     // let go
                     startActivity(new Intent(this, YourRideActivity.class));
                 }
@@ -335,8 +350,8 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 .show();
     }
 
-    private void setDriverLanguage(String langauge){
-        switch (langauge){
+    private void setDriverLanguage(String langauge) {
+        switch (langauge) {
             case "en":
                 new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 2);
                 break;
@@ -347,7 +362,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
     }
 
-    private String getDriverLanguage(){
+    private String getDriverLanguage() {
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
     }
