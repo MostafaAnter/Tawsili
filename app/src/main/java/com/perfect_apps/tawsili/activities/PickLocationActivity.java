@@ -761,9 +761,13 @@ public class PickLocationActivity extends LocalizationActivity
                     DriverDurationAndDistance mDriverDurationAndDistance = driverDurationAndDistanceList.get(0);
 
                     if ((Double.valueOf(mDriverDurationAndDistance.getDurationValue()) / 60) > 9) {
+                        new TawsiliPrefStore(PickLocationActivity.this)
+                                .addPreference(Constants.PREFERENCE_DRIVER_DURATION, "9\nmin");
                         textTime.setText("9\nmin");
                     } else {
                         int dur = Double.valueOf(mDriverDurationAndDistance.getDurationValue()).intValue();
+                        new TawsiliPrefStore(PickLocationActivity.this)
+                                .addPreference(Constants.PREFERENCE_DRIVER_DURATION, dur + "\nmin");
                         textTime.setText(dur + "\n min");
                     }
                 }

@@ -6,14 +6,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -47,6 +51,10 @@ import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
 import com.vipul.hp_hp.library.Layout_to_Image;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -242,7 +250,23 @@ public class BookABusinessCarActivity extends LocalizationActivity
         mMap = googleMap;
         // set draggable false done
         mMap.getUiSettings().setScrollGesturesEnabled(false);
-        setUpMarker(mMap, new LatLng(30.066649, 31.254493), new LatLng(30.067114, 31.253077));
+        setMapWithCurrentLocation();
+
+    }
+
+    private void setMapWithCurrentLocation() {
+        if (mMap != null) {
+            String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
+            String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
+            if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
+                setUpMarker(mMap, new LatLng(Double.valueOf(lat), Double.valueOf(lng)));
+                try {
+                    getAddressInfo(new LatLng(Double.valueOf(lat), Double.valueOf(lng)), curentLocationText);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void setUpMarker(GoogleMap mMap, LatLng latLng, LatLng secLatLang) {
@@ -277,6 +301,35 @@ public class BookABusinessCarActivity extends LocalizationActivity
         updateZoom(mMap, latLng, secLatLang);
     }
 
+    private void setUpMarker(GoogleMap mMap, LatLng latLng) {
+
+        Layout_to_Image layout_to_image;  //Create Object of Layout_to_Image Class
+        FrameLayout relativeLayout;   //Define Any Layout
+        Bitmap mbitmap;                  //Bitmap for holding Image of layout
+
+        //provide layout with its id in Xml
+        relativeLayout = (FrameLayout) findViewById(R.id.orign_marker);
+        TextView tv = (TextView) findViewById(R.id.time);
+        tv.setText(new TawsiliPrefStore(this).getPreferenceValue(Constants.PREFERENCE_DRIVER_DURATION));
+
+        //initialise layout_to_image object with its parent class and pass parameters as (<Current Activity>,<layout object>)
+        layout_to_image = new Layout_to_Image(BookABusinessCarActivity.this, relativeLayout);
+        //now call the main working function ;) and hold the returned image in bitmap
+        mbitmap = layout_to_image.convert_layout();
+
+
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng);
+        options.icon(BitmapDescriptorFactory.fromBitmap(mbitmap));
+        Marker marker = mMap.addMarker(options);
+
+        marker.showInfoWindow();
+
+
+        //animate camera
+        updateZoom(mMap, latLng);
+    }
+
     /*
      * Zooms the map to show the area of interest based on the search radius
      */
@@ -284,6 +337,11 @@ public class BookABusinessCarActivity extends LocalizationActivity
         LatLngBounds egypt = new LatLngBounds(
                 myLatLng, secLatLang);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(egypt.southwest, 16));
+    }
+
+    private void updateZoom(GoogleMap mMap, LatLng myLatLng) {
+        // Zoom to the given bounds
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 14));
     }
 
     @Override
@@ -300,12 +358,12 @@ public class BookABusinessCarActivity extends LocalizationActivity
                     startActivity(new Intent(this, YourRideActivity.class));
                 }
                 break;
-            case R.id.linearLayout2:
+            case R.id.current_location_button:
                 Intent intent3 = new Intent(this, FavoritePlacesActivity.class);
                 startActivity(intent3);
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
-            case R.id.linearLayout3:
+            case R.id.drop_off_location_button:
                 Intent intent4 = new Intent(this, FavoritePlacesActivity.class);
                 startActivity(intent4);
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
@@ -365,5 +423,35 @@ public class BookABusinessCarActivity extends LocalizationActivity
     private String getDriverLanguage() {
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
+    }
+
+    private void getAddressInfo(LatLng latLng, TextView tv) throws IOException {
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+
+        StringBuilder sb = new StringBuilder();
+
+        if (address != null)
+            sb.append(address);
+        if (city != null)
+            sb.append(", " + city);
+        if (state != null)
+            sb.append(", " + state);
+        if (country != null)
+            sb.append(", " + country);
+        if (knownName != null)
+            sb.append(", " + knownName);
+
+        tv.setText(sb);
+
+        Log.e("address info", sb.toString());
+
     }
 }
