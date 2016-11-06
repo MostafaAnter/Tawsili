@@ -446,18 +446,28 @@ public class PickLocationActivity extends LocalizationActivity
 
     @Override
     public void onClick(View v) {
+        String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
+        String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
         switch (v.getId()) {
             case R.id.button1:
-                Intent intent = new Intent(this, BookABusinessCarActivity.class);
-                intent.putExtra("now", true);
-                startActivity(intent);
-                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
+                    Intent intent = new Intent(this, BookABusinessCarActivity.class);
+                    intent.putExtra("now", true);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                }else {
+                    Toast.makeText(this, "There is no location", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.button2:
-                Intent intent2 = new Intent(this, BookABusinessCarActivity.class);
-                intent2.putExtra("now", false);
-                startActivity(intent2);
-                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
+                    Intent intent2 = new Intent(this, BookABusinessCarActivity.class);
+                    intent2.putExtra("now", false);
+                    startActivity(intent2);
+                    overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                } else {
+                    Toast.makeText(this, "There is no location", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.search_button:
                 Intent intent3 = new Intent(this, FavoritePlacesActivity.class);
