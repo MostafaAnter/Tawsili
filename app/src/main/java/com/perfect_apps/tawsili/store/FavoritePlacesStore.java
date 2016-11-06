@@ -57,8 +57,8 @@ public class FavoritePlacesStore {
         return noteList;
     }
 
-    public boolean isFavoritItem(String value, String key){
-        return value.equalsIgnoreCase(favoritePrefs.getString(key, ""));
+    public boolean isFavoritItem(String key){
+        return !favoritePrefs.getString(key, "").isEmpty();
     }
 
     public boolean addItem(FavoritePlaceItem note) {

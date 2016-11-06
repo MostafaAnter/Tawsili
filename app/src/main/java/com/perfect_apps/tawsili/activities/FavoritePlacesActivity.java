@@ -28,6 +28,7 @@ import com.perfect_apps.tawsili.adapters.FavoritePlacesItemsAdapter;
 import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.models.FavoritePlaceItem;
 import com.perfect_apps.tawsili.parser.JsonParser;
+import com.perfect_apps.tawsili.store.FavoritePlacesStore;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.DividerItemDecoration;
@@ -40,10 +41,12 @@ import butterknife.ButterKnife;
 
 public class FavoritePlacesActivity extends LocalizationActivity {
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
-    @BindView(R.id.swipeRefresh)SwipeRefreshLayout mSwipeRefresh;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout mSwipeRefresh;
 
     private static final String TAG = "ProviderChatsFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
@@ -103,7 +106,7 @@ public class FavoritePlacesActivity extends LocalizationActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setmRecyclerView(Bundle savedInstanceState){
+    private void setmRecyclerView(Bundle savedInstanceState) {
         // initiate mDataSet
         mDataset = new ArrayList<>();
 
@@ -148,7 +151,7 @@ public class FavoritePlacesActivity extends LocalizationActivity {
         });
 
         initiateRefresh();
-        if (mSwipeRefresh != null &&!mSwipeRefresh.isRefreshing())
+        if (mSwipeRefresh != null && !mSwipeRefresh.isRefreshing())
             mSwipeRefresh.setRefreshing(true);
     }
 
@@ -188,36 +191,36 @@ public class FavoritePlacesActivity extends LocalizationActivity {
         switch (layoutManagerType) {
             case GRID_LAYOUT_MANAGER:
                 mLayoutManager = new GridLayoutManager(this, SPAN_COUNT);
-                mCurrentLayoutManagerType =  LayoutManagerType.GRID_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
                 break;
             case LINEAR_LAYOUT_MANAGER:
                 mLayoutManager = new LinearLayoutManager(this);
-                mCurrentLayoutManagerType =  LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
                 break;
             default:
                 mLayoutManager = new LinearLayoutManager(this);
-                mCurrentLayoutManagerType =  LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         }
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
 
-    private void initiateRefresh(){
+    private void initiateRefresh() {
         if (!mSwipeRefresh.isRefreshing()) {
             mSwipeRefresh.setRefreshing(true);
         }
-
+        clearDataSet();
         getNearPlaces();
     }
 
-    private void onRefreshComplete(){
+    private void onRefreshComplete() {
         if (mSwipeRefresh.isRefreshing()) {
             mSwipeRefresh.setRefreshing(false);
         }
     }
 
-    private void getNearPlaces(){
+    private void getNearPlaces() {
         String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
         String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
 
@@ -230,7 +233,7 @@ public class FavoritePlacesActivity extends LocalizationActivity {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, response.toString());
-                List<FavoritePlaceItem> favoritePlaceItems =  JsonParser.parseFavoritePlaces(response);
+                List<FavoritePlaceItem> favoritePlaceItems = JsonParser.parseFavoritePlaces(response);
 
                 if (favoritePlaceItems != null) {
                     for (FavoritePlaceItem item :
@@ -240,6 +243,20 @@ public class FavoritePlacesActivity extends LocalizationActivity {
 
                     }
                 }
+
+                // add item inside favorite at top
+                mDataset.addAll(0, new FavoritePlacesStore(FavoritePlacesActivity.this).findAll());
+                mAdapter.notifyDataSetChanged();
+
+
+                // add two item at top
+                FavoritePlaceItem favoritePlaceItem1 = new FavoritePlaceItem(getString(R.string.iwill_guid),
+                        "", "8", null, false);
+                FavoritePlaceItem favoritePlaceItem2 = new FavoritePlaceItem(getString(R.string.select_location_from_map),
+                        "", "9", null, false);
+                mDataset.add(0, favoritePlaceItem1);
+                mDataset.add(1, favoritePlaceItem2);
+                mAdapter.notifyDataSetChanged();
 
                 onRefreshComplete();
 
@@ -255,6 +272,14 @@ public class FavoritePlacesActivity extends LocalizationActivity {
         });
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    // remove all item from RecyclerView
+    private void clearDataSet() {
+        if (mDataset != null) {
+            mDataset.clear();
+            mAdapter.notifyItemRangeRemoved(0, mDataset.size());
+        }
     }
 
 }

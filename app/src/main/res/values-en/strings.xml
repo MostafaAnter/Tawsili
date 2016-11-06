@@ -96,4 +96,6 @@
     <string name="special">Special</string>
     <string name="category">Category</string>
     <string name="confirm_pickup">Confirm PickUp</string>
+    <string name="iwill_guid">I will guid the captain</string>
+    <string name="select_location_from_map">Select location from map</string>
 </resources>

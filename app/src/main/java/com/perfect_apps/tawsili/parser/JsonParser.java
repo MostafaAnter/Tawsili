@@ -108,23 +108,30 @@ public class JsonParser {
                     String udid = driverObject.optString("udid");
                     String license_plate = driverObject.optString("license_plate");
                     String rate = driverObject.optString("rate");
-                    double distanceFromCarToClient =
-                            TawsiliPublicFunc.calculateDistance(Double.valueOf(userLat),
-                                    Double.valueOf(userLng), Double.valueOf(current_location_lat),
-                                    Double.valueOf(current_location_lng));
+                    double distanceFromCarToClient;
+                    if (!current_location_lat.trim().isEmpty() && !current_location_lng.trim().isEmpty()) {
+                        distanceFromCarToClient = TawsiliPublicFunc.calculateDistance(Double.valueOf(userLat),
+                                Double.valueOf(userLng), Double.valueOf(current_location_lat),
+                                Double.valueOf(current_location_lng));
+                    } else {
+                        distanceFromCarToClient = 0;
+                    }
                     DriverModel mDriverModel = new DriverModel(language_id, language,
                             driver_id, ssno, name, mobile, email, birth_date, nationality,
                             hire_date, driving_license_exp, status, enable, img_name, current_location_lat,
                             current_location_lng, un, car_id, car_from, car_by_un ,status_by, car_type,
                             model,category,category2, payment_machine, capacity, join_date, udid,
                             license_plate,rate, distanceFromCarToClient);
+                    if (distanceFromCarToClient != 0)
                     driverModelTreeSet.add(mDriverModel);
 
                 }
 
             }
             Log.d("treeSet", driverModelTreeSet.toString());
-            return driverModelTreeSet.first();
+            if (driverModelTreeSet.size() > 0) {
+                return driverModelTreeSet.first();
+            }
         }
 
         return null;

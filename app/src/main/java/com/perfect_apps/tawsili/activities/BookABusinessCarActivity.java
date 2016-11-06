@@ -338,10 +338,10 @@ public class BookABusinessCarActivity extends LocalizationActivity
     private void setDriverLanguage(String langauge){
         switch (langauge){
             case "en":
-                new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 1);
+                new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 2);
                 break;
             case "ar":
-                new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 0);
+                new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 1);
                 break;
         }
 

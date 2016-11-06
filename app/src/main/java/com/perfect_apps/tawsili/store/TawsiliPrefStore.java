@@ -43,6 +43,6 @@ public class TawsiliPrefStore {
     }
 
     public int getIntPreferenceValue(String key){
-        return tawsiliPreferences.getInt(key, 0);
+        return tawsiliPreferences.getInt(key, 1);
     }
 }
