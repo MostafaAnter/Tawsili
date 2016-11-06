@@ -360,7 +360,8 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 break;
             case R.id.current_location_button:
                 Intent intent3 = new Intent(this, FavoritePlacesActivity.class);
-                startActivity(intent3);
+                intent3.putExtra(Constants.comingFrom, 101);
+                startActivityForResult(intent3, 101);
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
             case R.id.drop_off_location_button:
@@ -452,6 +453,12 @@ public class BookABusinessCarActivity extends LocalizationActivity
         tv.setText(sb);
 
         Log.e("address info", sb.toString());
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
     }
 }

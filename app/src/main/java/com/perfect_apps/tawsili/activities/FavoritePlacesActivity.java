@@ -141,7 +141,7 @@ public class FavoritePlacesActivity extends LocalizationActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        if (FavoritePlacesActivity.FLAG != 100) {
+                        if (FavoritePlacesActivity.FLAG != 100 && FavoritePlacesActivity.FLAG != 101) {
                             if (position != 0 && position != 1) {
                                 // save location inside preference
                                 new TawsiliPrefStore(FavoritePlacesActivity.this).
@@ -164,6 +164,17 @@ public class FavoritePlacesActivity extends LocalizationActivity {
                             intent.putExtra(Constants.comingFrom, "all is Ok :)");
                             startActivity(intent);
                             finish();
+                        }else if (FavoritePlacesActivity.FLAG == 101) {
+                            new TawsiliPrefStore(FavoritePlacesActivity.this).
+                                    addPreference(Constants
+                                            .userLastLocationLat, String.valueOf(mDataset.get(position).getLat()));
+                            new TawsiliPrefStore(FavoritePlacesActivity.this)
+                                    .addPreference(Constants
+                                            .userLastLocationLng, String.valueOf(mDataset.get(position).getLng()));
+
+                            Intent intent = new Intent(FavoritePlacesActivity.this, ConfirmPickLocationActivity.class);
+                            intent.putExtra(Constants.comingFrom, "pick_current_location");
+                            startActivityForResult(intent, 300);
                         }
 
                     }
@@ -290,7 +301,7 @@ public class FavoritePlacesActivity extends LocalizationActivity {
                 mAdapter.notifyDataSetChanged();
 
 
-                if (FLAG != 100) {
+                if (FLAG != 100 && FLAG != 101) {
                     // add two item at top
                     FavoritePlaceItem favoritePlaceItem1 = new FavoritePlaceItem(getString(R.string.iwill_guid),
                             "", "8", null, false);
@@ -325,4 +336,14 @@ public class FavoritePlacesActivity extends LocalizationActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == 300){
+            if (resultCode == RESULT_OK){
+                //---get the result using getIntExtra()---
+
+            }
+        }
+    }
 }

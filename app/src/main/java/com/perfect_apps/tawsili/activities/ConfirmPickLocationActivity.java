@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -30,11 +33,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
+import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +54,8 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.nav_view)NavigationView navigationView;
     @BindView(R.id.button2)Button confirmButton;
+
+    @BindView(R.id.text5) TextView locationInfo;
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
@@ -271,5 +282,54 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        if (getIntent().getStringExtra(Constants.comingFrom) != null
+                && getIntent().getStringExtra(Constants.comingFrom).equalsIgnoreCase("pick_current_location")) {
+            double lat = Double.valueOf(new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat));
+            double lng = Double.valueOf(new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng));
+            MapHelper.setUpMarker(mMap, new LatLng(lat, lng), R.drawable.person_marker);
+            updateZoom(mMap, new LatLng(lat, lng));
+            try {
+                getAddressInfo(new LatLng(lat, lng), locationInfo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void updateZoom(GoogleMap mMap, LatLng myLatLng) {
+        // Zoom to the given bounds
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 14));
+    }
+
+    private void getAddressInfo(LatLng latLng, TextView tv) throws IOException {
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+
+        StringBuilder sb = new StringBuilder();
+
+        if (address != null)
+            sb.append(address);
+        if (city != null)
+            sb.append(", " + city);
+        if (state != null)
+            sb.append(", " + state);
+        if (country != null)
+            sb.append(", " + country);
+        if (knownName != null)
+            sb.append(", " + knownName);
+
+        tv.setText(sb);
+
+        Log.e("address info", sb.toString());
+
     }
 }

@@ -124,7 +124,7 @@ public class FavoritePlacesItemsAdapter extends RecyclerView.Adapter<FavoritePla
             @Override
             public void onClick(View v) {
 
-                if (FavoritePlacesActivity.FLAG != 100) {
+                if (FavoritePlacesActivity.FLAG != 100 && FavoritePlacesActivity.FLAG != 101) {
                     if (position != 0 && position != 1) {
                         if (!new FavoritePlacesStore(mContext).isFavoritItem(mDataSet.get(position).getLat()
                                 + "," + mDataSet.get(position).getLng())) {
