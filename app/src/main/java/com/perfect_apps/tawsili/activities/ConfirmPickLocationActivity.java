@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.perfect_apps.tawsili.R;
@@ -30,9 +31,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ConfirmPickLocationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener{
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.nav_view)NavigationView navigationView;
+    @BindView(R.id.button2)Button confirmButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,8 @@ public class ConfirmPickLocationActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         changeFontOfNavigation();
+
+        confirmButton.setOnClickListener(this);
     }
 
     //change font of drawer
@@ -83,6 +88,7 @@ public class ConfirmPickLocationActivity extends AppCompatActivity
     private void changeFontOfText(){
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
+        confirmButton.setTypeface(fontBold);
     }
 
 
@@ -188,5 +194,13 @@ public class ConfirmPickLocationActivity extends AppCompatActivity
     private String getDriverLanguage(){
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.button2:
+                break;
+        }
     }
 }
