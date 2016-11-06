@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +57,7 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
     @BindView(R.id.button2)Button confirmButton;
 
     @BindView(R.id.text5) TextView locationInfo;
+    @BindView(R.id.orign_marker)FrameLayout originMarker;
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
@@ -283,11 +285,15 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+
+
         if (getIntent().getStringExtra(Constants.comingFrom) != null
                 && getIntent().getStringExtra(Constants.comingFrom).equalsIgnoreCase("pick_current_location")) {
             double lat = Double.valueOf(new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat));
             double lng = Double.valueOf(new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng));
-            MapHelper.setUpMarker(mMap, new LatLng(lat, lng), R.drawable.person_marker);
+            if (mMap != null){
+                originMarker.setVisibility(View.VISIBLE);
+            }
             updateZoom(mMap, new LatLng(lat, lng));
             try {
                 getAddressInfo(new LatLng(lat, lng), locationInfo);
