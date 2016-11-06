@@ -446,6 +446,14 @@ public class PickLocationActivity extends LocalizationActivity
 
     @Override
     public void onClick(View v) {
+        // get latLang object of center
+        if (mMap != null) {
+            LatLng latLng = mMap.getCameraPosition().target;
+            // save location inside preference
+            new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLat, String.valueOf(latLng.latitude));
+            new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLng, String.valueOf(latLng.longitude));
+
+        }
         String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
         String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
         switch (v.getId()) {
