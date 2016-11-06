@@ -342,6 +342,11 @@ public class FavoritePlacesActivity extends LocalizationActivity {
         if(requestCode == 300){
             if (resultCode == RESULT_OK){
                 //---get the result using getIntExtra()---
+                Intent intent = new Intent();
+                intent.putExtra("lat", data.getDoubleExtra("lat", 0));
+                intent.putExtra("lng", data.getDoubleExtra("lng", 0));
+                setResult(RESULT_OK, intent);
+                finish();
 
             }
         }

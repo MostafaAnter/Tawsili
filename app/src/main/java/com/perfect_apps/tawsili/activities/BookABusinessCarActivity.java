@@ -72,14 +72,20 @@ public class BookABusinessCarActivity extends LocalizationActivity
     @BindView(R.id.button1)
     Button button1;
 
-    @BindView(R.id.current_location_button) LinearLayout pickCurrentLocation;
-    @BindView(R.id.drop_off_location_button) LinearLayout pickDropOffLocation;
-    @BindView(R.id.drop_off_line)View lineSeperator;
+    @BindView(R.id.current_location_button)
+    LinearLayout pickCurrentLocation;
+    @BindView(R.id.drop_off_location_button)
+    LinearLayout pickDropOffLocation;
+    @BindView(R.id.drop_off_line)
+    View lineSeperator;
 
-    @BindView(R.id.add_promo_code)TextView addPromoCode;
+    @BindView(R.id.add_promo_code)
+    TextView addPromoCode;
 
-    @BindView(R.id.current_location_text)TextView curentLocationText;
-    @BindView(R.id.drop_off_location_text)TextView dropOffLocationText;
+    @BindView(R.id.current_location_text)
+    TextView curentLocationText;
+    @BindView(R.id.drop_off_location_text)
+    TextView dropOffLocationText;
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
@@ -248,8 +254,6 @@ public class BookABusinessCarActivity extends LocalizationActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        // set draggable false done
-        mMap.getUiSettings().setScrollGesturesEnabled(false);
         setMapWithCurrentLocation();
 
     }
@@ -342,6 +346,8 @@ public class BookABusinessCarActivity extends LocalizationActivity
     private void updateZoom(GoogleMap mMap, LatLng myLatLng) {
         // Zoom to the given bounds
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 14));
+        // set draggable false done
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
     }
 
     @Override
@@ -459,6 +465,26 @@ public class BookABusinessCarActivity extends LocalizationActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 101) {
+            if (resultCode == RESULT_OK) {
+                //---get the result using getIntExtra()---
+                mMap.clear();
 
+                double lat = data.getDoubleExtra("lat", 0);
+                double lng = data.getDoubleExtra("lng", 0);
+
+                new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLat, String.valueOf(lat));
+                new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLng, String.valueOf(lng));
+                setMapWithCurrentLocation();
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mMap != null)
+            // set draggable false done
+            mMap.getUiSettings().setScrollGesturesEnabled(true);
     }
 }

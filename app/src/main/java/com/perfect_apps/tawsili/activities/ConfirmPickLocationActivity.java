@@ -230,6 +230,14 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button2:
+                if (mMap != null) {
+                    LatLng latLng = mMap.getCameraPosition().target;
+                    Intent intent = new Intent();
+                    intent.putExtra("lat", latLng.latitude);
+                    intent.putExtra("lng", latLng.longitude);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
                 break;
         }
     }
