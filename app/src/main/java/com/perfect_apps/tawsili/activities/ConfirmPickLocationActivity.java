@@ -294,12 +294,13 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
             if (mMap != null){
                 originMarker.setVisibility(View.VISIBLE);
             }
-            updateZoom(mMap, new LatLng(lat, lng));
             try {
                 getAddressInfo(new LatLng(lat, lng), locationInfo);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            updateZoom(mMap, new LatLng(lat, lng));
         }
 
     }
