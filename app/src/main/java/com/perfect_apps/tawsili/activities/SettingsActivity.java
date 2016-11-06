@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.store.FavoritePlacesStore;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
@@ -186,6 +187,7 @@ public class SettingsActivity extends LocalizationActivity
                 break;
             case R.id.button1:
                 new TawsiliPrefStore(this).clearPreference();
+                new FavoritePlacesStore(this).clearPreference();
                 startActivity(new Intent(this, SplashActivity.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);

@@ -52,9 +52,12 @@ public class FavoritePlacesItemsAdapter extends RecyclerView.Adapter<FavoritePla
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.name)TextView title;
-        @BindView(R.id.favImage)ImageView favImage;
-        @BindView(R.id.address)TextView subtitle;
+        @BindView(R.id.name)
+        TextView title;
+        @BindView(R.id.favImage)
+        ImageView favImage;
+        @BindView(R.id.address)
+        TextView subtitle;
 
         public TextView getTitle() {
             return title;
@@ -111,54 +114,51 @@ public class FavoritePlacesItemsAdapter extends RecyclerView.Adapter<FavoritePla
 
         viewHolder.getTitle().setText(mDataSet.get(position).getName());
         viewHolder.getSubtitle().setText(mDataSet.get(position).getVicinity());
+        viewHolder.getFavImage().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (position != 0 && position != 1) {
+                    if (!new FavoritePlacesStore(mContext).isFavoritItem(mDataSet.get(position).getLat()
+                            + "," + mDataSet.get(position).getLng())) {
+                        lastCheckedPosition = position;
+                        notifyItemRangeChanged(0, mDataSet.size());
+                        if (!likedPositions.contains(position)) {
+                            likedPositions.add(position);
+                            updateHeartButton(viewHolder, true);
+                        }
+                        addItem(position);
+                    } else {
+
+                        if (likedPositions.contains(position)) {
+                            likedPositions.remove(position);
+                            lastCheckedPosition = -1;
+                        }
+                        viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_gray);
+                        removeItem(position);
+                    }
+                }
+            }
+        });
+        if (position == lastCheckedPosition) {
+            viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_black_24dp);
+        } else if (new FavoritePlacesStore(mContext).isFavoritItem(mDataSet.get(position).getLat()
+                + "," + mDataSet.get(position).getLng())) {
+            // this item is in my database
+            viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_black_24dp);
+        } else {
+            viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_gray);
+        }
+
         //for handel first two items
         if (mDataSet.get(position).getLat().equalsIgnoreCase("8") ||
-                mDataSet.get(position).getLat().equalsIgnoreCase("9")){
-            if (mDataSet.get(position).getLat().equalsIgnoreCase("8")){
+                mDataSet.get(position).getLat().equalsIgnoreCase("9")) {
+            if (mDataSet.get(position).getLat().equalsIgnoreCase("8")) {
                 viewHolder.getFavImage().setImageResource(R.drawable.car2);
-            }else if (mDataSet.get(position).getLat().equalsIgnoreCase("9")){
+            } else if (mDataSet.get(position).getLat().equalsIgnoreCase("9")) {
                 viewHolder.getFavImage().setImageResource(R.drawable.location);
             }
 
         }
-
-        viewHolder.getFavImage().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!new FavoritePlacesStore(mContext).isFavoritItem(mDataSet.get(position).getLat()
-                        + "," + mDataSet.get(position).getLng())) {
-                    lastCheckedPosition = position;
-                    notifyItemRangeChanged(0, mDataSet.size());
-                    if (!likedPositions.contains(position)) {
-                        likedPositions.add(position);
-                        updateHeartButton(viewHolder, true);
-                    }
-                    addItem(position);
-                } else {
-
-                    if (likedPositions.contains(position)) {
-                        likedPositions.remove(position);
-                        lastCheckedPosition = -1;
-                    }
-                    viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_gray);
-                    removeItem(position);
-                }
-            }
-        });
-        if(position == lastCheckedPosition){
-            viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_black_24dp);
-        }else if (new FavoritePlacesStore(mContext).isFavoritItem(mDataSet.get(position).getLat()
-        + "," + mDataSet.get(position).getLng())){
-            // this item is in my database
-            viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_black_24dp);
-        }else {
-            viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_gray);
-        }
-
-
-
-        // Get element from your dataset at this position and replace the contents of the view
-        // with that element
 
     }
 
@@ -221,7 +221,8 @@ public class FavoritePlacesItemsAdapter extends RecyclerView.Adapter<FavoritePla
             if (likedPositions.contains(holder.getPosition())) {
                 holder.getFavImage().setImageResource(R.drawable.ic_grade_black_24dp);
             } else {
-                holder.getFavImage().setImageResource(R.drawable.ic_grade_gray);            }
+                holder.getFavImage().setImageResource(R.drawable.ic_grade_gray);
+            }
         }
     }
 }

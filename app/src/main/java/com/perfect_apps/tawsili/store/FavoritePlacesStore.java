@@ -92,4 +92,10 @@ public class FavoritePlacesStore {
 
         return true;
     }
+
+    public void clearPreference(){
+        SharedPreferences.Editor editor = favoritePrefs.edit();
+        editor.clear().apply();
+    }
+
 }
