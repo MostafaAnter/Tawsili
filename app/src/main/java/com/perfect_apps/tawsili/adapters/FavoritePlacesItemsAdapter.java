@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.activities.FavoritePlacesActivity;
 import com.perfect_apps.tawsili.models.FavoritePlaceItem;
 import com.perfect_apps.tawsili.models.MyRidesItem;
 import com.perfect_apps.tawsili.store.FavoritePlacesStore;
@@ -117,7 +118,25 @@ public class FavoritePlacesItemsAdapter extends RecyclerView.Adapter<FavoritePla
         viewHolder.getFavImage().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (position != 0 && position != 1) {
+
+                if (FavoritePlacesActivity.FLAG != 100) {
+                    if (position != 0 && position != 1) {
+                        if (!new FavoritePlacesStore(mContext).isFavoritItem(mDataSet.get(position).getLat()
+                                + "," + mDataSet.get(position).getLng())) {
+                            lastCheckedPosition = position;
+                            notifyItemRangeChanged(0, mDataSet.size());
+                            if (!likedPositions.contains(position)) {
+                                likedPositions.add(position);
+                                updateHeartButton(viewHolder, true);
+                            }
+                            addItem(position);
+                        } else {
+                            lastCheckedPosition = -1;
+                            viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_gray);
+                            removeItem(position);
+                        }
+                    }
+                } else {
                     if (!new FavoritePlacesStore(mContext).isFavoritItem(mDataSet.get(position).getLat()
                             + "," + mDataSet.get(position).getLng())) {
                         lastCheckedPosition = position;
@@ -128,20 +147,14 @@ public class FavoritePlacesItemsAdapter extends RecyclerView.Adapter<FavoritePla
                         }
                         addItem(position);
                     } else {
-
-                        if (likedPositions.contains(position)) {
-                            likedPositions.remove(position);
-                            lastCheckedPosition = -1;
-                        }
+                        lastCheckedPosition = -1;
                         viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_gray);
                         removeItem(position);
                     }
                 }
             }
         });
-        if (position == lastCheckedPosition) {
-            viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_black_24dp);
-        } else if (new FavoritePlacesStore(mContext).isFavoritItem(mDataSet.get(position).getLat()
+        if (new FavoritePlacesStore(mContext).isFavoritItem(mDataSet.get(position).getLat()
                 + "," + mDataSet.get(position).getLng())) {
             // this item is in my database
             viewHolder.getFavImage().setImageResource(R.drawable.ic_grade_black_24dp);

@@ -64,10 +64,13 @@ public class FavoritePlacesActivity extends LocalizationActivity {
     protected RecyclerView.LayoutManager mLayoutManager;
     protected List<FavoritePlaceItem> mDataset;
 
+    public static int FLAG = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite_places);
+        FLAG = getIntent().getIntExtra(Constants.comingFrom, 0);
         ButterKnife.bind(this);
         setToolbar();
 
@@ -249,14 +252,16 @@ public class FavoritePlacesActivity extends LocalizationActivity {
                 mAdapter.notifyDataSetChanged();
 
 
-                // add two item at top
-                FavoritePlaceItem favoritePlaceItem1 = new FavoritePlaceItem(getString(R.string.iwill_guid),
-                        "", "8", null, false);
-                FavoritePlaceItem favoritePlaceItem2 = new FavoritePlaceItem(getString(R.string.select_location_from_map),
-                        "", "9", null, false);
-                mDataset.add(0, favoritePlaceItem1);
-                mDataset.add(1, favoritePlaceItem2);
-                mAdapter.notifyDataSetChanged();
+                if (FLAG != 100) {
+                    // add two item at top
+                    FavoritePlaceItem favoritePlaceItem1 = new FavoritePlaceItem(getString(R.string.iwill_guid),
+                            "", "8", null, false);
+                    FavoritePlaceItem favoritePlaceItem2 = new FavoritePlaceItem(getString(R.string.select_location_from_map),
+                            "", "9", null, false);
+                    mDataset.add(0, favoritePlaceItem1);
+                    mDataset.add(1, favoritePlaceItem2);
+                    mAdapter.notifyDataSetChanged();
+                }
 
                 onRefreshComplete();
 

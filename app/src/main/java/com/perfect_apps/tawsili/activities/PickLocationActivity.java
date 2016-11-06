@@ -470,6 +470,7 @@ public class PickLocationActivity extends LocalizationActivity
                 break;
             case R.id.search_button:
                 Intent intent3 = new Intent(this, FavoritePlacesActivity.class);
+                intent3.putExtra(Constants.comingFrom, 100);
                 startActivity(intent3);
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
