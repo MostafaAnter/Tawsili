@@ -2,8 +2,10 @@ package com.perfect_apps.tawsili.activities;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +34,7 @@ import com.perfect_apps.tawsili.store.FavoritePlacesStore;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.DividerItemDecoration;
+import com.perfect_apps.tawsili.utils.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +134,41 @@ public class FavoritePlacesActivity extends LocalizationActivity {
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         mRecyclerView.addItemDecoration(itemDecoration);
+
+
+        // set item click listener
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if (FavoritePlacesActivity.FLAG != 100) {
+                            if (position != 0 && position != 1) {
+                                // save location inside preference
+                                new TawsiliPrefStore(FavoritePlacesActivity.this).
+                                        addPreference(Constants
+                                                .userLastLocationLat, String.valueOf(mDataset.get(position).getLat()));
+                                new TawsiliPrefStore(FavoritePlacesActivity.this)
+                                        .addPreference(Constants
+                                                .userLastLocationLng, String.valueOf(mDataset.get(position).getLng()));
+                            }
+                        }else if (FavoritePlacesActivity.FLAG == 100){
+                            new TawsiliPrefStore(FavoritePlacesActivity.this).
+                                    addPreference(Constants
+                                            .userLastLocationLat, String.valueOf(mDataset.get(position).getLat()));
+                            new TawsiliPrefStore(FavoritePlacesActivity.this)
+                                    .addPreference(Constants
+                                            .userLastLocationLng, String.valueOf(mDataset.get(position).getLng()));
+
+                            Intent intent = new Intent(FavoritePlacesActivity.this, PickLocationActivity.class)
+                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra(Constants.comingFrom, "all is Ok :)");
+                            startActivity(intent);
+                            finish();
+                        }
+
+                    }
+                })
+        );
 
 
         //noinspection ResourceAsColor

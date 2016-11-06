@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
@@ -36,7 +35,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,28 +54,22 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.models.DriverDurationAndDistance;
 import com.perfect_apps.tawsili.models.DriverModel;
 import com.perfect_apps.tawsili.models.NetworkEvent;
-import com.perfect_apps.tawsili.models.PickTimeEvent;
 import com.perfect_apps.tawsili.parser.JsonParser;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
-import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 import com.perfect_apps.tawsili.utils.TawsiliPublicFunc;
 import com.perfect_apps.tawsili.utils.Utils;
-import com.vipul.hp_hp.library.Layout_to_Image;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -89,7 +81,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PickLocationActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -471,7 +462,7 @@ public class PickLocationActivity extends LocalizationActivity
             case R.id.search_button:
                 Intent intent3 = new Intent(this, FavoritePlacesActivity.class);
                 intent3.putExtra(Constants.comingFrom, 100);
-                startActivity(intent3);
+                startActivityForResult(intent3, 100);
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
 
@@ -519,7 +510,7 @@ public class PickLocationActivity extends LocalizationActivity
     }
 
     private void setMapWithCurrentLocation() {
-        if (mLastLocation != null && mMap != null) {
+        if (mLastLocation != null && mMap != null && getIntent().getStringExtra(Constants.comingFrom) == null) {
             updateZoom(mMap, new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
             originalMarker.setVisibility(View.VISIBLE);
             try {
@@ -771,5 +762,15 @@ public class PickLocationActivity extends LocalizationActivity
         });
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if (resultCode == RESULT_OK){
+
+            }
+        }
     }
 }
