@@ -1,49 +1,66 @@
 package com.perfect_apps.tawsili.activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.view.SubMenu;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
+import com.perfect_apps.tawsili.utils.MapStateManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ConfirmPickLocationActivity extends AppCompatActivity
+public class ConfirmPickLocationActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        View.OnClickListener{
+        View.OnClickListener, OnMapReadyCallback{
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.nav_view)NavigationView navigationView;
     @BindView(R.id.button2)Button confirmButton;
 
+    private GoogleMap mMap;
+    private static final int GPS_ERRORDIALOG_REQUEST = 9001;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_pick_location);
         ButterKnife.bind(this);
         setToolbar();
         changeFontOfText();
+
+        // for map
+        if (servicesOK()) {
+            initMap();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -202,5 +219,57 @@ public class ConfirmPickLocationActivity extends AppCompatActivity
             case R.id.button2:
                 break;
         }
+    }
+
+    // setup map
+    public boolean servicesOK() {
+        int isAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+
+        if (isAvailable == ConnectionResult.SUCCESS) {
+            return true;
+        }
+        else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(isAvailable, this, GPS_ERRORDIALOG_REQUEST);
+            dialog.show();
+        }
+        else {
+            Toast.makeText(this, "Can't connect to Google Play services", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    private void initMap() {
+        if (mMap == null) {
+            SupportMapFragment mapFrag =
+                    (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mapFrag.getMapAsync(this);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mMap != null) {
+            MapStateManager mgr = new MapStateManager(this);
+            mgr.saveMapState(mMap);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MapStateManager mgr = new MapStateManager(this);
+        CameraPosition position = mgr.getSavedCameraPosition();
+        if (position != null && mMap != null) {
+            CameraUpdate update = CameraUpdateFactory.newCameraPosition(position);
+            mMap.moveCamera(update);
+            mMap.setMapType(mgr.getSavedMapType());
+        }
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
     }
 }
