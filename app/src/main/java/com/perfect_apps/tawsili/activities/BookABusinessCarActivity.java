@@ -522,6 +522,12 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 pickDropOffLocation.setVisibility(View.VISIBLE);
                 lineSeperator.setVisibility(View.VISIBLE);
                 if (!data.getBooleanExtra("guideTheDriver", false)) {
+                    // clear flag marker
+                    if (markers.size() > 1){
+                        markers.get(1).remove();
+                        markers.remove(1);
+                    }
+
                     //---get the result using getIntExtra()---
                     double lat = data.getDoubleExtra("lat", 0);
                     double lng = data.getDoubleExtra("lng", 0);
@@ -539,8 +545,10 @@ public class BookABusinessCarActivity extends LocalizationActivity
                     new TawsiliPrefStore(this).removePreference(Constants.userLastDropOffLocationLng);
 
                     // clear flag marker
-                    if (markers.size() > 1)
+                    if (markers.size() > 1){
                         markers.get(1).remove();
+                        markers.remove(1);
+                    }
 
                     centerAllMarker();
 
@@ -555,7 +563,10 @@ public class BookABusinessCarActivity extends LocalizationActivity
             builder.include(marker.getPosition());
         }
         LatLngBounds bounds = builder.build();
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 15);
+        mMap.setPadding(200,150,200,500);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
         mMap.animateCamera(cu);
+
+
     }
 }
