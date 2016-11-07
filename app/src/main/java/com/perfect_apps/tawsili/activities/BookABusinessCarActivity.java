@@ -89,13 +89,18 @@ public class BookABusinessCarActivity extends LocalizationActivity
     TextView dropOffLocationText;
 
     // penalty
-    @BindView(R.id.penaltyView)LinearLayout penaltyView;
-    @BindView(R.id.penaltyValueText)TextView penaltyTextView;
+    @BindView(R.id.penaltyView)
+    LinearLayout penaltyView;
+    @BindView(R.id.penaltyValueText)
+    TextView penaltyTextView;
 
     // fare estimate
-    @BindView(R.id.fairEstimateView)LinearLayout fareEstimateView;
-    @BindView(R.id.fairEstimateTitle)TextView fairEstimatetitl;
-    @BindView(R.id.fairEstimateValue)TextView fairEstimatevalue;
+    @BindView(R.id.fairEstimateView)
+    LinearLayout fareEstimateView;
+    @BindView(R.id.fairEstimateTitle)
+    TextView fairEstimatetitl;
+    @BindView(R.id.fairEstimateValue)
+    TextView fairEstimatevalue;
 
 
     private GoogleMap mMap;
@@ -516,14 +521,14 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLng, String.valueOf(lng));
                 setMapWithCurrentLocation();
             }
-        }else if (requestCode == 102) {
+        } else if (requestCode == 102) {
             if (resultCode == RESULT_OK) {
                 // set some view visible
                 pickDropOffLocation.setVisibility(View.VISIBLE);
                 lineSeperator.setVisibility(View.VISIBLE);
                 if (!data.getBooleanExtra("guideTheDriver", false)) {
                     // clear flag marker
-                    if (markers.size() > 1){
+                    if (markers.size() > 1) {
                         markers.get(1).remove();
                         markers.remove(1);
                     }
@@ -545,7 +550,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
                     new TawsiliPrefStore(this).removePreference(Constants.userLastDropOffLocationLng);
 
                     // clear flag marker
-                    if (markers.size() > 1){
+                    if (markers.size() > 1) {
                         markers.get(1).remove();
                         markers.remove(1);
                     }
@@ -557,13 +562,13 @@ public class BookABusinessCarActivity extends LocalizationActivity
         }
     }
 
-    private void centerAllMarker(){
+    private void centerAllMarker() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (Marker marker : markers) {
             builder.include(marker.getPosition());
         }
         LatLngBounds bounds = builder.build();
-        mMap.setPadding(200,150,200,500);
+        mMap.setPadding(200, 150, 200, 500);
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
         mMap.animateCamera(cu);
 
