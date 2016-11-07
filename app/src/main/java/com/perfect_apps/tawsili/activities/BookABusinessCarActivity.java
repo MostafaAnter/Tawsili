@@ -87,6 +87,16 @@ public class BookABusinessCarActivity extends LocalizationActivity
     @BindView(R.id.drop_off_location_text)
     TextView dropOffLocationText;
 
+    // penalty
+    @BindView(R.id.penaltyView)LinearLayout penaltyView;
+    @BindView(R.id.penaltyValueText)TextView penaltyTextView;
+
+    // fare estimate
+    @BindView(R.id.fairEstimateView)LinearLayout fareEstimateView;
+    @BindView(R.id.fairEstimateTitle)TextView fairEstimatetitl;
+    @BindView(R.id.fairEstimateValue)TextView fairEstimatevalue;
+
+
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
 
@@ -121,6 +131,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
         pickCurrentLocation.setOnClickListener(this);
         pickDropOffLocation.setOnClickListener(this);
         addPromoCode.setOnClickListener(this);
+        fareEstimateView.setOnClickListener(this);
     }
 
     private void animateView(LinearLayout frameLayout) {
@@ -266,6 +277,21 @@ public class BookABusinessCarActivity extends LocalizationActivity
         }
     }
 
+    private void setMapWithDropOfftLocation() {
+        if (mMap != null) {
+            String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastDropOffLocationLat);
+            String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastDropOffLocationLng);
+            if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
+                MapHelper.setUpMarker(mMap, new LatLng(Double.valueOf(lat), Double.valueOf(lng)), R.drawable.flag_marker);
+                try {
+                    getAddressInfo(new LatLng(Double.valueOf(lat), Double.valueOf(lng)), dropOffLocationText);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     private void setUpMarker(GoogleMap mMap, LatLng latLng, LatLng secLatLang) {
 
         Layout_to_Image layout_to_image;  //Create Object of Layout_to_Image Class
@@ -368,6 +394,12 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 startActivity(intent4);
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
+            case R.id.fairEstimateView:
+                Intent intent5 = new Intent(this, FavoritePlacesActivity.class);
+                intent5.putExtra(Constants.comingFrom, 102);
+                startActivityForResult(intent5, 102);
+                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                break;
         }
     }
 
@@ -461,6 +493,9 @@ public class BookABusinessCarActivity extends LocalizationActivity
         if (requestCode == 101) {
             if (resultCode == RESULT_OK) {
                 //---get the result using getIntExtra()---
+                if (mMap != null)
+                    // set draggable false done
+                    mMap.getUiSettings().setScrollGesturesEnabled(true);
                 mMap.clear();
 
                 double lat = data.getDoubleExtra("lat", 0);
@@ -470,14 +505,22 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLng, String.valueOf(lng));
                 setMapWithCurrentLocation();
             }
+        }else if (requestCode == 102) {
+            if (resultCode == RESULT_OK) {
+                // set some view visible
+                pickDropOffLocation.setVisibility(View.VISIBLE);
+                lineSeperator.setVisibility(View.VISIBLE);
+                if (!data.getBooleanExtra("guideTheDriver", false)) {
+                    //---get the result using getIntExtra()---
+                    double lat = data.getDoubleExtra("lat", 0);
+                    double lng = data.getDoubleExtra("lng", 0);
+                    new TawsiliPrefStore(this).addPreference(Constants.userLastDropOffLocationLat, String.valueOf(lat));
+                    new TawsiliPrefStore(this).addPreference(Constants.userLastDropOffLocationLng, String.valueOf(lng));
+                    setMapWithDropOfftLocation();
+                } else {
+                    // set view gone and clear
+                }
+            }
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mMap != null)
-            // set draggable false done
-            mMap.getUiSettings().setScrollGesturesEnabled(true);
     }
 }

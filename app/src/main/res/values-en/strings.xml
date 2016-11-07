@@ -59,7 +59,7 @@
     <string name="drop_off_location_is_gonna_be_here">Drop off location is gonna be here</string>
     <string name="let_s_go">Let\'s Go</string>
     <string name="cash">Cash</string>
-    <string name="fair_estimate">Fair Estimate</string>
+    <string name="fair_estimate">Add a dropoff</string>
     <string name="penalty">Penalty</string>
     <string name="select_time">Select Time</string>
     <string name="your_ride">Your Ride</string>
@@ -98,4 +98,5 @@
     <string name="confirm_pickup">Confirm PickUp</string>
     <string name="iwill_guid">I will guid the captain</string>
     <string name="select_location_from_map">Select location from map</string>
+    <string name="to_get_fare_estimate">to get fare estimate</string>
 </resources>

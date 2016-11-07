@@ -196,28 +196,33 @@
                 android:layout_width="8dp"
                 android:layout_height="1dp"/>
             <LinearLayout
+                android:id="@+id/fairEstimateView"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/fairEstimateTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/fair_estimate"
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/fairEstimateValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="LE 20-35" />
+                    android:text="@string/to_get_fare_estimate" />
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/penaltyView"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <TextView
@@ -228,9 +233,10 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/penaltyValueText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="12 LE" />
+                    android:text="" />
 
             </LinearLayout>
 

@@ -27,6 +27,8 @@ public class Constants {
     public static final String userId = "userId";
     public static final String userLastLocationLat = "userLastLocationLat";
     public static final String userLastLocationLng = "userLastLocationLng";
+    public static final String userLastDropOffLocationLat = "userLastDropOffLocationLat";
+    public static final String userLastDropOffLocationLng = "userLastDropOffLocationLng";
 
     /**
      * for check user

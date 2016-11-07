@@ -309,6 +309,21 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
             }
 
             updateZoom(mMap, new LatLng(lat, lng));
+        }else if (getIntent().getStringExtra(Constants.comingFrom) != null
+                && getIntent().getStringExtra(Constants.comingFrom).equalsIgnoreCase("drop_off_location")) {
+            double lat = Double.valueOf(new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastDropOffLocationLat));
+            double lng = Double.valueOf(new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastDropOffLocationLng));
+            if (mMap != null){
+                originMarker.setVisibility(View.VISIBLE);
+            }
+            try {
+                getAddressInfo(new LatLng(lat, lng), locationInfo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            updateZoom(mMap, new LatLng(lat, lng));
+
         }
 
     }
