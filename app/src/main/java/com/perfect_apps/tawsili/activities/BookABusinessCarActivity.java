@@ -32,6 +32,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -45,13 +50,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
+import com.perfect_apps.tawsili.utils.SweetDialogHelper;
+import com.perfect_apps.tawsili.utils.Utils;
 import com.vipul.hp_hp.library.Layout_to_Image;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,6 +77,8 @@ import butterknife.ButterKnife;
 public class BookABusinessCarActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         OnMapReadyCallback, View.OnClickListener {
+
+    private static final String TAG = "BookABusinessCarActivit";
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
@@ -113,6 +128,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
     // parameters for order
     private String result = "";
+    private String penalty = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -149,6 +165,8 @@ public class BookABusinessCarActivity extends LocalizationActivity
         pickDropOffLocation.setOnClickListener(this);
         addPromoCode.setOnClickListener(this);
         fareEstimateView.setOnClickListener(this);
+        // get user to get the penalty
+        getUser();
     }
 
     private void animateView(LinearLayout frameLayout) {
@@ -569,14 +587,14 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
                 }
             }
-        }else if (requestCode == 500) {
+        } else if (requestCode == 500) {
             if (resultCode == RESULT_OK) {
 
-                if (data.getStringExtra("result") != null){
+                if (data.getStringExtra("result") != null) {
                     result = data.getStringExtra("result");
                     addPromoCode.setText(getString(R.string.valide_promo));
                     addPromoCode.setTextColor(Color.GREEN);
-                }else {
+                } else {
                     addPromoCode.setText(getString(R.string.invalide_promo));
                     addPromoCode.setTextColor(Color.RED);
                 }
@@ -597,5 +615,50 @@ public class BookABusinessCarActivity extends LocalizationActivity
         mMap.animateCamera(cu);
 
 
+    }
+
+    private void getUser() {
+        String url = BuildConfig.API_BASE_URL + "getuser.php?mail=" +
+                "&id=" + new TawsiliPrefStore(this).getPreferenceValue(Constants.userId);
+
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, response.toString());
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String result = jsonObject.optString("balance");
+
+                        if (!result.trim().isEmpty()) {
+                            double balance = Double.valueOf(result);
+                            if (balance < 0) {
+                                penaltyView.setVisibility(View.VISIBLE);
+                                penaltyTextView.setText(result.replace("-", ""));
+                                penalty = result.replace("-", "");
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 }

@@ -142,6 +142,8 @@ public class AskForPromoCodeActivity extends LocalizationActivity implements Vie
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                new SweetDialogHelper(AskForPromoCodeActivity.this)
+                        .showErrorMessage(getString(R.string.error), getString(R.string.try_agin));
                 sdh.dismissDialog();
             }
         });
