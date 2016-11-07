@@ -147,6 +147,10 @@
         <activity
             android:name=".activities.ConfirmPickLocationActivity"
             android:label="@string/title_activity_confirm_pick_location"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.AskForPromoCodeActivity"
+            android:label="@string/title_activity_ask_for_promo_code"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

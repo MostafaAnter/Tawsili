@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
@@ -108,6 +109,10 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
     // for draw markers
     private List<Marker> markers;
+
+
+    // parameters for order
+    private String result = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -416,6 +421,11 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 startActivityForResult(intent5, 102);
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
+            case R.id.add_promo_code:
+                Intent intent6 = new Intent(this, AskForPromoCodeActivity.class);
+                startActivityForResult(intent6, 500);
+                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                break;
         }
     }
 
@@ -558,6 +568,20 @@ public class BookABusinessCarActivity extends LocalizationActivity
                     updateZoom(mMap, markers.get(0).getPosition());
 
                 }
+            }
+        }else if (requestCode == 500) {
+            if (resultCode == RESULT_OK) {
+
+                if (data.getStringExtra("result") != null){
+                    result = data.getStringExtra("result");
+                    addPromoCode.setText(getString(R.string.valide_promo));
+                    addPromoCode.setTextColor(Color.GREEN);
+                }else {
+                    addPromoCode.setText(getString(R.string.invalide_promo));
+                    addPromoCode.setTextColor(Color.RED);
+                }
+
+
             }
         }
     }
