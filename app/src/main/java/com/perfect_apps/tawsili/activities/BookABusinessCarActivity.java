@@ -53,6 +53,7 @@ import com.perfect_apps.tawsili.utils.MapStateManager;
 import com.vipul.hp_hp.library.Layout_to_Image;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -100,6 +101,9 @@ public class BookABusinessCarActivity extends LocalizationActivity
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
 
+    // for draw markers
+    private List<Marker> markers;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +115,9 @@ public class BookABusinessCarActivity extends LocalizationActivity
         if (servicesOK()) {
             initMap();
         }
+
+        // setup markers
+        this.markers = new ArrayList<>();
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -282,7 +289,8 @@ public class BookABusinessCarActivity extends LocalizationActivity
             String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastDropOffLocationLat);
             String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastDropOffLocationLng);
             if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
-                MapHelper.setUpMarker(mMap, new LatLng(Double.valueOf(lat), Double.valueOf(lng)), R.drawable.flag_marker);
+                Marker marker = MapHelper.setUpMarkerAndReturnMarker(mMap, new LatLng(Double.valueOf(lat), Double.valueOf(lng)), R.drawable.flag_marker);
+                markers.add(marker);
                 try {
                     getAddressInfo(new LatLng(Double.valueOf(lat), Double.valueOf(lng)), dropOffLocationText);
                 } catch (IOException e) {
@@ -348,6 +356,8 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
         marker.showInfoWindow();
 
+        // add to marker list
+        markers.add(marker);
 
         //animate camera
         updateZoom(mMap, latLng);
@@ -391,7 +401,8 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 break;
             case R.id.drop_off_location_button:
                 Intent intent4 = new Intent(this, FavoritePlacesActivity.class);
-                startActivity(intent4);
+                intent4.putExtra(Constants.comingFrom, 102);
+                startActivityForResult(intent4, 102);
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
             case R.id.fairEstimateView:
@@ -517,10 +528,34 @@ public class BookABusinessCarActivity extends LocalizationActivity
                     new TawsiliPrefStore(this).addPreference(Constants.userLastDropOffLocationLat, String.valueOf(lat));
                     new TawsiliPrefStore(this).addPreference(Constants.userLastDropOffLocationLng, String.valueOf(lng));
                     setMapWithDropOfftLocation();
+                    centerAllMarker();
                 } else {
                     // set view gone and clear
+                    pickDropOffLocation.setVisibility(View.GONE);
+                    lineSeperator.setVisibility(View.GONE);
+
+                    // clear dropOff location
+                    new TawsiliPrefStore(this).removePreference(Constants.userLastDropOffLocationLat);
+                    new TawsiliPrefStore(this).removePreference(Constants.userLastDropOffLocationLng);
+
+                    // clear flag marker
+                    if (markers.size() > 1)
+                        markers.get(1).remove();
+
+                    centerAllMarker();
+
                 }
             }
         }
+    }
+
+    private void centerAllMarker(){
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : markers) {
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 15);
+        mMap.animateCamera(cu);
     }
 }
