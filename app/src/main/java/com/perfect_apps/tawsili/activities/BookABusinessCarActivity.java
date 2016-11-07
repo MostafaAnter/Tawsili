@@ -241,13 +241,6 @@ public class BookABusinessCarActivity extends LocalizationActivity
     @Override
     public void onResume() {
         super.onResume();
-        MapStateManager mgr = new MapStateManager(this);
-        CameraPosition position = mgr.getSavedCameraPosition();
-        if (position != null && mMap != null) {
-            CameraUpdate update = CameraUpdateFactory.newCameraPosition(position);
-            mMap.moveCamera(update);
-            mMap.setMapType(mgr.getSavedMapType());
-        }
     }
 
 
