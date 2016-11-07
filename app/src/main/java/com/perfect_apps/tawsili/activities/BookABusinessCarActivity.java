@@ -550,7 +550,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
                         markers.remove(1);
                     }
 
-                    centerAllMarker();
+                    updateZoom(mMap, markers.get(0).getPosition());
 
                 }
             }
