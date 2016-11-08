@@ -55,17 +55,30 @@ public class OrderDriver {
 
 
 
-    public OrderDriver(FragmentActivity mContext, String mCategoryValue){
+    public OrderDriver(FragmentActivity mContext, String mCategoryValue,
+                       String mCategoryName, String fromDetails,
+                       String toDetails, String estmiateFee, String timeToCreateOrder,
+                       String typeNowOrLaterValue, String distanceWithKilo,
+                       String orderTypeValue, String promoCode, String typeNowOrLaterName){
         this.mContext = mContext;
         this.mCategoryValue = mCategoryValue;
         driverModels = new ArrayList<>();
         sweetDialogHelper = new SweetDialogHelper(this.mContext);
-    }
 
-    private void submitLogic(){
+        this.mCategoryName = mCategoryName;
+        this.fromDetails = fromDetails;
+        this.toDetails = toDetails;
+        this.estmiateFee = estmiateFee;
+        this.timeToCreateOrder = timeToCreateOrder;
+        this.typeNowOrLaterValue = typeNowOrLaterValue;
+        this.distanceWithKilo = distanceWithKilo;
+        this.orderTypeValue = orderTypeValue;
+        this.promoCode = promoCode;
+        this.typeNowOrLaterName = typeNowOrLaterName;
+
+
         getDriversList();
     }
-
 
     private void getDriversList() {
         String requestTag = "driversRequest";
@@ -169,6 +182,9 @@ public class OrderDriver {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String result = jsonObject.optString("error");
                         String userId = jsonObject.optString("id");
+
+                        // get orderId
+                      //  doProsess(oderID);
 
 
                     }

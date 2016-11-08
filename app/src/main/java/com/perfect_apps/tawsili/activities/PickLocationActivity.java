@@ -127,6 +127,10 @@ public class PickLocationActivity extends LocalizationActivity
     // driver object
     private DriverModel driverModel;
 
+    // pass this values to second page
+    private String mCategoryName; // category to get all drivers
+    private String mCategoryValue; // category to get all drivers
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -328,12 +332,19 @@ public class PickLocationActivity extends LocalizationActivity
         switch (tab.getPosition()) {
             case 0:
                 getDriversList("1");
+                mCategoryValue = "1";
+                mCategoryName = "Economy";
+                // TODO: 11/8/16
                 break;
             case 1:
                 getDriversList("2");
+                mCategoryValue = "2";
+                mCategoryName = "Business";
                 break;
             case 2:
                 getDriversList("3");
+                mCategoryValue = "3";
+                mCategoryName = "Vip";
                 break;
             case 3:
                 showSingleChoiceFamilyTypeAlertDialog();
@@ -351,12 +362,18 @@ public class PickLocationActivity extends LocalizationActivity
         switch (tab.getPosition()) {
             case 0:
                 getDriversList("1");
+                mCategoryValue = "1";
+                mCategoryName = "Economy";
                 break;
             case 1:
                 getDriversList("2");
+                mCategoryValue = "2";
+                mCategoryName = "Business";
                 break;
             case 2:
                 getDriversList("3");
+                mCategoryValue = "3";
+                mCategoryName = "Vip";
                 break;
             case 3:
                 showSingleChoiceFamilyTypeAlertDialog();
@@ -461,6 +478,8 @@ public class PickLocationActivity extends LocalizationActivity
                 if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
                     Intent intent = new Intent(this, BookABusinessCarActivity.class);
                     intent.putExtra("now", true);
+                    intent.putExtra("CategoryName",mCategoryName);
+                    intent.putExtra("CategoryValue", mCategoryValue);
                     startActivity(intent);
                     overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 }else {
@@ -471,6 +490,8 @@ public class PickLocationActivity extends LocalizationActivity
                 if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
                     Intent intent2 = new Intent(this, BookABusinessCarActivity.class);
                     intent2.putExtra("now", false);
+                    intent2.putExtra("CategoryName",mCategoryName);
+                    intent2.putExtra("CategoryValue", mCategoryValue);
                     startActivity(intent2);
                     overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 } else {
@@ -694,9 +715,13 @@ public class PickLocationActivity extends LocalizationActivity
                                 if (which == 0) {
                                     dialog.dismiss();
                                     getDriversList("4");
+                                    mCategoryValue = "4";
+                                    mCategoryName = "Family_Regular";
                                 } else if (which == 1) {
                                     dialog.dismiss();
                                     getDriversList("5");
+                                    mCategoryValue = "5";
+                                    mCategoryName = "Family_Special";
                                 }
                             }
                         })

@@ -58,6 +58,7 @@ import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
+import com.perfect_apps.tawsili.utils.OrderDriver;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 import com.perfect_apps.tawsili.utils.Utils;
 import com.vipul.hp_hp.library.Layout_to_Image;
@@ -130,6 +131,11 @@ public class BookABusinessCarActivity extends LocalizationActivity
     private String result = "";
     private String penalty = "";
 
+
+    private String mCategoryName; // category to get all drivers
+    private String mCategoryValue; // category to get all drivers
+    private String promoCode = "";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,6 +150,9 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
         // setup markers
         this.markers = new ArrayList<>();
+
+        mCategoryName = getIntent().getStringExtra("CategoryName");
+        mCategoryValue = getIntent().getStringExtra("CategoryValue");
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -413,9 +422,10 @@ public class BookABusinessCarActivity extends LocalizationActivity
             case R.id.button1:
                 if (!getIntent().getBooleanExtra("now", false)) {
                     // go to select date and time
-                    Intent intent1 = new Intent(this, SelectTimeActivity.class);
-                    startActivity(intent1);
-                    overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+//                    Intent intent1 = new Intent(this, SelectTimeActivity.class);
+//                    startActivity(intent1);
+//                    overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                    createOder();
                 } else {
                     // let go
                     startActivity(new Intent(this, YourRideActivity.class));
@@ -663,5 +673,15 @@ public class BookABusinessCarActivity extends LocalizationActivity
         });
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    private void createOder(){
+        String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
+        String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
+        if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
+            new OrderDriver(this, mCategoryValue, mCategoryName, curentLocationText.getText().toString()
+            , dropOffLocationText.getText().toString(), "11", Utils.returnTime(),
+                    "1", "140", mCategoryValue, promoCode, "Now");
+        }
     }
 }
