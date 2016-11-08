@@ -680,7 +680,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
         String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
         if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
             new OrderDriver(this, mCategoryValue, mCategoryName, curentLocationText.getText().toString()
-            , dropOffLocationText.getText().toString(), "11", Utils.returnTime().replace("%20", " "),
+            , dropOffLocationText.getText().toString(), "11", Utils.returnTime(),
                     "1", "140", mCategoryValue, promoCode, "Now");
         }
     }

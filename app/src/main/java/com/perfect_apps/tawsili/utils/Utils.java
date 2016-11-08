@@ -73,7 +73,7 @@ public class Utils {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = df.format(Calendar.getInstance().getTime());
 
-        return date.replace(" ", "%20");
+        return date;
 
         //        "yyyy.MM.dd G 'at' HH:mm:ss z" ---- 2001.07.04 AD at 12:08:56 PDT
 //        "hh 'o''clock' a, zzzz" ----------- 12 o'clock PM, Pacific Daylight Time

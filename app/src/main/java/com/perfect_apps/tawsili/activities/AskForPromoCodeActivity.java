@@ -99,7 +99,7 @@ public class AskForPromoCodeActivity extends LocalizationActivity implements Vie
     private void checkPromo(){
         String url = BuildConfig.API_BASE_URL + "checkpromocode.php?client=" +
                 new TawsiliPrefStore(this).getPreferenceValue(Constants.userId) +
-                "&time=" + Utils.returnTime() + "&promo=" + editText1.getText().toString().trim();
+                "&time=" + Utils.returnTime().replace(" ", "%20") + "&promo=" + editText1.getText().toString().trim();
         url = url.replace(" ", "%20");
         // here should show dialog
         final SweetDialogHelper sdh = new SweetDialogHelper(this);

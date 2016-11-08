@@ -387,6 +387,7 @@ public class OrderDriver {
                         if (!status.equalsIgnoreCase("Missed")) {
                             if (!driver_id.trim().equalsIgnoreCase("null")) {
                                 // show success message
+                                sweetDialogHelper.dismissDialog();
                                 sweetDialogHelper.showSuccessfulMessage("Done!", "Your order success :)");
                             } else {
                                 if (0 <= driverCounterForloop && driverCounterForloop < driverModels.size()) {
