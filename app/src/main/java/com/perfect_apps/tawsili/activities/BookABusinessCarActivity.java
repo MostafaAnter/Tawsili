@@ -577,6 +577,9 @@ public class BookABusinessCarActivity extends LocalizationActivity
                     new TawsiliPrefStore(this).removePreference(Constants.userLastDropOffLocationLat);
                     new TawsiliPrefStore(this).removePreference(Constants.userLastDropOffLocationLng);
 
+                    // clear dropOff editText
+                    dropOffLocationText.setText("");
+
                     // clear flag marker
                     if (markers.size() > 1) {
                         markers.get(1).remove();
