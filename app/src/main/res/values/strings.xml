@@ -118,4 +118,5 @@
     <string name="valide_promo">Valide Code</string>
     <string name="invalide_promo">Invalide Code</string>
     <string name="try_agin">Try agin!</string>
+    <string name="yes_try_again">Yes, try again</string>
 </resources>

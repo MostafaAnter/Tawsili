@@ -10,6 +10,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
@@ -28,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by mostafa_anter on 11/7/16.
@@ -54,12 +57,11 @@ public class OrderDriver {
     private String typeNowOrLaterName;
 
 
-
     public OrderDriver(FragmentActivity mContext, String mCategoryValue,
                        String mCategoryName, String fromDetails,
                        String toDetails, String estmiateFee, String timeToCreateOrder,
                        String typeNowOrLaterValue, String distanceWithKilo,
-                       String orderTypeValue, String promoCode, String typeNowOrLaterName){
+                       String orderTypeValue, String promoCode, String typeNowOrLaterName) {
         this.mContext = mContext;
         this.mCategoryValue = mCategoryValue;
         driverModels = new ArrayList<>();
@@ -112,8 +114,17 @@ public class OrderDriver {
                         createOrder();
                     } else {
                         sweetDialogHelper.dismissDialog();
-                        sweetDialogHelper.showErrorMessage(mContext.getString(R.string.error),
-                                mContext.getString(R.string.try_agin));
+                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(mContext.getString(R.string.error))
+                                .setContentText(mContext.getString(R.string.try_agin))
+                                .setConfirmText(mContext.getString(R.string.yes_try_again))
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        getDriversList();
+                                    }
+                                })
+                                .show();
                     }
                 }
             }, new Response.ErrorListener() {
@@ -122,8 +133,17 @@ public class OrderDriver {
                 public void onErrorResponse(VolleyError error) {
                     VolleyLog.d("Error drivers", "Error: " + error.getMessage());
                     sweetDialogHelper.dismissDialog();
-                    sweetDialogHelper.showErrorMessage(mContext.getString(R.string.error),
-                            mContext.getString(R.string.try_agin));
+                    new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText(mContext.getString(R.string.error))
+                            .setContentText(mContext.getString(R.string.try_agin))
+                            .setConfirmText(mContext.getString(R.string.yes_try_again))
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    getDriversList();
+                                }
+                            })
+                            .show();
                 }
             });
             // Adding request to request queue
@@ -132,7 +152,7 @@ public class OrderDriver {
 
     }
 
-    private void createOrder(){
+    private void createOrder() {
         String url = BuildConfig.API_BASE_URL + "createorder.php";
         // here should show dialog
 
@@ -165,6 +185,7 @@ public class OrderDriver {
 
         } catch (JSONException e) {
             e.printStackTrace();
+            sweetDialogHelper.dismissDialog();
         }
 
         CustomRequest strReq = new CustomRequest(Request.Method.POST,
@@ -181,15 +202,31 @@ public class OrderDriver {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String result = jsonObject.optString("error");
-                        String userId = jsonObject.optString("id");
-
-                        // get orderId
-                      //  doProsess(oderID);
+                        String orderID = jsonObject.optString("id");
+                        if (!result.trim().isEmpty()) {
+                            sweetDialogHelper.dismissDialog();
+                            new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(mContext.getString(R.string.error))
+                                    .setContentText(result + " " + mContext.getString(R.string.try_agin))
+                                    .setConfirmText(mContext.getString(R.string.yes_try_again))
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            getDriversList();
+                                        }
+                                    })
+                                    .show();
+                            break;
+                        } else {
+                            // get orderId
+                            doProsess(orderID);
+                        }
 
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    sweetDialogHelper.dismissDialog();
                 }
 
             }
@@ -210,9 +247,10 @@ public class OrderDriver {
 
     private int driverCounterForloop = 0;
     private int processCounterLoop = 0;
-    private void doProsess(String orderID){
+
+    private void doProsess(String orderID) {
         String driverTokenID = "";
-        switch (driverCounterForloop){
+        switch (driverCounterForloop) {
             case 0:
                 if (driverModels.size() > 0) {
                     driverTokenID = driverModels.get(0).getUdid();
@@ -246,7 +284,7 @@ public class OrderDriver {
     /**
      * push notification to driver
      */
-    private void pushMessageToDriver(String driverTokenID, final String orderID){
+    private void pushMessageToDriver(String driverTokenID, final String orderID) {
         String url = "https://gcm-http.googleapis.com/gcm/send";
         // here should show dialog
 
@@ -260,30 +298,29 @@ public class OrderDriver {
             orderObject.put("id", orderID);
             orderObject.put("client", new TawsiliPrefStore(mContext)
                     .getPreferenceValue(Constants.userId));
-            orderObject.put("fromlat",new TawsiliPrefStore(mContext)
+            orderObject.put("fromlat", new TawsiliPrefStore(mContext)
                     .getPreferenceValue(Constants.userLastLocationLat));
-            orderObject.put("fromlng",new TawsiliPrefStore(mContext)
+            orderObject.put("fromlng", new TawsiliPrefStore(mContext)
                     .getPreferenceValue(Constants.userLastLocationLng));
-            orderObject.put("fromdetail",fromDetails);
-            orderObject.put("tolat",new TawsiliPrefStore(mContext)
+            orderObject.put("fromdetail", fromDetails);
+            orderObject.put("tolat", new TawsiliPrefStore(mContext)
                     .getPreferenceValue(Constants.userLastDropOffLocationLat));
-            orderObject.put("tolng",new TawsiliPrefStore(mContext)
+            orderObject.put("tolng", new TawsiliPrefStore(mContext)
                     .getPreferenceValue(Constants.userLastDropOffLocationLng));
             orderObject.put("todetail", toDetails);
             orderObject.put("time", timeToCreateOrder);
             orderObject.put("type", mCategoryName);
             orderObject.put("ordertype", typeNowOrLaterName);
-
             dataObject.put("order", orderObject);
             rootObject.put("data", dataObject);
-
         } catch (JSONException e) {
             e.printStackTrace();
+            sweetDialogHelper.dismissDialog();
         }
-        CustomRequest strReq = new CustomRequest(Request.Method.POST,
-                url, rootObject, new Response.Listener<JSONArray>() {
+        JsonObjectRequest strReq = new JsonObjectRequest(Request.Method.POST,
+                url, rootObject, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response1) {
+            public void onResponse(JSONObject response1) {
                 String response = response1.toString();
                 Log.d("create order", response.toString());
 
@@ -294,8 +331,9 @@ public class OrderDriver {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("error create order", "Error: " + error.toString());
                 // TODO: 11/7/16 dismiss progress
+                sweetDialogHelper.dismissDialog();
             }
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -308,7 +346,7 @@ public class OrderDriver {
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
-    private class SleepTask extends AsyncTask<String, Void, String>{
+    private class SleepTask extends AsyncTask<String, Void, String> {
 
 
         @Override
@@ -328,7 +366,7 @@ public class OrderDriver {
         }
     }
 
-    private void checkOrder(final String orderID){
+    private void checkOrder(final String orderID) {
         String url = BuildConfig.API_BASE_URL + "getorder.php?id=" + orderID;
 
         StringRequest strReq = new StringRequest(Request.Method.GET,
@@ -343,25 +381,68 @@ public class OrderDriver {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String result = jsonObject.optString("balance");
-                        
-                        
-                        if (true/*there driver id*/){
-                            // show success message
-                            
-                        }else {
-                            if (0 <= driverCounterForloop && driverCounterForloop < driverModels.size() ){
-                                driverCounterForloop ++;
-                            }else {
-                                if (processCounterLoop == 0){
-                                    processCounterLoop ++;
-                                }else {
-                                    // TODO: 11/8/16 return and show dialog to cancel or try again 
+                        String driver_id = jsonObject.optString("driver_id");
+                        String status = jsonObject.optString("status");
+
+                        if (!status.equalsIgnoreCase("Missed")) {
+                            if (!driver_id.trim().equalsIgnoreCase("null")) {
+                                // show success message
+                                sweetDialogHelper.showSuccessfulMessage("Done!", "Your order success :)");
+                            } else {
+                                if (0 <= driverCounterForloop && driverCounterForloop < driverModels.size()) {
+                                    driverCounterForloop++;
+                                } else {
+                                    if (processCounterLoop == 0) {
+                                        processCounterLoop++;
+                                    } else {
+                                        processCounterLoop++;
+                                        sweetDialogHelper.dismissDialog();
+                                        // TODO: 11/8/16 return and show dialog to cancel or try again
+                                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                .setTitleText("Drivers Busy!")
+                                                .setContentText("it seem our drivers are busy now")
+                                                .setCancelText("Cancel")
+                                                .setConfirmText("Try again!")
+                                                .showCancelButton(true)
+                                                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                        sDialog.cancel();
+                                                        missedOrder(orderID);
+
+                                                    }
+                                                })
+                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                        sDialog.dismissWithAnimation();
+                                                        driverCounterForloop = 0;
+                                                        processCounterLoop = 0;
+                                                        doProsess(orderID);
+                                                    }
+                                                })
+                                                .show();
+
+                                    }
+                                    driverCounterForloop = 0;
                                 }
-                                driverCounterForloop = 0;
+                                if (processCounterLoop == 0 || processCounterLoop == 1) {
+                                    doProsess(orderID);
+                                }
                             }
-                            
-                            doProsess(orderID);
+                        } else {
+                            sweetDialogHelper.dismissDialog();
+                            new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Time out!")
+                                    .setContentText("this order is missed if you want create new one")
+                                    .setConfirmText("Ok, i know")
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            sDialog.dismissWithAnimation();
+                                        }
+                                    })
+                                    .show();
                         }
 
                     }
@@ -384,6 +465,27 @@ public class OrderDriver {
     }
 
 
+    private void missedOrder(String orderID) {
+        String url = BuildConfig.API_BASE_URL + "missedorder.php?order=" + orderID;
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("missed order", response.toString());
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("error missed", "Error: " + error.getMessage());
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
 
 
 }

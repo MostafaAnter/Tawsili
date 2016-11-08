@@ -134,7 +134,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
     private String mCategoryName; // category to get all drivers
     private String mCategoryValue; // category to get all drivers
-    private String promoCode = "";
+    private String promoCode = "NULL";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -422,13 +422,13 @@ public class BookABusinessCarActivity extends LocalizationActivity
             case R.id.button1:
                 if (!getIntent().getBooleanExtra("now", false)) {
                     // go to select date and time
-//                    Intent intent1 = new Intent(this, SelectTimeActivity.class);
-//                    startActivity(intent1);
-//                    overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
-                    createOder();
+                    Intent intent1 = new Intent(this, SelectTimeActivity.class);
+                    startActivity(intent1);
+                    overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 } else {
                     // let go
-                    startActivity(new Intent(this, YourRideActivity.class));
+                   // startActivity(new Intent(this, YourRideActivity.class));
+                    createOder();
                 }
                 break;
             case R.id.current_location_button:
@@ -680,7 +680,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
         String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
         if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
             new OrderDriver(this, mCategoryValue, mCategoryName, curentLocationText.getText().toString()
-            , dropOffLocationText.getText().toString(), "11", Utils.returnTime(),
+            , dropOffLocationText.getText().toString(), "11", Utils.returnTime().replace("%20", " "),
                     "1", "140", mCategoryValue, promoCode, "Now");
         }
     }
