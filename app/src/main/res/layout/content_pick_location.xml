@@ -61,7 +61,7 @@
 
     <!--</LinearLayout>-->
 
-    <FrameLayout
+    <com.perfect_apps.tawsili.utils.CustomFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <fragment
@@ -97,7 +97,7 @@
                 android:textSize="9sp"
                 android:textStyle="bold" />
         </FrameLayout>
-    </FrameLayout>
+    </com.perfect_apps.tawsili.utils.CustomFrameLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout1"

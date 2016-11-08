@@ -10,6 +10,8 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.app.AppController;
+import com.perfect_apps.tawsili.models.FavoritePlaceItem;
+import com.perfect_apps.tawsili.store.FavoritePlacesStore;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 
 import java.text.DecimalFormat;
@@ -82,6 +84,16 @@ public class TawsiliPublicFunc {
                 targetLongitude + "&mode=driving&language=en-EN&key="
                 + "AIzaSyAiT5rjXpzq0N7-ibpjq-QW5_pDfFPElRw";
 
+    }
+
+    public static void addItem(Context mContext, FavoritePlaceItem favoritePlaceItem) {
+        //add item to favorite
+        new FavoritePlacesStore(mContext).addItem(favoritePlaceItem);
+    }
+
+    public static void removeItem(Context mContext, FavoritePlaceItem favoritePlaceItem) {
+        //add item to favorite
+        new FavoritePlacesStore(mContext).removeItem(favoritePlaceItem);
     }
 
 

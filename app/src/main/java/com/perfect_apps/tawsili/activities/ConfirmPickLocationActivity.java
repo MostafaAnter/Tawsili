@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import android.text.SpannableString;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
@@ -36,11 +38,16 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.models.PickTimeEvent;
+import com.perfect_apps.tawsili.models.TouchMapEvent;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.util.List;
@@ -268,7 +275,14 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void onStop() {
+        EventBus.getDefault().unregister(this);
         super.onStop();
         if (mMap != null) {
             MapStateManager mgr = new MapStateManager(this);
@@ -361,5 +375,19 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
 
         Log.e("address info", sb.toString());
 
+
     }
+
+    @Subscribe
+    public void onMessageEvent(TouchMapEvent event) {
+        Log.d("handel touch", "handel touch");
+        try {
+            getAddressInfo(mMap.getCameraPosition().target, locationInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 }

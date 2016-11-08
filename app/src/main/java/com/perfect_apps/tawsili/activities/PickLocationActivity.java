@@ -62,6 +62,7 @@ import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.models.DriverDurationAndDistance;
 import com.perfect_apps.tawsili.models.DriverModel;
 import com.perfect_apps.tawsili.models.NetworkEvent;
+import com.perfect_apps.tawsili.models.TouchMapEvent;
 import com.perfect_apps.tawsili.parser.JsonParser;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
@@ -819,5 +820,16 @@ public class PickLocationActivity extends LocalizationActivity
 
             }
         }
+    }
+
+    @Subscribe
+    public void onMessageEvent(TouchMapEvent event) {
+        Log.d("handel touch", "handel touch");
+        try {
+            getAddressInfo(mMap.getCameraPosition().target);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
