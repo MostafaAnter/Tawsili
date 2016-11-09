@@ -119,4 +119,6 @@
     <string name="invalide_promo">Invalide Code</string>
     <string name="try_agin">Try agin!</string>
     <string name="yes_try_again">Yes, try again</string>
+    <string name="title_activity_your_ride_two">YourRideTwoActivity</string>
+    <string name="title_activity_your_ride_third">YourRideThirdActivity</string>
 </resources>

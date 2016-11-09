@@ -151,6 +151,14 @@
         <activity
             android:name=".activities.AskForPromoCodeActivity"
             android:label="@string/title_activity_ask_for_promo_code"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.YourRideTwoActivity"
+            android:label="@string/title_activity_your_ride_two"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.YourRideThirdActivity"
+            android:label="@string/title_activity_your_ride_third"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
