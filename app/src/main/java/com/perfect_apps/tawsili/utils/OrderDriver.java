@@ -1,5 +1,6 @@
 package com.perfect_apps.tawsili.utils;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -14,6 +15,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.activities.YourRideActivity;
 import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.models.DriverModel;
 import com.perfect_apps.tawsili.parser.JsonParser;
@@ -389,6 +391,28 @@ public class OrderDriver {
                                 // show success message
                                 sweetDialogHelper.dismissDialog();
                                 sweetDialogHelper.showSuccessfulMessage("Done!", "Your order success :)");
+                                new AsyncTask<Void, Void, Void>(){
+
+                                    @Override
+                                    protected Void doInBackground(Void... params) {
+                                        try {
+                                            Thread.sleep(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        return null;
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+                                        sweetDialogHelper.dismissDialog();
+                                        mContext.startActivity(new Intent(mContext, YourRideActivity.class));
+                                    }
+                                }.execute();
+
+
+
                             } else {
                                 if (0 <= driverCounterForloop && driverCounterForloop < driverModels.size()) {
                                     driverCounterForloop++;
