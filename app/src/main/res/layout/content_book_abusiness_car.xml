@@ -83,10 +83,11 @@
                 tools:ignore="RtlCompat" />
 
             <ImageView
-                android:layout_width="30dp"
+                android:id="@+id/add_current_loc_to_favorite"
+                android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:contentDescription="@null"
-                android:padding="5dp"
+                android:padding="8dp"
                 android:src="@drawable/ic_grade_gray" />
         </LinearLayout>
         <View
@@ -125,10 +126,11 @@
                 tools:ignore="RtlCompat" />
 
             <ImageView
-                android:layout_width="30dp"
+                android:id="@+id/add_drop_off_loc_to_favorite"
+                android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:contentDescription="@null"
-                android:padding="5dp"
+                android:padding="8dp"
                 android:src="@drawable/ic_grade_gray" />
         </LinearLayout>
         <View
