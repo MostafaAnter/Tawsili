@@ -97,4 +97,11 @@
     <string name="regular">عادى</string>
     <string name="select_location_from_map">أختر مكان من الخريطة</string>
     <string name="special">خاص</string>
+    <string name="add_code">برومو كود!</string>
+    <string name="invalide_promo">كود غير صالح</string>
+    <string name="promo_code">برومو كود</string>
+    <string name="to_get_fare_estimate">حساب تقريبي</string>
+    <string name="try_agin">حاول مرة أخري</string>
+    <string name="valide_promo">كود صالح</string>
+    <string name="yes_try_again">نعم, جرب مره أخري</string>
 </resources>
