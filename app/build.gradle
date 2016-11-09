@@ -72,4 +72,6 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     // for get current location
     compile 'com.google.android.gms:play-services-location:9.8.0'
+    // nine
+    compile 'com.nineoldandroids:library:2.4.0'
 }

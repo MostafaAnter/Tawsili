@@ -11,7 +11,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,10 +22,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,21 +47,26 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.app.AppController;
+import com.perfect_apps.tawsili.models.FavoritePlaceItem;
+import com.perfect_apps.tawsili.store.FavoritePlacesStore;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
 import com.perfect_apps.tawsili.utils.OrderDriver;
-import com.perfect_apps.tawsili.utils.SweetDialogHelper;
+import com.perfect_apps.tawsili.utils.TawsiliPublicFunc;
 import com.perfect_apps.tawsili.utils.Utils;
 import com.vipul.hp_hp.library.Layout_to_Image;
 
@@ -69,8 +76,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,6 +89,11 @@ public class BookABusinessCarActivity extends LocalizationActivity
         OnMapReadyCallback, View.OnClickListener {
 
     private static final String TAG = "BookABusinessCarActivit";
+
+    // belong like button animations
+    private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR = new AccelerateInterpolator();
+    private static final OvershootInterpolator OVERSHOOT_INTERPOLATOR = new OvershootInterpolator(4);
+    private final Map<ImageView, AnimatorSet> likeAnimations = new HashMap<>();
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
@@ -118,6 +132,10 @@ public class BookABusinessCarActivity extends LocalizationActivity
     TextView fairEstimatetitl;
     @BindView(R.id.fairEstimateValue)
     TextView fairEstimatevalue;
+
+    @BindView(R.id.add_current_loc_to_favorite)ImageView currentFavImage;
+    @BindView(R.id.add_drop_off_loc_to_favorite)ImageView dropOffFavImage;
+
 
 
     private GoogleMap mMap;
@@ -174,6 +192,9 @@ public class BookABusinessCarActivity extends LocalizationActivity
         pickDropOffLocation.setOnClickListener(this);
         addPromoCode.setOnClickListener(this);
         fareEstimateView.setOnClickListener(this);
+
+        currentFavImage.setOnClickListener(this);
+        dropOffFavImage.setOnClickListener(this);
         // get user to get the penalty
         getUser();
     }
@@ -317,6 +338,11 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                if (new FavoritePlacesStore(BookABusinessCarActivity.this)
+                        .isFavoritItem(lat + "," + lng)){
+                    currentFavImage.setImageResource(R.drawable.ic_grade_black_24dp);
+                }
             }
         }
     }
@@ -332,6 +358,11 @@ public class BookABusinessCarActivity extends LocalizationActivity
                     getAddressInfo(new LatLng(Double.valueOf(lat), Double.valueOf(lng)), dropOffLocationText);
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+
+                if (new FavoritePlacesStore(BookABusinessCarActivity.this)
+                        .isFavoritItem(lat + "," + lng)){
+                    dropOffFavImage.setImageResource(R.drawable.ic_grade_black_24dp);
                 }
             }
         }
@@ -453,6 +484,18 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 Intent intent6 = new Intent(this, AskForPromoCodeActivity.class);
                 startActivityForResult(intent6, 500);
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                break;
+            case R.id.add_drop_off_loc_to_favorite:
+                FavoritePlaceItem favoritePlaceItem = new FavoritePlaceItem(dropOffLocationText.getText().toString(),
+                        "", new TawsiliPrefStore(BookABusinessCarActivity.this).getPreferenceValue(Constants.userLastDropOffLocationLat),
+                        new TawsiliPrefStore(BookABusinessCarActivity.this).getPreferenceValue(Constants.userLastDropOffLocationLng), true);
+                updateHeartImage(dropOffFavImage, true, favoritePlaceItem);
+                break;
+            case R.id.add_current_loc_to_favorite:
+                FavoritePlaceItem favoritePlaceItem1 = new FavoritePlaceItem(curentLocationText.getText().toString(),
+                        "", new TawsiliPrefStore(BookABusinessCarActivity.this).getPreferenceValue(Constants.userLastLocationLat),
+                        new TawsiliPrefStore(BookABusinessCarActivity.this).getPreferenceValue(Constants.userLastLocationLng), true);
+                updateHeartImage(currentFavImage, true, favoritePlaceItem1);
                 break;
         }
     }
@@ -630,6 +673,76 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
     }
 
+    // belong like button
+    private void updateHeartImage(final ImageView holder,
+                                  boolean animated,
+                                  final FavoritePlaceItem favoritePlaceItem) {
+        if (animated) {
+            if (!likeAnimations.containsKey(holder) &&! new FavoritePlacesStore(BookABusinessCarActivity.this)
+                    .isFavoritItem(favoritePlaceItem.getLat() + "," + favoritePlaceItem.getLng())) {
+                AnimatorSet animatorSet = new AnimatorSet();
+                likeAnimations.put(holder, animatorSet);
+
+                ObjectAnimator bounceAnimX = ObjectAnimator.ofFloat(holder, "scaleX", 0.2f, 1f);
+                bounceAnimX.setDuration(300);
+                bounceAnimX.setInterpolator(OVERSHOOT_INTERPOLATOR);
+
+                ObjectAnimator bounceAnimY = ObjectAnimator.ofFloat(holder, "scaleY", 0.2f, 1f);
+                bounceAnimY.setDuration(300);
+                bounceAnimY.setInterpolator(OVERSHOOT_INTERPOLATOR);
+                bounceAnimY.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        holder.setImageResource(R.drawable.ic_grade_black_24dp);
+                    }
+                });
+                animatorSet.play(bounceAnimX).with(bounceAnimY);
+                animatorSet.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (!favoritePlaceItem.getName().trim().isEmpty()){
+                            TawsiliPublicFunc.addItem(BookABusinessCarActivity.this,
+                                    favoritePlaceItem);
+                        }
+                    }
+                });
+
+                animatorSet.start();
+            } else {
+                AnimatorSet animatorSet = new AnimatorSet();
+                likeAnimations.remove(holder);
+
+                ObjectAnimator bounceAnimX = ObjectAnimator.ofFloat(holder, "scaleX", 0.2f, 1f);
+                bounceAnimX.setDuration(300);
+                bounceAnimX.setInterpolator(OVERSHOOT_INTERPOLATOR);
+
+                ObjectAnimator bounceAnimY = ObjectAnimator.ofFloat(holder, "scaleY", 0.2f, 1f);
+                bounceAnimY.setDuration(300);
+                bounceAnimY.setInterpolator(OVERSHOOT_INTERPOLATOR);
+                bounceAnimY.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        holder.setImageResource(R.drawable.ic_grade_gray);
+                    }
+                });
+                animatorSet.play(bounceAnimX).with(bounceAnimY);
+                animatorSet.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (new FavoritePlacesStore(BookABusinessCarActivity.this)
+                                .isFavoritItem(favoritePlaceItem.getLat() + "," + favoritePlaceItem.getLng())){
+                            TawsiliPublicFunc.removeItem(BookABusinessCarActivity.this,
+                                    favoritePlaceItem);
+                        }
+
+                    }
+                });
+
+                animatorSet.start();
+            }
+        }
+    }
+
     private void getUser() {
         String url = BuildConfig.API_BASE_URL + "getuser.php?mail=" +
                 "&id=" + new TawsiliPrefStore(this).getPreferenceValue(Constants.userId);
@@ -684,4 +797,6 @@ public class BookABusinessCarActivity extends LocalizationActivity
                     "1", "140", mCategoryValue, promoCode, "Now");
         }
     }
+
+
 }
