@@ -96,5 +96,72 @@ public class TawsiliPublicFunc {
         new FavoritePlacesStore(mContext).removeItem(favoritePlaceItem);
     }
 
+    public static int calculateFairEstimate(String category, int disInKilo, boolean isNow){
+        float startCost = 0;
+        float runningCost = 0;
+        float minimumCost = 0;
+        switch (category){
+            case "1":
+                if (isNow){
+                    startCost = Constants.startCostOfEconomyNow;
+                    runningCost = Constants.runningCostOfEconomy;
+                    minimumCost = Constants.minimumCostOfEconomyNow;
+                }else {
+                    startCost = Constants.startCostOfEconomyLater;
+                    runningCost = Constants.runningCostOfEconomy;
+                    minimumCost = Constants.minimumCostOfEconomyLater;
+                }
+                break;
+            case "2":
+                if (isNow){
+                    startCost = Constants.startCostOfBusinessNow;
+                    runningCost = Constants.runningCostOfBusiness;
+                    minimumCost = Constants.minimumCostOfBusinessNow;
+                }else {
+                    startCost = Constants.startCostOfBusinessLater;
+                    runningCost = Constants.runningCostOfBusiness;
+                    minimumCost = Constants.minimumCostOfBusinessLater;
+                }
+                break;
+            case "3":
+                if (isNow){
+                    startCost = Constants.startCostOfVIPNow;
+                    runningCost = Constants.runningCostOfVIP;
+                    minimumCost = Constants.minimumCostOfVIPNow;
+                }else {
+                    startCost = Constants.startCostOfVIPLater;
+                    runningCost = Constants.runningCostOfVIP;
+                    minimumCost = Constants.minimumCostOfVIPLater;
+                }
+                break;
+            case "4":
+                if (isNow){
+                    startCost = Constants.startCostOfFamilitRegularNow;
+                    runningCost = Constants.runningCostOfFamilitRegular;
+                    minimumCost = Constants.minimumCostOfFamilitRegularNow;
+                }else {
+                    startCost = Constants.startCostOfFamilitRegularLater;
+                    runningCost = Constants.runningCostOfFamilitRegular;
+                    minimumCost = Constants.minimumCostOfFamilitRegularLater;
+                }
+                break;
+            case "5":
+                if (isNow){
+                    startCost = Constants.startCostOfFamilitSpecialNow;
+                    runningCost = Constants.runningCostOfFamilitSpecial;
+                    minimumCost = Constants.minimumCostOfFamilitSpecialNow;
+                }else {
+                    startCost = Constants.startCostOfFamilitSpecialLater;
+                    runningCost = Constants.runningCostOfFamilitSpecial;
+                    minimumCost = Constants.minimumCostOfFamilitSpecialLater;
+                }
+                break;
+        }
+
+        float estimateFare = startCost + (disInKilo * runningCost);
+
+        return estimateFare > minimumCost? Math.round(estimateFare) : Math.round(minimumCost);
+    }
+
 
 }

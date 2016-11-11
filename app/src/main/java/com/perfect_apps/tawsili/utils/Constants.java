@@ -57,17 +57,17 @@ public class Constants {
     public static final float minimumCostOfEconomyNow = 11;
     public static final float minimumCostOfEconomyLater = 40;
 
-    public static final int startCostOfBusinessNow = 8;
-    public static final int startCostOfBusinessLater = 15;
+    public static final float startCostOfBusinessNow = 8;
+    public static final float startCostOfBusinessLater = 15;
     public static final float runningCostOfBusiness = 1.5f;
-    public static final int minimumCostOfBusinessNow = 17;
-    public static final int minimumCostOfBusinessLater = 40;
+    public static final float minimumCostOfBusinessNow = 17;
+    public static final float minimumCostOfBusinessLater = 40;
 
-    public static final int startCostOfVIPNow = 13;
-    public static final int startCostOfVIPLater = 25;
+    public static final float startCostOfVIPNow = 13;
+    public static final float startCostOfVIPLater = 25;
     public static final float runningCostOfVIP = 2;
-    public static final int minimumCostOfVIPNow = 26;
-    public static final int minimumCostOfVIPLater = 65;
+    public static final float minimumCostOfVIPNow = 26;
+    public static final float minimumCostOfVIPLater = 65;
 
     public static final float startCostOfFamilitRegularNow = 15;
     public static final float startCostOfFamilitRegularLater = 30;
