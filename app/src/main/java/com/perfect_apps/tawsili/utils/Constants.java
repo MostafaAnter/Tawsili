@@ -47,5 +47,39 @@ public class Constants {
     public static final String register_email = "register_email";
     public static final String register_password = "register_password";
 
+    /**
+     * price of trip
+     */
+
+    public static final float startCostOfEconomyNow = 8;
+    public static final float startCostOfEconomyLater = 15;
+    public static final float runningCostOfEconomy = 1.5f;
+    public static final float minimumCostOfEconomyNow = 17;
+    public static final float minimumCostOfEconomyLater = 40;
+
+    public static final int startCostOfBusinessNow = 13;
+    public static final int startCostOfBusinessLater = 25;
+    public static final float runningCostOfBusiness = 2;
+    public static final int minimumCostOfBusinessNow = 26;
+    public static final int minimumCostOfBusinessLater = 65;
+
+    public static final int startCostOfVIPNow = 13;
+    public static final int startCostOfVIPLater = 25;
+    public static final float runningCostOfVIP = 2;
+    public static final int minimumCostOfVIPNow = 26;
+    public static final int minimumCostOfVIPLater = 65;
+
+    public static final float startCostOfFamilitRegularNow = 15;
+    public static final float startCostOfFamilitRegularLater = 30;
+    public static final float runningCostOfFamilitRegular = 2.5f;
+    public static final float minimumCostOfFamilitRegularNow = 29;
+    public static final float minimumCostOfFamilitRegularLater = 70;
+
+    public static final float startCostOfFamilitSpecialNow = 20;
+    public static final float startCostOfFamilitSpecialLater = 35;
+    public static final float runningCostOfFamilitSpecial = 3.5f;
+    public static final float minimumCostOfFamilitSpecialNow = 35;
+    public static final float minimumCostOfFamilitSpecialLater = 80;
+
 
 }
