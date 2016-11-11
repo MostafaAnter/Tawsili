@@ -12,6 +12,7 @@ public class Constants {
     public static final String PREFERENCE_LANGUAGE = "language";
     public static final String PREFERENCE_DRIVER_LANGUAGE = "driver_language";
     public static final String PREFERENCE_DRIVER_DURATION = "driver_duration";
+    public static final String PREFERENCE_ESTIMATE = "fareEstimate";
     public static final String PRICE_LIST = "price_list";
     public static final String comingFrom = "comingFrom";
 

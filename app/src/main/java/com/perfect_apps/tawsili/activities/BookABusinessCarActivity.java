@@ -58,7 +58,9 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.app.AppController;
+import com.perfect_apps.tawsili.models.DriverDurationAndDistance;
 import com.perfect_apps.tawsili.models.FavoritePlaceItem;
+import com.perfect_apps.tawsili.parser.JsonParser;
 import com.perfect_apps.tawsili.store.FavoritePlacesStore;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
@@ -66,6 +68,7 @@ import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
 import com.perfect_apps.tawsili.utils.OrderDriver;
+import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 import com.perfect_apps.tawsili.utils.TawsiliPublicFunc;
 import com.perfect_apps.tawsili.utils.Utils;
 import com.vipul.hp_hp.library.Layout_to_Image;
@@ -153,6 +156,8 @@ public class BookABusinessCarActivity extends LocalizationActivity
     private String mCategoryName; // category to get all drivers
     private String mCategoryValue; // category to get all drivers
     private String promoCode = "NULL";
+    private String mEstimateFare = "0";
+    private String distanceWithKilo = "0";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -621,6 +626,14 @@ public class BookABusinessCarActivity extends LocalizationActivity
                     new TawsiliPrefStore(this).addPreference(Constants.userLastDropOffLocationLng, String.valueOf(lng));
                     setMapWithDropOfftLocation();
                     centerAllMarker();
+                    getDriverDurationFromUserAndCalculateFare(new TawsiliPrefStore(this)
+                            .getPreferenceValue(Constants.userLastLocationLat),
+                            new TawsiliPrefStore(this)
+                                    .getPreferenceValue(Constants.userLastLocationLng),
+                            new TawsiliPrefStore(this)
+                                    .getPreferenceValue(Constants.userLastDropOffLocationLat),
+                            new TawsiliPrefStore(this)
+                                    .getPreferenceValue(Constants.userLastDropOffLocationLng));
                 } else {
                     // set view gone and clear
                     pickDropOffLocation.setVisibility(View.GONE);
@@ -788,13 +801,49 @@ public class BookABusinessCarActivity extends LocalizationActivity
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
+    private void getDriverDurationFromUserAndCalculateFare(String userLat, String userLng,
+                                                           String driverLat, String driverLng) {
+        String url = TawsiliPublicFunc.createMatrixUri(userLat, userLng, driverLat, driverLng);
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("duration", response.toString());
+                List<DriverDurationAndDistance> driverDurationAndDistanceList =
+                        JsonParser.parseDistanceAndDuration(response);
+
+                if (driverDurationAndDistanceList != null && driverDurationAndDistanceList.size() > 0) {
+                    DriverDurationAndDistance mDriverDurationAndDistance = driverDurationAndDistanceList.get(0);
+                    int disInKilo = Double.valueOf(mDriverDurationAndDistance.getDistanceValue()).intValue()/1000;
+                    distanceWithKilo = String.valueOf(disInKilo);
+                    mEstimateFare = String.valueOf(TawsiliPublicFunc.calculateFairEstimate(mCategoryValue, disInKilo,true));
+                    int esimatePlusFive = Integer.valueOf(mEstimateFare) + 5;
+                    String fareEstimateText = "SR " + mEstimateFare + "-" + esimatePlusFive;
+                    fairEstimatevalue.setText(fareEstimateText);
+                    new TawsiliPrefStore(BookABusinessCarActivity.this).addPreference(Constants.PREFERENCE_ESTIMATE,
+                            fareEstimateText);
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
+
     private void createOder(){
         String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
         String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
         if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
             new OrderDriver(this, mCategoryValue, mCategoryName, curentLocationText.getText().toString()
-            , dropOffLocationText.getText().toString(), "11", Utils.returnTime(),
-                    "1", "140", mCategoryValue, promoCode, "Now");
+            , dropOffLocationText.getText().toString(), mEstimateFare, Utils.returnTime(),
+                    "1", distanceWithKilo, mCategoryValue, promoCode, "Now");
         }
     }
 
