@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +26,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,10 +46,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.app.AppController;
@@ -55,10 +60,14 @@ import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
+import com.vipul.hp_hp.library.Layout_to_Image;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,6 +100,13 @@ public class YourRideActivity extends LocalizationActivity
     private String orderId;
     private String driverId;
 
+    private List<Marker> markers;
+    private Marker marker1, marker2;
+
+
+    // for repeat func
+    Handler mHandler = new Handler();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,6 +124,9 @@ public class YourRideActivity extends LocalizationActivity
         if (servicesOK()) {
             initMap();
         }
+
+        markers = new ArrayList<>();
+
         orderId = getIntent().getStringExtra("orderID");
         driverId = getIntent().getStringExtra("driver_id");
 
@@ -123,7 +142,39 @@ public class YourRideActivity extends LocalizationActivity
 
         getDriver(driverId);
 
+        // call my function for first time
+        getOrder(orderId);
+        getDriverLocation(driverId);
 
+        repeatFunc();
+
+
+    }
+
+    private void repeatFunc(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                while (true) {
+                    try {
+                        Thread.sleep(10000);
+                        mHandler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // TODO Auto-generated method stub
+                                // Write your code here to update the UI.
+                                getOrder(orderId);
+                                getDriverLocation(driverId);
+                            }
+                        });
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                }
+            }
+        }).start();
     }
 
     private void animateView(LinearLayout frameLayout) {
@@ -358,73 +409,28 @@ public class YourRideActivity extends LocalizationActivity
         }
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
     }
 
-    private void setUpMarker(GoogleMap mMap, LatLng latLng, LatLng secLatLang) {
+    private void setUpMarker(GoogleMap mMap, LatLng latLng) {
 
-        Marker marker1 = MapHelper.setUpMarkerAndReturnMarker(mMap, latLng, R.drawable.car_marker);
-        // for second location
-        Marker marker2 = MapHelper.setUpMarkerAndReturnMarker(mMap, secLatLang, R.drawable.person_marker);
+        marker1 = MapHelper.setUpMarkerAndReturnMarker(mMap, latLng, R.drawable.person_marker);
+        // add to marker list
+        markers.add(marker1);
 
         //animate camera
-        updateZoom(mMap, latLng, secLatLang);
+        updateZoom(mMap, latLng);
 
-        new FakeTask().execute(new MarkersModel(marker1, marker2));
+        centerAllMarker();
     }
 
-    /*
-     * Zooms the map to show the area of interest based on the search radius
-     */
-    private void updateZoom(GoogleMap mMap, LatLng myLatLng, LatLng secLatLang) {
-        LatLngBounds egypt = new LatLngBounds(
-                myLatLng, secLatLang);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(egypt.southwest, 17));
-    }
-    // for animate marker to another marker
-    private void animateAfterSeconds(Marker marker1, Marker marker2){
-        MapHelper.animateMarkerTo(marker1, marker2.getPosition().latitude, marker2.getPosition().longitude);
-    }
-
-    private class FakeTask extends AsyncTask<MarkersModel, Void, MarkersModel>{
-
-
-        @Override
-        protected MarkersModel doInBackground(MarkersModel... params) {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return params[0];
-        }
-
-        @Override
-        protected void onPostExecute(MarkersModel markersModel) {
-            super.onPostExecute(markersModel);
-            animateAfterSeconds(markersModel.getMarker1(), markersModel.getMarker2());
-        }
-    }
-
-    private class MarkersModel{
-        private Marker marker1;
-        private Marker marker2;
-
-        public MarkersModel(Marker marker1, Marker marker2) {
-            this.marker1 = marker1;
-            this.marker2 = marker2;
-        }
-
-        public Marker getMarker1() {
-            return marker1;
-        }
-
-        public Marker getMarker2() {
-            return marker2;
-        }
+    private void updateZoom(GoogleMap mMap, LatLng myLatLng) {
+        // Zoom to the given bounds
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 14));
+        // set draggable false done
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
     }
 
     private void getOrder(String orderId){
@@ -442,6 +448,20 @@ public class YourRideActivity extends LocalizationActivity
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String status = jsonObject.optString("status");
+                        String from_location_lat = jsonObject.optString("from_location_lat");
+                        String from_location_lng = jsonObject.optString("from_location_lng");
+
+                        if (!from_location_lat.trim().isEmpty()&&
+                                !from_location_lng.trim().isEmpty()){
+
+                            if (marker1 != null){
+                                marker1.remove();
+                                markers.remove(marker1);
+                                marker1 = null;
+                            }
+                            setUpMarker(mMap, new LatLng(Double.valueOf(from_location_lat),
+                                    Double.valueOf(from_location_lng)));
+                        }
 
                         if (status.equalsIgnoreCase("Canceled by Client")
                                 || status.equalsIgnoreCase("Canceled by Admin")
@@ -474,14 +494,16 @@ public class YourRideActivity extends LocalizationActivity
                                     super.onPostExecute(aVoid);
                                     sweetAlertDialog.dismissWithAnimation();
                                     Intent intent = new Intent(YourRideActivity.this,
-                                            PickLocationActivity.class);
+                                            PickLocationActivity.class)
+                                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                 }
                             }.execute();
 
-                        }else if (status.equalsIgnoreCase("Done")){
+                        }else if (status.equalsIgnoreCase("On Ride")){
                             Intent intent = new Intent(YourRideActivity.this,
-                                    YourRideTwoActivity.class);
+                                    YourRideTwoActivity.class)
+                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
 
@@ -521,6 +543,25 @@ public class YourRideActivity extends LocalizationActivity
                         String current_location_lat = jsonObject.optString("current_location_lat");
                         String current_location_lng = jsonObject.optString("current_location_lng");
 
+                        if (marker2 != null){
+                            MapHelper.animateMarkerTo(marker2, Double.valueOf(current_location_lat),
+                                    Double.valueOf(current_location_lng));
+//                            marker2.remove();
+//                            markers.remove(marker2);
+//                            marker2 = null;
+
+                        }else {
+                            if (!current_location_lat.trim().isEmpty()&&
+                                    !current_location_lng.trim().isEmpty()){
+                                marker2 = MapHelper.setUpMarkerAndReturnMarker(mMap,
+                                        new LatLng(Double.valueOf(current_location_lat),
+                                                Double.valueOf(current_location_lng)), R.drawable.car_marker);
+                                markers.add(marker2);
+                                centerAllMarker();
+
+                            }
+                        }
+
                     }
 
                 } catch (JSONException e) {
@@ -538,6 +579,19 @@ public class YourRideActivity extends LocalizationActivity
         });
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    private void centerAllMarker() {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : markers) {
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+        mMap.setPadding(200, 150, 200, 500);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
+        mMap.animateCamera(cu);
+
+
     }
 
     private void getDriver(String driverId){
