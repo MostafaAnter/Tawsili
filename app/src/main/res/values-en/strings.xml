@@ -113,4 +113,13 @@
     <string name="license_plate">License plate:</string>
     <string name="ok">Ok</string>
     <string name="driver_arrived">Driver Arrived</string>
+    <string name="pickup">Pickup</string>
+    <string name="driver_rating">Driver Rating</string>
+    <string name="paid_with">Paid with</string>
+    <string name="total_fare">Total fare</string>
+    <string name="discount">Discount</string>
+    <string name="paid_from_balance">Paid From Balance</string>
+    <string name="trip_fair">Trip fair</string>
+    <string name="distance">Distance</string>
+    <string name="drop_off">Drop Off</string>
 </resources>
