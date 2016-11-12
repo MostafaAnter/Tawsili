@@ -287,8 +287,31 @@ public class YourRideActivity extends LocalizationActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+           // super.onBackPressed();
         }
+
+        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Cancel order!")
+                .setContentText("it seem you will cancel this order")
+                .setCancelText("No")
+                .setConfirmText("Yes, cancel")
+                .showCancelButton(true)
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+
+
+                    }
+                })
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+
+                    }
+                })
+                .show();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
