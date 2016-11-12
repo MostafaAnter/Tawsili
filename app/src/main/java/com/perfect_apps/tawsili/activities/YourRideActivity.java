@@ -4,29 +4,38 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.view.SubMenu;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
+import android.view.SubMenu;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -34,31 +43,53 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
-import com.vipul.hp_hp.library.Layout_to_Image;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class YourRideActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        OnMapReadyCallback{
+        OnMapReadyCallback, View.OnClickListener{
     @BindView(R.id.toolbar)Toolbar toolbar;
     @BindView(R.id.nav_view)NavigationView navigationView;
+    @BindView(R.id.linearLayout1) LinearLayout linearLayout1;
+
+    @BindView(R.id.secondCounter)TextView secondCounter;
+    private static int counter = 60;
+    @BindView(R.id.avatar)CircleImageView avatar;
+    @BindView(R.id.driverName) TextView driverName;
+    @BindView(R.id.car_name)TextView carName;
+    @BindView(R.id.rateValue)TextView rateValue;
+    @BindView(R.id.ratingBar)AppCompatRatingBar ratingBar;
+
+    @BindView(R.id.button1)Button button1;
+    @BindView(R.id.button2)Button button2;
+
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
+
+    private String driverMobiel = "";
+    private String orderId;
+    private String driverId;
 
 
     @Override
@@ -68,10 +99,17 @@ public class YourRideActivity extends LocalizationActivity
         ButterKnife.bind(this);
         setToolbar();
 
+        linearLayout1.setVisibility(View.GONE);
+
+        button1.setOnClickListener(this);
+        button2.setOnClickListener(this);
+
         // for map
         if (servicesOK()) {
             initMap();
         }
+        orderId = getIntent().getStringExtra("orderID");
+        driverId = getIntent().getStringExtra("driver_id");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -82,6 +120,66 @@ public class YourRideActivity extends LocalizationActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         changeFontOfNavigation();
+
+        getDriver(driverId);
+
+
+    }
+
+    private void animateView(LinearLayout frameLayout) {
+        frameLayout.setVisibility(View.VISIBLE);
+        Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(this, R.anim.push_up_enter_long);
+        frameLayout.startAnimation(hyperspaceJumpAnimation);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.button1:
+                break;
+            case R.id.button2:
+                break;
+        }
+    }
+
+    private class CounterTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            secondCounter.setText("60");
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            for (int i = counter; i > 0; i--) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                publishProgress();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            secondCounter.setText(getString(R.string.pay_penalty));
+            secondCounter.setTextColor(Color.RED);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+            counter--;
+            secondCounter.setText(counter + "");
+
+
+        }
     }
 
     private void setToolbar() {
@@ -264,7 +362,6 @@ public class YourRideActivity extends LocalizationActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        setUpMarker(mMap, new LatLng(30.066649, 31.254493), new LatLng(30.067114, 31.253077));
     }
 
     private void setUpMarker(GoogleMap mMap, LatLng latLng, LatLng secLatLang) {
@@ -328,5 +425,248 @@ public class YourRideActivity extends LocalizationActivity
         public Marker getMarker2() {
             return marker2;
         }
+    }
+
+    private void getOrder(String orderId){
+        String url = BuildConfig.API_BASE_URL + "getorder.php?id=" + orderId;
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("checkOrder", response.toString());
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String status = jsonObject.optString("status");
+
+                        if (status.equalsIgnoreCase("Canceled by Client")
+                                || status.equalsIgnoreCase("Canceled by Admin")
+                                || status.equalsIgnoreCase("Client Didn't Attend")){
+                            final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(YourRideActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Order Canceled!")
+                                    .setContentText("this order is missed if you want, create new one")
+                                    .setConfirmText("Ok, i know")
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            sDialog.dismissWithAnimation();
+                                        }
+                                    });
+                            sweetAlertDialog.show();
+                            new AsyncTask<Void, Void, Void>(){
+
+                                @Override
+                                protected Void doInBackground(Void... params) {
+                                    try {
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    return null;
+                                }
+
+                                @Override
+                                protected void onPostExecute(Void aVoid) {
+                                    super.onPostExecute(aVoid);
+                                    sweetAlertDialog.dismissWithAnimation();
+                                    Intent intent = new Intent(YourRideActivity.this,
+                                            PickLocationActivity.class);
+                                    startActivity(intent);
+                                }
+                            }.execute();
+
+                        }else if (status.equalsIgnoreCase("Done")){
+                            Intent intent = new Intent(YourRideActivity.this,
+                                    YourRideTwoActivity.class);
+                            startActivity(intent);
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("checkOrder", "Error: " + error.getMessage());
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    private void getDriverLocation(String driverId){
+        String url = BuildConfig.API_BASE_URL + "driverlocation.php?id=" + driverId;
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("checkOrder", response.toString());
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String current_location_lat = jsonObject.optString("current_location_lat");
+                        String current_location_lng = jsonObject.optString("current_location_lng");
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("checkOrder", "Error: " + error.getMessage());
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    private void getDriver(String driverId){
+        String url = BuildConfig.API_BASE_URL + "getdriver.php?id=" + driverId;
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("checkOrder", response.toString());
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject driverObject = jsonArray.getJSONObject(i);
+                        String language_id = driverObject.optString("language_id");
+                        String language = driverObject.optString("language");
+                        String driver_id = driverObject.optString("driver_id");
+                        String ssno = driverObject.optString("ssno");
+                        String name = driverObject.optString("name");
+                        String mobile = driverObject.optString("mobile");
+                        String email = driverObject.optString("email");
+                        String birth_date = driverObject.optString("birth_date");
+                        String nationality = driverObject.optString("nationality");
+                        String hire_date = driverObject.optString("hire_date");
+                        String driving_license_exp = driverObject.optString("driving_license_exp");
+                        String status = driverObject.optString("status");
+                        String enable = driverObject.optString("enable");
+                        String img_name = driverObject.optString("img_name");
+                        String current_location_lat = driverObject.optString("current_location_lat");
+                        String current_location_lng = driverObject.optString("current_location_lng");
+                        String un = driverObject.optString("un");
+                        String car_id = driverObject.optString("car_id");
+                        String car_from = driverObject.optString("car_from");
+                        String car_by_un = driverObject.optString("car_by_un");
+                        String status_by = driverObject.optString("status_by");
+                        String car_type = driverObject.optString("car_type");
+                        String model = driverObject.optString("model");
+                        String category = driverObject.optString("category");
+                        String category2 = driverObject.optString("category2");
+                        String payment_machine = driverObject.optString("payment_machine");
+                        String capacity = driverObject.optString("capacity");
+                        String join_date = driverObject.optString("join_date");
+                        String udid = driverObject.optString("udid");
+                        String license_plate = driverObject.optString("license_plate");
+                        String rate = driverObject.optString("rate");
+
+                        driverMobiel = mobile;
+                        driverName.setText(name);
+                        carName.setText(car_type);
+                        rateValue.setText(rate);
+                        ratingBar.setRating(Float.valueOf(rate));
+                        // populate mainImage
+                        Glide.with(YourRideActivity.this)
+                                .load("http://tawsely.com/img/drivers/" + img_name)
+                                .placeholder(R.color.gray_btn_bg_color)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .crossFade()
+                                .dontAnimate()
+                                .thumbnail(0.2f)
+                                .into(avatar);
+
+                        animateView(linearLayout1);
+
+                        new CounterTask().execute();
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("checkOrder", "Error: " + error.getMessage());
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    private void updateUserPalance(String balance){
+        String url = BuildConfig.API_BASE_URL + "updateuserbalance.php?balance=" +
+                balance + "&id=" +
+                new TawsiliPrefStore(this).getPreferenceValue(Constants.userId);
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("checkOrder", response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("checkOrder", "Error: " + error.getMessage());
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    private void updateOrderStatus(){
+
+        String url = BuildConfig.API_BASE_URL + "updateorderstatus.php?order="
+                + orderId + "&status=4";
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("checkOrder", response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("checkOrder", "Error: " + error.getMessage());
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 }

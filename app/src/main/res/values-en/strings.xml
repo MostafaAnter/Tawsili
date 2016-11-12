@@ -105,4 +105,9 @@
     <string name="invalide_promo">Invalide Code</string>
     <string name="try_agin">Try agin!</string>
     <string name="yes_try_again">Yes, try again</string>
+    <string name="cancel">Cancel</string>
+    <string name="pay_penalty">You will pay penalty if order Canceled</string>
+    <string name="driver">Driver:</string>
+    <string name="car">Car:</string>
+    <string name="rate">Rate:</string>
 </resources>

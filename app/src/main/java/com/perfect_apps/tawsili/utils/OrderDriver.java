@@ -383,7 +383,7 @@ public class OrderDriver {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String driver_id = jsonObject.optString("driver_id");
+                        final String driver_id = jsonObject.optString("driver_id");
                         String status = jsonObject.optString("status");
 
                         if (!status.equalsIgnoreCase("Missed")) {
@@ -407,7 +407,10 @@ public class OrderDriver {
                                     protected void onPostExecute(Void aVoid) {
                                         super.onPostExecute(aVoid);
                                         sweetDialogHelper.dismissDialog();
-                                        mContext.startActivity(new Intent(mContext, YourRideActivity.class));
+                                        Intent intent = new Intent(mContext, YourRideActivity.class);
+                                        intent.putExtra("orderID", orderID);
+                                        intent.putExtra("driver_id", driver_id);
+                                        mContext.startActivity(intent);
                                     }
                                 }.execute();
 

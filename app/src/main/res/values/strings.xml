@@ -121,4 +121,9 @@
     <string name="yes_try_again">Yes, try again</string>
     <string name="title_activity_your_ride_two" translatable="false">YourRideTwoActivity</string>
     <string name="title_activity_your_ride_third" translatable="false">YourRideThirdActivity</string>
+    <string name="cancel">Cancel</string>
+    <string name="pay_penalty">You will pay penalty if order Canceled</string>
+    <string name="driver">Driver:</string>
+    <string name="car">Car:</string>
+    <string name="rate">Rate:</string>
 </resources>
