@@ -58,7 +58,7 @@ public class DriverInfoDialog extends DialogFragment implements View.OnClickList
      * Create a new instance of MyDialogFragment, providing "num"
      * as an argument.
      */
-    static DriverInfoDialog newInstance(int num) {
+    public static DriverInfoDialog newInstance(int num) {
         DriverInfoDialog f = new DriverInfoDialog();
 
         // Supply num input as an argument.

@@ -462,7 +462,7 @@ public class YourRideActivity extends LocalizationActivity
         mMap.getUiSettings().setScrollGesturesEnabled(false);
     }
 
-    private void getOrder(String orderId){
+    private void getOrder(final String orderId){
         String url = BuildConfig.API_BASE_URL + "getorder.php?id=" + orderId;
         StringRequest strReq = new StringRequest(Request.Method.GET,
                 url, new Response.Listener<String>() {
@@ -534,6 +534,8 @@ public class YourRideActivity extends LocalizationActivity
                             Intent intent = new Intent(YourRideActivity.this,
                                     YourRideTwoActivity.class)
                                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("driverId", driverId);
+                            intent.putExtra("orderId", orderId);
                             startActivity(intent);
                         }
 

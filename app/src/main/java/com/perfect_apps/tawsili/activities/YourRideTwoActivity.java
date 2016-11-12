@@ -5,22 +5,20 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.view.SubMenu;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,12 +33,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.fragments.DriverInfoDialog;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
-import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
 
 import butterknife.BindView;
@@ -50,11 +47,16 @@ public class YourRideTwoActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         OnMapReadyCallback{
 
+    private static int mStackLevel = 0;
+
     @BindView(R.id.toolbar)Toolbar toolbar;
     @BindView(R.id.nav_view)NavigationView navigationView;
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
+
+    private String driverId;
+    private String orderId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,9 @@ public class YourRideTwoActivity extends LocalizationActivity
             initMap();
         }
 
+        driverId = getIntent().getStringExtra("driverId");
+        orderId = getIntent().getStringExtra("orderId");
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -79,6 +84,26 @@ public class YourRideTwoActivity extends LocalizationActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         changeFontOfNavigation();
+        openDialog();
+
+
+    }
+
+    private void openDialog(){
+        mStackLevel++;
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = DriverInfoDialog.newInstance(mStackLevel);
+        Bundle bundle1 = new Bundle();
+        bundle1.putString("driverId", driverId);
+        newFragment.setArguments(bundle1);
+        newFragment.show(ft, "dialog");
     }
 
     private void setToolbar() {
@@ -261,19 +286,6 @@ public class YourRideTwoActivity extends LocalizationActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        setUpMarker(mMap, new LatLng(30.066649, 31.254493), new LatLng(30.067114, 31.253077));
-    }
-
-    private void setUpMarker(GoogleMap mMap, LatLng latLng, LatLng secLatLang) {
-
-        Marker marker1 = MapHelper.setUpMarkerAndReturnMarker(mMap, latLng, R.drawable.car_marker);
-        // for second location
-        Marker marker2 = MapHelper.setUpMarkerAndReturnMarker(mMap, secLatLang, R.drawable.person_marker);
-
-        //animate camera
-        updateZoom(mMap, latLng, secLatLang);
-
-        new FakeTask().execute(new MarkersModel(marker1, marker2));
     }
 
     /*
@@ -284,46 +296,7 @@ public class YourRideTwoActivity extends LocalizationActivity
                 myLatLng, secLatLang);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(egypt.southwest, 17));
     }
-    // for animate marker to another marker
-    private void animateAfterSeconds(Marker marker1, Marker marker2){
-        MapHelper.animateMarkerTo(marker1, marker2.getPosition().latitude, marker2.getPosition().longitude);
-    }
-
-    private class FakeTask extends AsyncTask<MarkersModel, Void, MarkersModel> {
 
 
-        @Override
-        protected MarkersModel doInBackground(MarkersModel... params) {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return params[0];
-        }
 
-        @Override
-        protected void onPostExecute(MarkersModel markersModel) {
-            super.onPostExecute(markersModel);
-            animateAfterSeconds(markersModel.getMarker1(), markersModel.getMarker2());
-        }
-    }
-
-    private class MarkersModel{
-        private Marker marker1;
-        private Marker marker2;
-
-        public MarkersModel(Marker marker1, Marker marker2) {
-            this.marker1 = marker1;
-            this.marker2 = marker2;
-        }
-
-        public Marker getMarker1() {
-            return marker1;
-        }
-
-        public Marker getMarker2() {
-            return marker2;
-        }
-    }
 }
