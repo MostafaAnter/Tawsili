@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.AppCompatRatingBar;
@@ -85,13 +86,30 @@ public class DriverInfoDialog extends DialogFragment implements View.OnClickList
         return v;
     }
 
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog d =  new Dialog(getActivity(), getTheme()){
+            @Override
+            public void onBackPressed() {
+                //do your stuff
+            }
+        };
+        d.setCanceledOnTouchOutside(false);
+
+
+        return d;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
         driverId = getArguments().getString("driverId");
-        getDriver(driverId);
+        if (driverId != null) {
+            getDriver(driverId);
+        }
     }
 
     @Override
@@ -100,7 +118,7 @@ public class DriverInfoDialog extends DialogFragment implements View.OnClickList
 
         Dialog dialog = getDialog();
         if (dialog != null) {
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
     }
@@ -119,8 +137,6 @@ public class DriverInfoDialog extends DialogFragment implements View.OnClickList
     }
 
     private void getDriver(String driverId){
-        final SweetDialogHelper sdh = new SweetDialogHelper(getActivity());
-        sdh.showMaterialProgress(getString(R.string.loading));
         String url = BuildConfig.API_BASE_URL + "getdriver.php?id=" + driverId;
         StringRequest strReq = new StringRequest(Request.Method.GET,
                 url, new Response.Listener<String>() {
@@ -182,13 +198,11 @@ public class DriverInfoDialog extends DialogFragment implements View.OnClickList
                                 .thumbnail(0.2f)
                                 .into(avatar);
 
-                        sdh.dismissDialog();
 
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    sdh.dismissDialog();
 
                 }
 
@@ -199,7 +213,6 @@ public class DriverInfoDialog extends DialogFragment implements View.OnClickList
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("checkOrder", "Error: " + error.getMessage());
-                sdh.dismissDialog();
             }
         });
         // Adding request to request queue

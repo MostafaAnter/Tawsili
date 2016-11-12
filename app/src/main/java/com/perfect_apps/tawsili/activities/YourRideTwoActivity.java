@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -23,6 +26,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -33,15 +41,27 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.fragments.DriverInfoDialog;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
+import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class YourRideTwoActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -58,6 +78,15 @@ public class YourRideTwoActivity extends LocalizationActivity
     private String driverId;
     private String orderId;
 
+    private List<Marker> markers;
+    private Marker marker1, marker2;
+
+
+    // for repeat func
+    Handler mHandler = new Handler();
+
+    private static boolean rebeate = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +100,7 @@ public class YourRideTwoActivity extends LocalizationActivity
             initMap();
         }
 
+        markers = new ArrayList<>();
         driverId = getIntent().getStringExtra("driverId");
         orderId = getIntent().getStringExtra("orderId");
 
@@ -87,6 +117,40 @@ public class YourRideTwoActivity extends LocalizationActivity
         openDialog();
 
 
+        // call my function for first time
+        getOrder(orderId);
+        getDriverLocation(driverId);
+
+        rebeate = true;
+        repeatFunc();
+
+
+    }
+
+    private void repeatFunc(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                while (rebeate) {
+                    try {
+                        Thread.sleep(10000);
+                        mHandler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // TODO Auto-generated method stub
+                                // Write your code here to update the UI.
+                                getOrder(orderId);
+                                getDriverLocation(driverId);
+                            }
+                        });
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                }
+            }
+        }).start();
     }
 
     private void openDialog(){
@@ -99,11 +163,13 @@ public class YourRideTwoActivity extends LocalizationActivity
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        DialogFragment newFragment = DriverInfoDialog.newInstance(mStackLevel);
+        DriverInfoDialog newFragment = DriverInfoDialog.newInstance(mStackLevel);
         Bundle bundle1 = new Bundle();
         bundle1.putString("driverId", driverId);
         newFragment.setArguments(bundle1);
         newFragment.show(ft, "dialog");
+        if ( newFragment.getDialog() != null )
+            newFragment.getDialog().setCanceledOnTouchOutside(false);
     }
 
     private void setToolbar() {
@@ -155,7 +221,7 @@ public class YourRideTwoActivity extends LocalizationActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            //super.onBackPressed();
         }
     }
 
@@ -282,19 +348,203 @@ public class YourRideTwoActivity extends LocalizationActivity
         }
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
     }
 
-    /*
-     * Zooms the map to show the area of interest based on the search radius
-     */
-    private void updateZoom(GoogleMap mMap, LatLng myLatLng, LatLng secLatLang) {
-        LatLngBounds egypt = new LatLngBounds(
-                myLatLng, secLatLang);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(egypt.southwest, 17));
+    private void updateZoom(GoogleMap mMap, LatLng myLatLng) {
+        // Zoom to the given bounds
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 14));
+        // set draggable false done
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
+    }
+
+    private void setUpMarker(GoogleMap mMap, LatLng latLng) {
+
+        marker1 = MapHelper.setUpMarkerAndReturnMarker(mMap, latLng, R.drawable.person_marker);
+        // add to marker list
+        markers.add(marker1);
+
+        //animate camera
+        updateZoom(mMap, latLng);
+
+        centerAllMarker();
+    }
+
+    private void getOrder(final String orderId){
+        String url = BuildConfig.API_BASE_URL + "getorder.php?id=" + orderId;
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("checkOrder", response.toString());
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String status = jsonObject.optString("status");
+                        String from_location_lat = jsonObject.optString("to_location_lat");
+                        String from_location_lng = jsonObject.optString("to_location_lng");
+                        if (!from_location_lat.trim().isEmpty()&&
+                                !from_location_lng.trim().isEmpty()
+                                && !from_location_lat.trim().equalsIgnoreCase("0.000000000000")
+                                && !from_location_lng.trim().equalsIgnoreCase("0.000000000000")){
+
+                            if (marker1 != null){
+                                marker1.remove();
+                                markers.remove(marker1);
+                                marker1 = null;
+                            }
+                            setUpMarker(mMap, new LatLng(Double.valueOf(from_location_lat),
+                                    Double.valueOf(from_location_lng)));
+                        }
+
+                        if (status.equalsIgnoreCase("Canceled by Client")
+                                || status.equalsIgnoreCase("Canceled by Admin")
+                                || status.equalsIgnoreCase("Client Didn't Attend")){
+                            final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(YourRideTwoActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Order Canceled!")
+                                    .setContentText("this order is missed if you want, create new one")
+                                    .setConfirmText("Ok, i know")
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            sDialog.dismissWithAnimation();
+                                        }
+                                    });
+                            sweetAlertDialog.show();
+                            new AsyncTask<Void, Void, Void>(){
+
+                                @Override
+                                protected Void doInBackground(Void... params) {
+                                    try {
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    return null;
+                                }
+
+                                @Override
+                                protected void onPostExecute(Void aVoid) {
+                                    super.onPostExecute(aVoid);
+                                    rebeate = false;
+                                    mHandler.removeCallbacksAndMessages(null);
+                                    sweetAlertDialog.dismissWithAnimation();
+                                    Intent intent = new Intent(YourRideTwoActivity.this,
+                                            PickLocationActivity.class)
+                                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                }
+                            }.execute();
+
+                        }else if (status.equalsIgnoreCase("Done")){
+                            rebeate = false;
+                            mHandler.removeCallbacksAndMessages(null);
+                            Intent intent = new Intent(YourRideTwoActivity.this,
+                                    YourRideThirdActivity.class)
+                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("driverId", driverId);
+                            intent.putExtra("orderId", orderId);
+                            startActivity(intent);
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("checkOrder", "Error: " + error.getMessage());
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    private void getDriverLocation(String driverId){
+        String url = BuildConfig.API_BASE_URL + "driverlocation.php?id=" + driverId;
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("checkOrder", response.toString());
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String current_location_lat = jsonObject.optString("current_location_lat");
+                        String current_location_lng = jsonObject.optString("current_location_lng");
+
+                        if (marker2 != null){
+                            MapHelper.animateMarkerTo(marker2, Double.valueOf(current_location_lat),
+                                    Double.valueOf(current_location_lng));
+//                            marker2.remove();
+//                            markers.remove(marker2);
+//                            marker2 = null;
+
+                        }else {
+                            if (!current_location_lat.trim().isEmpty()&&
+                                    !current_location_lng.trim().isEmpty()){
+                                marker2 = MapHelper.setUpMarkerAndReturnMarker(mMap,
+                                        new LatLng(Double.valueOf(current_location_lat),
+                                                Double.valueOf(current_location_lng)), R.drawable.car_marker);
+                                markers.add(marker2);
+                                centerAllMarker();
+
+                            }
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("checkOrder", "Error: " + error.getMessage());
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    private void centerAllMarker() {
+        if (markers.size() > 1) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (Marker marker : markers) {
+                builder.include(marker.getPosition());
+            }
+            LatLngBounds bounds = builder.build();
+            mMap.setPadding(200, 150, 200, 500);
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
+            mMap.animateCamera(cu);
+        }else if (markers.size() == 1){
+            // Zoom to the given bounds
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), 14));
+            // set draggable false done
+            mMap.getUiSettings().setScrollGesturesEnabled(false);
+        }
+
+
     }
 
 

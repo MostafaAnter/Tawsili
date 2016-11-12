@@ -110,6 +110,8 @@ public class YourRideActivity extends LocalizationActivity
     // for repeat func
     Handler mHandler = new Handler();
 
+    private static boolean rebeate = false;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -149,6 +151,8 @@ public class YourRideActivity extends LocalizationActivity
         getOrder(orderId);
         getDriverLocation(driverId);
 
+        rebeate = true;
+
         repeatFunc();
 
 
@@ -159,7 +163,7 @@ public class YourRideActivity extends LocalizationActivity
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                while (true) {
+                while (rebeate) {
                     try {
                         Thread.sleep(10000);
                         mHandler.post(new Runnable() {
@@ -523,20 +527,26 @@ public class YourRideActivity extends LocalizationActivity
                                 protected void onPostExecute(Void aVoid) {
                                     super.onPostExecute(aVoid);
                                     sweetAlertDialog.dismissWithAnimation();
+                                    rebeate = false;
+                                    mHandler.removeCallbacksAndMessages(null);
                                     Intent intent = new Intent(YourRideActivity.this,
                                             PickLocationActivity.class)
                                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
+                                    finish();
                                 }
                             }.execute();
 
                         }else if (status.equalsIgnoreCase("On Ride")){
+                            rebeate = false;
+                            mHandler.removeCallbacksAndMessages(null);
                             Intent intent = new Intent(YourRideActivity.this,
                                     YourRideTwoActivity.class)
                                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtra("driverId", driverId);
                             intent.putExtra("orderId", orderId);
                             startActivity(intent);
+                            finish();
                         }
 
                     }
