@@ -127,4 +127,6 @@
     <string name="car">Car:</string>
     <string name="rate">Rate:</string>
     <string name="license_plate">License plate:</string>
+    <string name="ok">Ok</string>
+    <string name="driver_arrived">Driver Arrived</string>
 </resources>
