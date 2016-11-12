@@ -317,6 +317,10 @@ public class BookABusinessCarActivity extends LocalizationActivity
             MapStateManager mgr = new MapStateManager(this);
             mgr.saveMapState(mMap);
         }
+
+        // clear dropOff location
+        new TawsiliPrefStore(this).removePreference(Constants.userLastDropOffLocationLat);
+        new TawsiliPrefStore(this).removePreference(Constants.userLastDropOffLocationLng);
     }
 
     @Override

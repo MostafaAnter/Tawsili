@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -99,6 +100,7 @@ public class YourRideActivity extends LocalizationActivity
     private String driverMobiel = "";
     private String orderId;
     private String driverId;
+    private String order_type;
 
     private List<Marker> markers;
     private Marker marker1, marker2;
@@ -188,8 +190,11 @@ public class YourRideActivity extends LocalizationActivity
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button1:
+                Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + driverMobiel));
+                startActivity(callIntent);
                 break;
             case R.id.button2:
+
                 break;
         }
     }
@@ -450,6 +455,7 @@ public class YourRideActivity extends LocalizationActivity
                         String status = jsonObject.optString("status");
                         String from_location_lat = jsonObject.optString("from_location_lat");
                         String from_location_lng = jsonObject.optString("from_location_lng");
+                        order_type = jsonObject.optString("order_type");
 
                         if (!from_location_lat.trim().isEmpty()&&
                                 !from_location_lng.trim().isEmpty()){
@@ -678,7 +684,14 @@ public class YourRideActivity extends LocalizationActivity
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
-    private void updateUserPalance(String balance){
+    private void updateUserPalance(String order_type){
+        String balance = "";
+        switch (order_type){
+            case "":
+                break;
+
+        }
+
         String url = BuildConfig.API_BASE_URL + "updateuserbalance.php?balance=" +
                 balance + "&id=" +
                 new TawsiliPrefStore(this).getPreferenceValue(Constants.userId);
