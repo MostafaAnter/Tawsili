@@ -126,4 +126,5 @@
     <string name="driver">Driver:</string>
     <string name="car">Car:</string>
     <string name="rate">Rate:</string>
+    <string name="license_plate">License plate:</string>
 </resources>

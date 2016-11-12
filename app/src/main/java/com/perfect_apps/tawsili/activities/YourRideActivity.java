@@ -87,6 +87,7 @@ public class YourRideActivity extends LocalizationActivity
     @BindView(R.id.avatar)CircleImageView avatar;
     @BindView(R.id.driverName) TextView driverName;
     @BindView(R.id.car_name)TextView carName;
+    @BindView(R.id.license)TextView licensePlate;
     @BindView(R.id.rateValue)TextView rateValue;
     @BindView(R.id.ratingBar)AppCompatRatingBar ratingBar;
 
@@ -672,6 +673,7 @@ public class YourRideActivity extends LocalizationActivity
                         driverMobiel = mobile;
                         driverName.setText(name);
                         carName.setText(car_type);
+                        licensePlate.setText(license_plate);
                         rateValue.setText(rate);
                         ratingBar.setRating(Float.valueOf(rate));
                         // populate mainImage
