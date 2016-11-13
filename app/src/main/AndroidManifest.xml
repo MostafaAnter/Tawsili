@@ -22,6 +22,9 @@
         android:description="@null"
         android:label="A label for your permission" />
 
+    <!-- for publish local notification when time coming -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:name=".app.AppController"
         android:allowBackup="true"
@@ -160,7 +163,16 @@
         <activity
             android:name=".activities.YourRideThirdActivity"
             android:label="@string/title_activity_your_ride_third"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <receiver android:name=".scheduleing_task.PushLocalNotification$AlarmReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".scheduleing_task.PushLocalNotification"/>
+
     </application>
 
 </manifest>

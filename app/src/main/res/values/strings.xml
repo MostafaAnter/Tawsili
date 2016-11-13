@@ -138,4 +138,7 @@
     <string name="trip_fair">Trip fair</string>
     <string name="distance">Distance</string>
     <string name="drop_off">Drop Off</string>
+    <string name="rate_driver">Rate Driver</string>
+    <string name="ratee">Rate</string>
+    <string name="done">Done!</string>
 </resources>

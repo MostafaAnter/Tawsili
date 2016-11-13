@@ -52,6 +52,7 @@ public class SelectTimeActivity extends LocalizationActivity
     Spinner spinner;
     @BindView(R.id.pick_date)Button button1;
     @BindView(R.id.pick_time)Button button2;
+    @BindView(R.id.button1)Button button3;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class SelectTimeActivity extends LocalizationActivity
         setSpinner();
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
+        button3.setOnClickListener(this);
     }
 
     @Override
@@ -193,6 +195,10 @@ public class SelectTimeActivity extends LocalizationActivity
             case R.id.pick_time:
                 DialogFragment newFragment = new TimePickerFragment();
                 newFragment.show(getSupportFragmentManager(), "timePicker");
+                break;
+            case R.id.button1:
+                // createschedule api
+                // show message schedule save
                 break;
         }
     }

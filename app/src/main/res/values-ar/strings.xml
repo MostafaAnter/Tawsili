@@ -104,4 +104,24 @@
     <string name="try_agin">حاول مرة أخري</string>
     <string name="valide_promo">كود صالح</string>
     <string name="yes_try_again">نعم, جرب مره أخري</string>
+    <string name="cancel">إلغاء</string>
+    <string name="car">سيارة:</string>
+    <string name="discount">خصم</string>
+    <string name="distance">مسافة</string>
+    <string name="done">تم!</string>
+    <string name="driver">سائق:</string>
+    <string name="driver_arrived">السائق وصل بسلامة</string>
+    <string name="driver_rating">تقييم السائق</string>
+    <string name="drop_off">مكان النزول</string>
+    <string name="license_plate">الرخصه:</string>
+    <string name="ok">نعم</string>
+    <string name="paid_from_balance">مدفوع من الرصيد</string>
+    <string name="paid_with">مدفوع بواسطة</string>
+    <string name="pay_penalty">ستقوم بدفع غرامه فى حالة الغاء الطلب</string>
+    <string name="pickup">المكان الحالى</string>
+    <string name="rate_driver">تقييم السائق</string>
+    <string name="rate">التقييم:</string>
+    <string name="ratee">التقييم</string>
+    <string name="total_fare">المبلغ الكلى</string>
+    <string name="trip_fair">مبلغ الرحلة</string>
 </resources>
