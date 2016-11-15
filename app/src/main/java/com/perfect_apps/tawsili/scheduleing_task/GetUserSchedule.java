@@ -11,13 +11,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.perfect_apps.tawsili.BuildConfig;
-import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.models.SchedualObject;
 import com.perfect_apps.tawsili.parser.JsonParser;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
-import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 import com.perfect_apps.tawsili.utils.Utils;
 
 import java.text.ParseException;
@@ -103,8 +101,8 @@ public class GetUserSchedule extends IntentService{
                             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     try {
 
-                        Date date1 = simpleDateFormat.parse(schedualObject.getOrder_start_time());
-                        Date date2 = simpleDateFormat.parse(Utils.returnTime());
+                        Date date1 = simpleDateFormat.parse(Utils.returnTime());
+                        Date date2 = simpleDateFormat.parse(schedualObject.getOrder_start_time());
 
                         if (!isExpired(date1, date2, schedualObject.getSchedual_id())){
                             // add to pref
