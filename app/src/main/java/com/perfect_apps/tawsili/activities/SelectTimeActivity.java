@@ -518,7 +518,7 @@ public class SelectTimeActivity extends LocalizationActivity
         if (elapsedHours >= 1){
             return true;
         }else {
-            new SweetDialogHelper(this).showErrorMessage("should date more than on hour from now",
+            new SweetDialogHelper(this).showErrorMessage("schedule at least one hour later",
                     getString(R.string.try_agin));
             return false;
         }
