@@ -149,7 +149,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
 
     // parameters for order
-    private String result = "";
+    private String result = "0";
     private String penalty = "";
 
 
@@ -463,6 +463,15 @@ public class BookABusinessCarActivity extends LocalizationActivity
                 if (!getIntent().getBooleanExtra("now", false)) {
                     // go to select date and time
                     Intent intent1 = new Intent(this, SelectTimeActivity.class);
+                    intent1.putExtra("promoCode", promoCode);
+                    intent1.putExtra("discount", result);
+                    intent1.putExtra("carType", mCategoryValue);
+                    intent1.putExtra("toLat", new TawsiliPrefStore(this)
+                            .getPreferenceValue(Constants.userLastDropOffLocationLat));
+                    intent1.putExtra("toLng", new TawsiliPrefStore(this)
+                            .getPreferenceValue(Constants.userLastDropOffLocationLng));
+                    intent1.putExtra("fromDetails", curentLocationText.getText().toString().trim());
+                    intent1.putExtra("toDetails", dropOffLocationText.getText().toString().trim());
                     startActivity(intent1);
                     overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 } else {

@@ -46,7 +46,6 @@ import com.perfect_apps.tawsili.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,7 +82,7 @@ public class SelectTimeActivity extends LocalizationActivity
     // parameter to create schedule
     private String fromDetails = "",
             toDetails = "",
-            carType,
+            carType="1",
             promoCode = "0",
             discount = "0",
             toLat = "",
@@ -112,6 +111,17 @@ public class SelectTimeActivity extends LocalizationActivity
             promoCode = getIntent().getStringExtra("promoCode");
         if (getIntent().getStringExtra("discount") != null)
             discount = getIntent().getStringExtra("discount");
+        if (getIntent().getStringExtra("carType") != null)
+            carType = getIntent().getStringExtra("carType");
+        if (getIntent().getStringExtra("toLat") != null)
+            toLat = getIntent().getStringExtra("toLat");
+        if (getIntent().getStringExtra("toLng") != null)
+            toLng = getIntent().getStringExtra("toLng");
+        if (getIntent().getStringExtra("fromDetails") != null)
+            fromDetails = getIntent().getStringExtra("fromDetails");
+        if (getIntent().getStringExtra("toDetails") != null)
+            toDetails = getIntent().getStringExtra("toDetails");
+
 
         setSpinner();
         button1.setOnClickListener(this);
@@ -256,7 +266,7 @@ public class SelectTimeActivity extends LocalizationActivity
                 // createschedule api
                 // show message schedule save
                 if (checkBeforeCreateSchedule()) {
-                    // createSchedule();
+                     createSchedule();
                 }
                 break;
         }
@@ -345,7 +355,7 @@ public class SelectTimeActivity extends LocalizationActivity
     }
 
     private void createSchedule() {
-        String url = BuildConfig.API_BASE_URL + "createorder.php";
+        String url = BuildConfig.API_BASE_URL + "createschedule.php";
         // here should show dialog
         final SweetDialogHelper sweetDialogHelper = new SweetDialogHelper(this);
         sweetDialogHelper.showMaterialProgress(getString(R.string.loading));
@@ -481,7 +491,7 @@ public class SelectTimeActivity extends LocalizationActivity
             Date date1 = simpleDateFormat.parse(timeOfSchedule);
             Date date2 = simpleDateFormat.parse(Utils.returnTime());
 
-            return printDifference(date1, date2);
+            return printDifference(date2, date1);
 
         } catch (ParseException e) {
             e.printStackTrace();
