@@ -61,7 +61,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class SelectTimeActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        AdapterView.OnItemSelectedListener , View.OnClickListener{
+        AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -69,23 +69,26 @@ public class SelectTimeActivity extends LocalizationActivity
     NavigationView navigationView;
     @BindView(R.id.choose_iteration)
     Spinner spinner;
-    @BindView(R.id.pick_date)Button button1;
-    @BindView(R.id.pick_time)Button button2;
-    @BindView(R.id.button1)Button button3;
+    @BindView(R.id.pick_date)
+    Button button1;
+    @BindView(R.id.pick_time)
+    Button button2;
+    @BindView(R.id.button1)
+    Button button3;
 
     // date and time selected
     private String selectedDate, selectedTime,
-    createdTime, timeOfSchedule;
+            createdTime, timeOfSchedule;
 
     // parameter to create schedule
     private String fromDetails = "",
             toDetails = "",
             carType,
-            typeOfScheduleValue = "1",
             promoCode = "0",
             discount = "0",
             toLat = "",
-            toLng = "";
+            toLng = "",
+            typeOfScheduleValue = "1";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -205,7 +208,7 @@ public class SelectTimeActivity extends LocalizationActivity
 
         } else if (id == R.id.settings) {
             startActivity(new Intent(SelectTimeActivity.this, SettingsActivity.class));
-        }else if (id == R.id.english_speaking){
+        } else if (id == R.id.english_speaking) {
             showSingleChoiceListDrivereLangaugeAlertDialog();
         }
 
@@ -216,7 +219,7 @@ public class SelectTimeActivity extends LocalizationActivity
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        switch (position){
+        switch (position) {
             case 0:
                 typeOfScheduleValue = "1";
                 break;
@@ -240,7 +243,7 @@ public class SelectTimeActivity extends LocalizationActivity
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.pick_date:
                 DialogFragment newFragment1 = new DatePickerFragment();
                 newFragment1.show(getSupportFragmentManager(), "datePicker");
@@ -252,8 +255,8 @@ public class SelectTimeActivity extends LocalizationActivity
             case R.id.button1:
                 // createschedule api
                 // show message schedule save
-                if (checkBeforeCreateSchedule()){
-                   // createSchedule();
+                if (checkBeforeCreateSchedule()) {
+                    // createSchedule();
                 }
                 break;
         }
@@ -276,10 +279,10 @@ public class SelectTimeActivity extends LocalizationActivity
         int hours = event.getHourOfDay();
         int minuts = event.getMinute();
 
-        if (minuts > 30){
+        if (minuts > 30) {
             minuts -= 30;
-        }else {
-            hours -= 1 ;
+        } else {
+            hours -= 1;
             minuts += 30;
         }
 
@@ -324,8 +327,8 @@ public class SelectTimeActivity extends LocalizationActivity
                 .show();
     }
 
-    private void setDriverLanguage(String langauge){
-        switch (langauge){
+    private void setDriverLanguage(String langauge) {
+        switch (langauge) {
             case "en":
                 new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 2);
                 break;
@@ -336,12 +339,12 @@ public class SelectTimeActivity extends LocalizationActivity
 
     }
 
-    private String getDriverLanguage(){
+    private String getDriverLanguage() {
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
     }
 
-    private void createSchedule(){
+    private void createSchedule() {
         String url = BuildConfig.API_BASE_URL + "createorder.php";
         // here should show dialog
         final SweetDialogHelper sweetDialogHelper = new SweetDialogHelper(this);
@@ -396,7 +399,7 @@ public class SelectTimeActivity extends LocalizationActivity
                                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                         @Override
                                         public void onClick(SweetAlertDialog sDialog) {
-                                           // recall function that create schedule
+                                            // recall function that create schedule
                                         }
                                     })
                                     .show();
@@ -405,7 +408,7 @@ public class SelectTimeActivity extends LocalizationActivity
                             // go to home activity
                             sweetDialogHelper.dismissDialog();
                             sweetDialogHelper.showSuccessfulMessage("Done!", "Your schedule saved success :)");
-                            new AsyncTask<Void, Void, Void>(){
+                            new AsyncTask<Void, Void, Void>() {
 
                                 @Override
                                 protected Void doInBackground(Void... params) {
@@ -425,7 +428,6 @@ public class SelectTimeActivity extends LocalizationActivity
                                     overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                                 }
                             }.execute();
-
 
 
                         }
@@ -454,9 +456,9 @@ public class SelectTimeActivity extends LocalizationActivity
 
     }
 
-    private boolean checkBeforeCreateSchedule(){
+    private boolean checkBeforeCreateSchedule() {
 
-        if (selectedTime != null && selectedDate != null){
+        if (selectedTime != null && selectedDate != null) {
 
             createdTime = selectedDate + " " + createdTime;
             timeOfSchedule = selectedDate + " " + selectedTime;
@@ -464,14 +466,14 @@ public class SelectTimeActivity extends LocalizationActivity
             return checkForOneHour();
 
 
-        }else {
+        } else {
             new SweetDialogHelper(this).showErrorMessage("Select Date and time",
                     getString(R.string.try_agin));
             return false;
         }
     }
 
-    private boolean checkForOneHour(){
+    private boolean checkForOneHour() {
         SimpleDateFormat simpleDateFormat =
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
@@ -488,13 +490,13 @@ public class SelectTimeActivity extends LocalizationActivity
 
     }
 
-    public boolean printDifference(Date startDate, Date endDate){
+    public boolean printDifference(Date startDate, Date endDate) {
 
         //milliseconds
         long different = endDate.getTime() - startDate.getTime();
 
         System.out.println("startDate : " + startDate);
-        System.out.println("endDate : "+ endDate);
+        System.out.println("endDate : " + endDate);
         System.out.println("different : " + different);
 
         long secondsInMilli = 1000;
@@ -513,9 +515,9 @@ public class SelectTimeActivity extends LocalizationActivity
 
         long elapsedSeconds = different / secondsInMilli;
 
-        if (elapsedHours >= 1){
+        if (elapsedHours >= 1) {
             return true;
-        }else {
+        } else {
             new SweetDialogHelper(this).showErrorMessage("schedule at least one hour later",
                     getString(R.string.try_agin));
             return false;
