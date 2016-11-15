@@ -674,6 +674,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
 
                 if (data.getStringExtra("result") != null) {
                     result = data.getStringExtra("result");
+                    promoCode = data.getStringExtra("promoCode");
                     addPromoCode.setText(getString(R.string.valide_promo));
                     addPromoCode.setTextColor(Color.GREEN);
                 } else {

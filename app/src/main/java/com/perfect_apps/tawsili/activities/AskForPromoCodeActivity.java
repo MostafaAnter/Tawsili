@@ -122,6 +122,7 @@ public class AskForPromoCodeActivity extends LocalizationActivity implements Vie
                     if (!result.trim().isEmpty()){
                         Intent intent = new Intent();
                         intent.putExtra("result", result);
+                        intent.putExtra("promoCode", editText1.getText().toString().trim());
                         setResult(RESULT_OK, intent);
                         finish();
                     }
