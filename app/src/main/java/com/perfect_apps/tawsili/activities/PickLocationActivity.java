@@ -336,16 +336,22 @@ public class PickLocationActivity extends LocalizationActivity
                 mCategoryValue = "1";
                 mCategoryName = "Economy";
                 // TODO: 11/8/16
+                new TawsiliPrefStore(this)
+                        .addPreference(Constants.PREFERENCE_ORDER_TYPE, "1");
                 break;
             case 1:
                 getDriversList("2");
                 mCategoryValue = "2";
                 mCategoryName = "Business";
+                new TawsiliPrefStore(this)
+                        .addPreference(Constants.PREFERENCE_ORDER_TYPE, "2");
                 break;
             case 2:
                 getDriversList("3");
                 mCategoryValue = "3";
                 mCategoryName = "Vip";
+                new TawsiliPrefStore(this)
+                        .addPreference(Constants.PREFERENCE_ORDER_TYPE, "3");
                 break;
             case 3:
                 showSingleChoiceFamilyTypeAlertDialog();
@@ -365,16 +371,22 @@ public class PickLocationActivity extends LocalizationActivity
                 getDriversList("1");
                 mCategoryValue = "1";
                 mCategoryName = "Economy";
+                new TawsiliPrefStore(this)
+                        .addPreference(Constants.PREFERENCE_ORDER_TYPE, "1");
                 break;
             case 1:
                 getDriversList("2");
                 mCategoryValue = "2";
                 mCategoryName = "Business";
+                new TawsiliPrefStore(this)
+                        .addPreference(Constants.PREFERENCE_ORDER_TYPE, "2");
                 break;
             case 2:
                 getDriversList("3");
                 mCategoryValue = "3";
                 mCategoryName = "Vip";
+                new TawsiliPrefStore(this)
+                        .addPreference(Constants.PREFERENCE_ORDER_TYPE, "3");
                 break;
             case 3:
                 showSingleChoiceFamilyTypeAlertDialog();
@@ -718,11 +730,15 @@ public class PickLocationActivity extends LocalizationActivity
                                     getDriversList("4");
                                     mCategoryValue = "4";
                                     mCategoryName = "Family_Regular";
+                                    new TawsiliPrefStore(PickLocationActivity.this)
+                                            .addPreference(Constants.PREFERENCE_ORDER_TYPE, "4");
                                 } else if (which == 1) {
                                     dialog.dismiss();
                                     getDriversList("5");
                                     mCategoryValue = "5";
                                     mCategoryName = "Family_Special";
+                                    new TawsiliPrefStore(PickLocationActivity.this)
+                                            .addPreference(Constants.PREFERENCE_ORDER_TYPE, "5");
                                 }
                             }
                         })

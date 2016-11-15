@@ -101,7 +101,7 @@ public class YourRideActivity extends LocalizationActivity
     private String driverMobiel = "";
     private String orderId;
     private String driverId;
-    private String order_type;
+    private String order_type_now_or_later;
 
     private List<Marker> markers;
     private Marker marker1, marker2;
@@ -483,7 +483,7 @@ public class YourRideActivity extends LocalizationActivity
                         String status = jsonObject.optString("status");
                         String from_location_lat = jsonObject.optString("from_location_lat");
                         String from_location_lng = jsonObject.optString("from_location_lng");
-                        order_type = jsonObject.optString("order_type");
+                        order_type_now_or_later = jsonObject.optString("order_type");
 
                         if (!from_location_lat.trim().isEmpty()&&
                                 !from_location_lng.trim().isEmpty()){
@@ -721,13 +721,54 @@ public class YourRideActivity extends LocalizationActivity
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
-    private void updateUserPalance(String order_type){
+    private void updateUserPalance(){
         String balance = "";
-        switch (order_type){
-            case "":
-                break;
+        if (order_type_now_or_later.equalsIgnoreCase("now")){
+            switch (new TawsiliPrefStore(this).getPreferenceValue(Constants.PREFERENCE_ORDER_TYPE)){
+                case "1":
+                    balance = String.valueOf(Constants.minimumCostOfEconomyNow);
+                    break;
+                case "2":
+                    balance = String.valueOf(Constants.minimumCostOfBusinessNow);
+                    break;
+                case "3":
+                    balance = String.valueOf(Constants.minimumCostOfVIPNow);
+                    break;
+                case "4":
+                    balance = String.valueOf(Constants.minimumCostOfFamilitRegularNow);
+                    break;
+                case "5":
+                    balance = String.valueOf(Constants.minimumCostOfFamilitSpecialNow);
+                    break;
+                default:
+                    balance = String.valueOf(Constants.minimumCostOfEconomyNow);
+                    break;
 
+            }
+        }else {
+            switch (new TawsiliPrefStore(this).getPreferenceValue(Constants.PREFERENCE_ORDER_TYPE)){
+                case "1":
+                    balance = String.valueOf(Constants.minimumCostOfEconomyLater);
+                    break;
+                case "2":
+                    balance = String.valueOf(Constants.minimumCostOfBusinessLater);
+                    break;
+                case "3":
+                    balance = String.valueOf(Constants.minimumCostOfVIPLater);
+                    break;
+                case "4":
+                    balance = String.valueOf(Constants.minimumCostOfFamilitRegularLater);
+                    break;
+                case "5":
+                    balance = String.valueOf(Constants.minimumCostOfFamilitSpecialLater);
+                    break;
+                default:
+                    balance = String.valueOf(Constants.minimumCostOfEconomyLater);
+                    break;
+
+            }
         }
+
 
         String url = BuildConfig.API_BASE_URL + "updateuserbalance.php?balance=" +
                 balance + "&id=" +
