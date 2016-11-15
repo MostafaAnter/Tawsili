@@ -76,10 +76,10 @@
     <string name="invalid_code">invalid code!</string>
 
     <string-array name="options_array">
-        <item>Every day</item>
-        <item>Every week</item>
-        <item>Every month</item>
-        <item>Every year</item>
+        <item>Once</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
     </string-array>
     <string name="complete_your_data">Complete your data</string>
     <string name="email_invalide">email not valid</string>
@@ -124,4 +124,5 @@
     <string name="drop_off">Drop Off</string>
     <string name="rate_driver">Rate Driver</string>
     <string name="ratee">Rate</string>
+    <string name="done">Done!</string>
 </resources>

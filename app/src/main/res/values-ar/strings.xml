@@ -56,10 +56,10 @@
     <string name="ride_now">بدء الرحلة</string>
     <string name="book_a_business_car">Book A Car</string>
     <string-array name="options_array">
-        <item>كل يوم</item>
-        <item>كل اسبوع</item>
-        <item>كل شهر</item>
-        <item>كل سنة</item>
+        <item>مرة واحدة</item>
+        <item>يومياً</item>
+        <item>أسبوعياً</item>
+        <item>شهرياً</item>
     </string-array>
     <string name="cash">الدفع</string>
     <string name="current_location_is_gonna_be_here">سوف يظهر الموقع الحالى هنا</string>
