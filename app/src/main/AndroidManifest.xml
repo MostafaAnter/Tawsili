@@ -172,6 +172,7 @@
             </intent-filter>
         </receiver>
         <service android:name=".scheduleing_task.PushLocalNotification"/>
+        <service android:name=".scheduleing_task.GetUserSchedule"/>
 
     </application>
 

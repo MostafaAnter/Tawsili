@@ -64,6 +64,8 @@ import com.perfect_apps.tawsili.models.DriverModel;
 import com.perfect_apps.tawsili.models.NetworkEvent;
 import com.perfect_apps.tawsili.models.TouchMapEvent;
 import com.perfect_apps.tawsili.parser.JsonParser;
+import com.perfect_apps.tawsili.scheduleing_task.GetUserSchedule;
+import com.perfect_apps.tawsili.scheduleing_task.PushLocalNotification;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
@@ -177,6 +179,10 @@ public class PickLocationActivity extends LocalizationActivity
         if (Utils.isOnline(this)) {
             initGoogleApiClient();
         }
+
+        // start service of getting uer schedule
+        Intent getUserSchedule = new Intent(this, GetUserSchedule.class);
+        startService(getUserSchedule);
     }
 
     private void initGoogleApiClient() {
