@@ -61,6 +61,7 @@ import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
+import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 import com.vipul.hp_hp.library.Layout_to_Image;
 
 import org.json.JSONArray;
@@ -77,22 +78,34 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class YourRideActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        OnMapReadyCallback, View.OnClickListener{
-    @BindView(R.id.toolbar)Toolbar toolbar;
-    @BindView(R.id.nav_view)NavigationView navigationView;
-    @BindView(R.id.linearLayout1) LinearLayout linearLayout1;
+        OnMapReadyCallback, View.OnClickListener {
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.linearLayout1)
+    LinearLayout linearLayout1;
 
-    @BindView(R.id.secondCounter)TextView secondCounter;
+    @BindView(R.id.secondCounter)
+    TextView secondCounter;
     private static int counter = 60;
-    @BindView(R.id.avatar)CircleImageView avatar;
-    @BindView(R.id.driverName) TextView driverName;
-    @BindView(R.id.car_name)TextView carName;
-    @BindView(R.id.license)TextView licensePlate;
-    @BindView(R.id.rateValue)TextView rateValue;
-    @BindView(R.id.ratingBar)AppCompatRatingBar ratingBar;
+    @BindView(R.id.avatar)
+    CircleImageView avatar;
+    @BindView(R.id.driverName)
+    TextView driverName;
+    @BindView(R.id.car_name)
+    TextView carName;
+    @BindView(R.id.license)
+    TextView licensePlate;
+    @BindView(R.id.rateValue)
+    TextView rateValue;
+    @BindView(R.id.ratingBar)
+    AppCompatRatingBar ratingBar;
 
-    @BindView(R.id.button1)Button button1;
-    @BindView(R.id.button2)Button button2;
+    @BindView(R.id.button1)
+    Button button1;
+    @BindView(R.id.button2)
+    Button button2;
 
 
     private GoogleMap mMap;
@@ -158,7 +171,7 @@ public class YourRideActivity extends LocalizationActivity
 
     }
 
-    private void repeatFunc(){
+    private void repeatFunc() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -193,13 +206,14 @@ public class YourRideActivity extends LocalizationActivity
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button1:
                 Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + driverMobiel));
                 startActivity(callIntent);
                 break;
             case R.id.button2:
-
+                updateUserPalance();
+                updateOrderStatus();
                 break;
         }
     }
@@ -260,15 +274,15 @@ public class YourRideActivity extends LocalizationActivity
     }
 
     //change font of drawer
-    private void changeFontOfNavigation(){
+    private void changeFontOfNavigation() {
         Menu m = navigationView.getMenu();
-        for (int i=0;i<m.size();i++) {
+        for (int i = 0; i < m.size(); i++) {
             MenuItem mi = m.getItem(i);
 
             //for aapplying a font to subMenu ...
             SubMenu subMenu = mi.getSubMenu();
-            if (subMenu!=null && subMenu.size() >0 ) {
-                for (int j=0; j <subMenu.size();j++) {
+            if (subMenu != null && subMenu.size() > 0) {
+                for (int j = 0; j < subMenu.size(); j++) {
                     MenuItem subMenuItem = subMenu.getItem(j);
                     applyFontToMenuItem(subMenuItem);
                 }
@@ -282,7 +296,7 @@ public class YourRideActivity extends LocalizationActivity
     private void applyFontToMenuItem(MenuItem mi) {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         SpannableString mNewTitle = new SpannableString(mi.getTitle());
-        mNewTitle.setSpan(new CustomTypefaceSpan("" , font), 0 , mNewTitle.length(),  Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        mNewTitle.setSpan(new CustomTypefaceSpan("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         mi.setTitle(mNewTitle);
     }
 
@@ -292,7 +306,7 @@ public class YourRideActivity extends LocalizationActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-           // super.onBackPressed();
+            // super.onBackPressed();
         }
 
         new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
@@ -312,6 +326,8 @@ public class YourRideActivity extends LocalizationActivity
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
+                        updateUserPalance();
+                        updateOrderStatus();
                         sDialog.dismissWithAnimation();
 
                     }
@@ -333,7 +349,7 @@ public class YourRideActivity extends LocalizationActivity
 
         } else if (id == R.id.settings) {
             startActivity(new Intent(YourRideActivity.this, SettingsActivity.class));
-        }else if (id == R.id.english_speaking){
+        } else if (id == R.id.english_speaking) {
             showSingleChoiceListDrivereLangaugeAlertDialog();
         }
 
@@ -379,8 +395,8 @@ public class YourRideActivity extends LocalizationActivity
                 .show();
     }
 
-    private void setDriverLanguage(String langauge){
-        switch (langauge){
+    private void setDriverLanguage(String langauge) {
+        switch (langauge) {
             case "en":
                 new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 2);
                 break;
@@ -391,7 +407,7 @@ public class YourRideActivity extends LocalizationActivity
 
     }
 
-    private String getDriverLanguage(){
+    private String getDriverLanguage() {
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
     }
@@ -402,12 +418,10 @@ public class YourRideActivity extends LocalizationActivity
 
         if (isAvailable == ConnectionResult.SUCCESS) {
             return true;
-        }
-        else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
+        } else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(isAvailable, this, GPS_ERRORDIALOG_REQUEST);
             dialog.show();
-        }
-        else {
+        } else {
             Toast.makeText(this, "Can't connect to Google Play services", Toast.LENGTH_SHORT).show();
         }
         return false;
@@ -466,7 +480,7 @@ public class YourRideActivity extends LocalizationActivity
         mMap.getUiSettings().setScrollGesturesEnabled(false);
     }
 
-    private void getOrder(final String orderId){
+    private void getOrder(final String orderId) {
         String url = BuildConfig.API_BASE_URL + "getorder.php?id=" + orderId;
         StringRequest strReq = new StringRequest(Request.Method.GET,
                 url, new Response.Listener<String>() {
@@ -485,10 +499,10 @@ public class YourRideActivity extends LocalizationActivity
                         String from_location_lng = jsonObject.optString("from_location_lng");
                         order_type_now_or_later = jsonObject.optString("order_type");
 
-                        if (!from_location_lat.trim().isEmpty()&&
-                                !from_location_lng.trim().isEmpty()){
+                        if (!from_location_lat.trim().isEmpty() &&
+                                !from_location_lng.trim().isEmpty()) {
 
-                            if (marker1 != null){
+                            if (marker1 != null) {
                                 marker1.remove();
                                 markers.remove(marker1);
                                 marker1 = null;
@@ -499,7 +513,7 @@ public class YourRideActivity extends LocalizationActivity
 
                         if (status.equalsIgnoreCase("Canceled by Client")
                                 || status.equalsIgnoreCase("Canceled by Admin")
-                                || status.equalsIgnoreCase("Client Didn't Attend")){
+                                || status.equalsIgnoreCase("Client Didn't Attend")) {
                             final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(YourRideActivity.this, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("Order Canceled!")
                                     .setContentText("this order is missed if you want, create new one")
@@ -511,7 +525,7 @@ public class YourRideActivity extends LocalizationActivity
                                         }
                                     });
                             sweetAlertDialog.show();
-                            new AsyncTask<Void, Void, Void>(){
+                            new AsyncTask<Void, Void, Void>() {
 
                                 @Override
                                 protected Void doInBackground(Void... params) {
@@ -537,7 +551,7 @@ public class YourRideActivity extends LocalizationActivity
                                 }
                             }.execute();
 
-                        }else if (status.equalsIgnoreCase("On Ride")){
+                        } else if (status.equalsIgnoreCase("On Ride")) {
                             rebeate = false;
                             mHandler.removeCallbacksAndMessages(null);
                             Intent intent = new Intent(YourRideActivity.this,
@@ -568,7 +582,7 @@ public class YourRideActivity extends LocalizationActivity
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
-    private void getDriverLocation(String driverId){
+    private void getDriverLocation(String driverId) {
         String url = BuildConfig.API_BASE_URL + "driverlocation.php?id=" + driverId;
         StringRequest strReq = new StringRequest(Request.Method.GET,
                 url, new Response.Listener<String>() {
@@ -585,16 +599,16 @@ public class YourRideActivity extends LocalizationActivity
                         String current_location_lat = jsonObject.optString("current_location_lat");
                         String current_location_lng = jsonObject.optString("current_location_lng");
 
-                        if (marker2 != null){
+                        if (marker2 != null) {
                             MapHelper.animateMarkerTo(marker2, Double.valueOf(current_location_lat),
                                     Double.valueOf(current_location_lng));
 //                            marker2.remove();
 //                            markers.remove(marker2);
 //                            marker2 = null;
 
-                        }else {
-                            if (!current_location_lat.trim().isEmpty()&&
-                                    !current_location_lng.trim().isEmpty()){
+                        } else {
+                            if (!current_location_lat.trim().isEmpty() &&
+                                    !current_location_lng.trim().isEmpty()) {
                                 marker2 = MapHelper.setUpMarkerAndReturnMarker(mMap,
                                         new LatLng(Double.valueOf(current_location_lat),
                                                 Double.valueOf(current_location_lng)), R.drawable.car_marker);
@@ -636,7 +650,7 @@ public class YourRideActivity extends LocalizationActivity
 
     }
 
-    private void getDriver(String driverId){
+    private void getDriver(String driverId) {
         String url = BuildConfig.API_BASE_URL + "getdriver.php?id=" + driverId;
         StringRequest strReq = new StringRequest(Request.Method.GET,
                 url, new Response.Listener<String>() {
@@ -721,10 +735,10 @@ public class YourRideActivity extends LocalizationActivity
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
-    private void updateUserPalance(){
+    private void updateUserPalance() {
         String balance = "";
-        if (order_type_now_or_later.equalsIgnoreCase("now")){
-            switch (new TawsiliPrefStore(this).getPreferenceValue(Constants.PREFERENCE_ORDER_TYPE)){
+        if (order_type_now_or_later.equalsIgnoreCase("now")) {
+            switch (new TawsiliPrefStore(this).getPreferenceValue(Constants.PREFERENCE_ORDER_TYPE)) {
                 case "1":
                     balance = String.valueOf(Constants.minimumCostOfEconomyNow);
                     break;
@@ -745,8 +759,8 @@ public class YourRideActivity extends LocalizationActivity
                     break;
 
             }
-        }else {
-            switch (new TawsiliPrefStore(this).getPreferenceValue(Constants.PREFERENCE_ORDER_TYPE)){
+        } else {
+            switch (new TawsiliPrefStore(this).getPreferenceValue(Constants.PREFERENCE_ORDER_TYPE)) {
                 case "1":
                     balance = String.valueOf(Constants.minimumCostOfEconomyLater);
                     break;
@@ -792,16 +806,22 @@ public class YourRideActivity extends LocalizationActivity
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
-    private void updateOrderStatus(){
+    private void updateOrderStatus() {
 
         String url = BuildConfig.API_BASE_URL + "updateorderstatus.php?order="
                 + orderId + "&status=4";
+        final SweetDialogHelper sweetDialogHelper = new SweetDialogHelper(this);
+        sweetDialogHelper.showMaterialProgress(getString(R.string.loading));
         StringRequest strReq = new StringRequest(Request.Method.GET,
                 url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
                 Log.d("checkOrder", response.toString());
+                sweetDialogHelper.dismissDialog();
+                startActivity(new Intent(YourRideActivity.this, PickLocationActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
 
             }
         }, new Response.ErrorListener() {
@@ -809,6 +829,7 @@ public class YourRideActivity extends LocalizationActivity
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("checkOrder", "Error: " + error.getMessage());
+                sweetDialogHelper.dismissDialog();
             }
         });
         // Adding request to request queue
