@@ -80,10 +80,12 @@ public class SelectTimeActivity extends LocalizationActivity
     // parameter to create schedule
     private String fromDetails = "",
             toDetails = "",
-            carType ,
+            carType,
             typeOfScheduleValue = "1",
             promoCode = "0",
-            discount = "0";
+            discount = "0",
+            toLat = "",
+            toLng = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -354,17 +356,13 @@ public class SelectTimeActivity extends LocalizationActivity
                     .getPreferenceValue(Constants.userLastLocationLat));
             params.put("fromlng", new TawsiliPrefStore(this)
                     .getPreferenceValue(Constants.userLastLocationLng));
-            params.put("tolat", new TawsiliPrefStore(this)
-                    .getPreferenceValue(Constants.userLastDropOffLocationLat));
-            params.put("tolng", new TawsiliPrefStore(this)
-                    .getPreferenceValue(Constants.userLastDropOffLocationLng));
+            params.put("type", typeOfScheduleValue);
+
+            params.put("tolat", toLat);
+            params.put("tolng", toLng);
             params.put("fromdetails", fromDetails);
             params.put("todetails", toDetails);
-
-
-            params.put("type", typeOfScheduleValue);
             params.put("category", carType);
-
             params.put("promocode", promoCode);
             params.put("discount", discount);
 
