@@ -124,4 +124,5 @@
     <string name="ratee">التقييم</string>
     <string name="total_fare">المبلغ الكلى</string>
     <string name="trip_fair">مبلغ الرحلة</string>
+    <string name="you_have_new_trip">لديك طلب مجدول!</string>
 </resources>
