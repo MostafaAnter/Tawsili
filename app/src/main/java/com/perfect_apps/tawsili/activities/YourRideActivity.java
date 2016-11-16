@@ -540,27 +540,31 @@ public class YourRideActivity extends LocalizationActivity
                                 @Override
                                 protected void onPostExecute(Void aVoid) {
                                     super.onPostExecute(aVoid);
-                                    sweetAlertDialog.dismissWithAnimation();
-                                    rebeate = false;
-                                    mHandler.removeCallbacksAndMessages(null);
-                                    Intent intent = new Intent(YourRideActivity.this,
-                                            PickLocationActivity.class)
-                                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    finish();
+                                    if (rebeate) {
+                                        sweetAlertDialog.dismissWithAnimation();
+                                        rebeate = false;
+                                        mHandler.removeCallbacksAndMessages(null);
+                                        Intent intent = new Intent(YourRideActivity.this,
+                                                PickLocationActivity.class)
+                                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }
                                 }
                             }.execute();
 
                         } else if (status.equalsIgnoreCase("On Ride")) {
-                            rebeate = false;
-                            mHandler.removeCallbacksAndMessages(null);
-                            Intent intent = new Intent(YourRideActivity.this,
-                                    YourRideTwoActivity.class)
-                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("driverId", driverId);
-                            intent.putExtra("orderId", orderId);
-                            startActivity(intent);
-                            finish();
+                            if (rebeate) {
+                                rebeate = false;
+                                mHandler.removeCallbacksAndMessages(null);
+                                Intent intent = new Intent(YourRideActivity.this,
+                                        YourRideTwoActivity.class)
+                                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtra("driverId", driverId);
+                                intent.putExtra("orderId", orderId);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
 
                     }
@@ -700,8 +704,10 @@ public class YourRideActivity extends LocalizationActivity
                         driverName.setText(name);
                         carName.setText(car_type);
                         licensePlate.setText(license_plate);
-                        rateValue.setText(rate);
-                        ratingBar.setRating(Float.valueOf(rate));
+                        if (!rate.equalsIgnoreCase("null")&&!rate.isEmpty()) {
+                            rateValue.setText(rate);
+                            ratingBar.setRating(Float.valueOf(rate));
+                        }
                         // populate mainImage
                         Glide.with(YourRideActivity.this)
                                 .load("http://tawsely.com/img/drivers/" + img_name)

@@ -431,26 +431,30 @@ public class YourRideTwoActivity extends LocalizationActivity
 
                                 @Override
                                 protected void onPostExecute(Void aVoid) {
-                                    super.onPostExecute(aVoid);
-                                    rebeate = false;
-                                    mHandler.removeCallbacksAndMessages(null);
-                                    sweetAlertDialog.dismissWithAnimation();
-                                    Intent intent = new Intent(YourRideTwoActivity.this,
-                                            PickLocationActivity.class)
-                                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
+                                    if (rebeate) {
+                                        super.onPostExecute(aVoid);
+                                        rebeate = false;
+                                        mHandler.removeCallbacksAndMessages(null);
+                                        sweetAlertDialog.dismissWithAnimation();
+                                        Intent intent = new Intent(YourRideTwoActivity.this,
+                                                PickLocationActivity.class)
+                                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                    }
                                 }
                             }.execute();
 
                         }else if (status.equalsIgnoreCase("Done")){
-                            rebeate = false;
-                            mHandler.removeCallbacksAndMessages(null);
-                            Intent intent = new Intent(YourRideTwoActivity.this,
-                                    YourRideThirdActivity.class)
-                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("driverId", driverId);
-                            intent.putExtra("orderId", orderId);
-                            startActivity(intent);
+                            if (rebeate) {
+                                rebeate = false;
+                                mHandler.removeCallbacksAndMessages(null);
+                                Intent intent = new Intent(YourRideTwoActivity.this,
+                                        YourRideThirdActivity.class)
+                                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtra("driverId", driverId);
+                                intent.putExtra("orderId", orderId);
+                                startActivity(intent);
+                            }
                         }
 
                     }
