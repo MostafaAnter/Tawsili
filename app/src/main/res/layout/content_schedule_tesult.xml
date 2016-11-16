@@ -15,10 +15,10 @@
     tools:showIn="@layout/activity_schedule_tesult">
 
     <ImageView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_access_alarm_black_24dp"/>
+        android:src="@drawable/alarm_clock"/>
 
     <LinearLayout
         android:id="@+id/linearLayout"

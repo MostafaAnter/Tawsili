@@ -71,14 +71,10 @@ public class ScheduleTesultActivity extends LocalizationActivity implements View
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button1:
-                Intent intent = new Intent(getApplicationContext(), PushLocalNotification.class);
-                intent.setAction("createOrder");
-                startService(intent);
+                // create order
                 break;
             case R.id.button2:
-                Intent intent1 = new Intent(getApplicationContext(), PushLocalNotification.class);
-                intent1.setAction("cancel");
-                startService(intent1);
+                finish();
                 break;
         }
     }
