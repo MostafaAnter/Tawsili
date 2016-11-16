@@ -125,4 +125,5 @@
     <string name="rate_driver">Rate Driver</string>
     <string name="ratee">Rate</string>
     <string name="done">Done!</string>
+    <string name="you_have_new_trip">You have scheduling order</string>
 </resources>

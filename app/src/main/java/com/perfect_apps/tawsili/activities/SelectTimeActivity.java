@@ -473,7 +473,7 @@ public class SelectTimeActivity extends LocalizationActivity
             createdTime = selectedDate + " " + createdTime;
             timeOfSchedule = selectedDate + " " + selectedTime;
 
-            return checkForOneHour();
+            return /*checkForOneHour()*/true;
 
 
         } else {

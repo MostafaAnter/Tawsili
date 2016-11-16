@@ -1,6 +1,9 @@
 package com.perfect_apps.tawsili.scheduleing_task;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
@@ -14,12 +17,14 @@ import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.models.SchedualObject;
 import com.perfect_apps.tawsili.parser.JsonParser;
+import com.perfect_apps.tawsili.store.SceduleStore;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +34,7 @@ import java.util.List;
 
 public class GetUserSchedule extends IntentService{
     private Handler mHandler = new Handler();
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      */
@@ -103,10 +109,27 @@ public class GetUserSchedule extends IntentService{
 
                         Date date1 = simpleDateFormat.parse(Utils.returnTime());
                         Date date2 = simpleDateFormat.parse(schedualObject.getOrder_start_time());
+                        Date date3;
+                        if (!schedualObject.getSchedual_create_time().contains("0000")){
+                            date3 = simpleDateFormat.parse(schedualObject.getSchedual_create_time());
+                        }else {
+                            date3 = date2;
+                        }
 
                         if (!isExpired(date1, date2, schedualObject.getSchedual_id())){
-                            // add to pref
-                            // create alarm
+                            //check if saved before
+                            if (!new SceduleStore(GetUserSchedule.this).
+                                    isScheduleItem(schedualObject.getSchedual_id())){
+                                // add to pref
+                                if (new SceduleStore(GetUserSchedule.this).addItem(schedualObject)){
+                                    // create alarm
+                                    createAlarm(date3,
+                                            schedualObject.getSchedual_type(),
+                                            schedualObject.getSchedual_id());
+
+                                }
+
+                            }
                         }
 
                     } catch (ParseException e) {
@@ -178,5 +201,36 @@ public class GetUserSchedule extends IntentService{
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
 
+    }
+
+    private void createAlarm(Date date, String schedual_type ,String schedule_id){
+        AlarmManager alarmMgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, PushLocalNotification.AlarmReceiver.class);
+        intent.setAction("Tawsili_schedule");
+        intent.putExtra("ID", schedule_id);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+
+        // Set the alarm to start at specific date
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        switch (schedual_type.toLowerCase()){
+            case "once":
+                alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                break;
+            case "daily":
+                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY, alarmIntent);
+                break;
+            case "weekly":
+                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY * 7, alarmIntent);
+                break;
+            case "monthly":
+                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY * 30, alarmIntent);
+                break;
+        }
     }
 }
