@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.scheduleing_task.PushLocalNotification;
+import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +35,10 @@ public class ScheduleTesultActivity extends LocalizationActivity implements View
 
         b1.setOnClickListener(this);
         b2.setOnClickListener(this);
+
+        if (getIntent().getStringExtra("flag") != null){
+            createOrder();
+        }
 
     }
 
@@ -72,10 +77,15 @@ public class ScheduleTesultActivity extends LocalizationActivity implements View
         switch (v.getId()){
             case R.id.button1:
                 // create order
+                createOrder();
                 break;
             case R.id.button2:
                 finish();
                 break;
         }
+    }
+
+    private void createOrder(){
+        new SweetDialogHelper(this).showSuccessfulMessage("hhghhh", "done");
     }
 }

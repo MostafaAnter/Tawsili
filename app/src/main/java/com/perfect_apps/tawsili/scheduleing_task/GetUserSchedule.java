@@ -116,7 +116,8 @@ public class GetUserSchedule extends IntentService{
                             date3 = date2;
                         }
 
-                        if (!isExpired(date1, date2, schedualObject.getSchedual_id())){
+                        if (!isExpired(date1, date3, schedualObject.getSchedual_id())
+                                && !isExpired(date1, date2, schedualObject.getSchedual_id())){
                             //check if saved before
                             if (!new SceduleStore(GetUserSchedule.this).
                                     isScheduleItem(schedualObject.getSchedual_id())){

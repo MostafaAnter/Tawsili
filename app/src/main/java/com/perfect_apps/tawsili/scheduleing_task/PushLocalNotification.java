@@ -36,11 +36,15 @@ public class PushLocalNotification extends IntentService {
         String action = intent.getAction();
         // This section handles the 3 possible actions:
         // ping, snooze, and dismiss.
-        if(action.equals("ACTION_PING")){
+        if (action.equals("ACTION_PING")) {
             issueNotification(intent, mScheduleID);
         } else if (action.equals("createOrder")) {
             nm.cancel(Integer.valueOf(mScheduleID));
-            // TODO: 11/16/16 create order 
+            Intent resultIntent = new Intent(this, ScheduleTesultActivity.class);
+            resultIntent.putExtra("ID", mScheduleID);
+            resultIntent.putExtra("flag", "createOrder");
+            resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(resultIntent);
 
         } else if (action.equals("cancel")) {
             nm.cancel(Integer.valueOf(mScheduleID));
@@ -69,12 +73,14 @@ public class PushLocalNotification extends IntentService {
         // Sets up the Snooze and Dismiss action buttons that will appear in the
         // expanded view of the notification.
         Intent dismissIntent = new Intent(this, PushLocalNotification.class);
+        dismissIntent.putExtra("ID", mScheduleID);
         dismissIntent.setAction("cancel");
-        PendingIntent piDismiss = PendingIntent.getService(this, 0, dismissIntent, 0);
+        PendingIntent piDismiss = PendingIntent.getService(this, 0, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Intent snoozeIntent = new Intent(this, PushLocalNotification.class);
+        snoozeIntent.putExtra("ID", mScheduleID);
         snoozeIntent.setAction("createOrder");
-        PendingIntent piSnooze = PendingIntent.getService(this, 0, snoozeIntent, 0);
+        PendingIntent piSnooze = PendingIntent.getService(this, 0, snoozeIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         // Constructs the Builder object.
         builder =
@@ -92,9 +98,9 @@ public class PushLocalNotification extends IntentService {
                  */
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(getString(R.string.you_have_new_trip)))
-                        .addAction (R.drawable.close,
+                        .addAction(R.drawable.close,
                                 getString(R.string.cancel), piDismiss)
-                        .addAction (R.drawable.com_facebook_button_like_icon_selected,
+                        .addAction(R.drawable.com_facebook_button_like_icon_selected,
                                 getString(R.string.let_s_go), piSnooze);
 
         /*

@@ -433,6 +433,7 @@ public class SelectTimeActivity extends LocalizationActivity
                                 @Override
                                 protected void onPostExecute(Void aVoid) {
                                     super.onPostExecute(aVoid);
+                                    sweetDialogHelper.dismissDialog();
                                     startActivity(new Intent(SelectTimeActivity.this, PickLocationActivity.class)
                                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                                     overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
