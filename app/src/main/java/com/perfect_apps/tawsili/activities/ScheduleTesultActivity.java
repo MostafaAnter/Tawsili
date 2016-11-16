@@ -106,27 +106,42 @@ public class ScheduleTesultActivity extends LocalizationActivity implements View
             switch (mCategoryValue) {
                 case "1":
                     mCategoryName = "Economy";
+                    new TawsiliPrefStore(this)
+                            .addPreference(Constants.PREFERENCE_ORDER_TYPE, "1");
                     break;
                 case "2":
                     mCategoryName = "Business";
+                    new TawsiliPrefStore(this)
+                            .addPreference(Constants.PREFERENCE_ORDER_TYPE, "2");
                     break;
                 case "3":
                     mCategoryName = "Vip";
+                    new TawsiliPrefStore(this)
+                            .addPreference(Constants.PREFERENCE_ORDER_TYPE, "3");
                     break;
                 case "4":
                     mCategoryName = "Family_Regular";
+                    new TawsiliPrefStore(this)
+                            .addPreference(Constants.PREFERENCE_ORDER_TYPE, "4");
                     break;
                 case "5":
                     mCategoryName = "Family_Special";
+                    new TawsiliPrefStore(this)
+                            .addPreference(Constants.PREFERENCE_ORDER_TYPE, "5");
                     break;
                 default:
                     mCategoryName = "Economy";
+                    new TawsiliPrefStore(this)
+                            .addPreference(Constants.PREFERENCE_ORDER_TYPE, "1");
                     break;
             }
             String tripTime = schedualObject.getOrder_start_time();
             String currentLocationInfo = schedualObject.getFrom_details();
             String dropOffLocationInfo = schedualObject.getTo_details();
             String promoCode = schedualObject.getPromocode();
+
+            if (promoCode.equalsIgnoreCase("0") || promoCode.isEmpty())
+                promoCode = "NULL";
 
             String lat = schedualObject.getFrom_location_lat();
             String lng = schedualObject.getFrom_location_lng();
