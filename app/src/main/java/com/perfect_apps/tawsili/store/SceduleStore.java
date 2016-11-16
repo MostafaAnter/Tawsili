@@ -64,7 +64,43 @@ public class SceduleStore {
         return noteList;
     }
 
-    public boolean isScheduleItem(String key){
+    public SchedualObject findItem(String key) {
+        JSONObject scheduleObject = null;
+        String jsonString = schedulePrefs.getString(key, "");
+        if (!jsonString.equalsIgnoreCase(""))
+            try {
+                scheduleObject = new JSONObject(jsonString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        if (scheduleObject != null) {
+            String schedual_id = scheduleObject.optString("schedual_id");
+            String client_id = scheduleObject.optString("client_id");
+            String schedual_create_time = scheduleObject.optString("schedual_create_time");
+            String order_start_time = scheduleObject.optString("order_start_time");
+            String from_location_lat = scheduleObject.optString("from_location_lat");
+            String from_location_lng = scheduleObject.optString("from_location_lng");
+            String to_location_lat = scheduleObject.optString("to_location_lat");
+            String to_location_lng = scheduleObject.optString("to_location_lng");
+            String from_details = scheduleObject.optString("from_details");
+            String to_details = scheduleObject.optString("to_details");
+            String schedual_type = scheduleObject.optString("schedual_type");
+            String order_category = scheduleObject.optString("order_category");
+            String promocode = scheduleObject.optString("promocode");
+            String discount = scheduleObject.optString("discount");
+            return new SchedualObject(schedual_id,
+                    client_id, schedual_create_time, order_start_time,
+                    from_location_lat, from_location_lng, to_location_lat, to_location_lng,
+                    from_details, to_details, schedual_type, order_category, promocode,
+                    discount);
+        }
+
+        return null;
+
+
+    }
+
+    public boolean isScheduleItem(String key) {
         return !schedulePrefs.getString(key, "").isEmpty();
     }
 
@@ -92,7 +128,6 @@ public class SceduleStore {
         }
 
 
-
         SharedPreferences.Editor editor = schedulePrefs.edit();
         editor.putString(note.getSchedual_id(), jsonObject.toString());
         editor.apply();
@@ -110,7 +145,7 @@ public class SceduleStore {
         return true;
     }
 
-    public void clearPreference(){
+    public void clearPreference() {
         SharedPreferences.Editor editor = schedulePrefs.edit();
         editor.clear().apply();
     }

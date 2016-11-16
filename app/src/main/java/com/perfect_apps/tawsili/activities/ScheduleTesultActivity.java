@@ -13,8 +13,14 @@ import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.models.SchedualObject;
 import com.perfect_apps.tawsili.scheduleing_task.PushLocalNotification;
+import com.perfect_apps.tawsili.store.SceduleStore;
+import com.perfect_apps.tawsili.store.TawsiliPrefStore;
+import com.perfect_apps.tawsili.utils.Constants;
+import com.perfect_apps.tawsili.utils.OrderDriver;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
+import com.perfect_apps.tawsili.utils.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,7 +91,29 @@ public class ScheduleTesultActivity extends LocalizationActivity implements View
         }
     }
 
-    private void createOrder(){
-        new SweetDialogHelper(this).showSuccessfulMessage("hhghhh", "done");
+   private void createOrder(){
+//        SchedualObject schedualObject = new SceduleStore(this).findItem(getIntent().getStringExtra("ID"));
+//
+//
+//        if (schedualObject != null) {
+//            String mCategoryValue;
+//            String mCategoryName;
+//            String currentLocationInfo;
+//            String dropOffLocationInfo;
+//            String mEstimateFare;
+//            String tripTime;
+//            String distanceWithKilo;
+//            String promoCode;
+//            String la;
+//            String lng;
+//            // set pref of last loc and  drop off loc
+//
+//
+//            if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
+//                new OrderDriver(this, mCategoryValue, mCategoryName, currentLocationInfo
+//                        , dropOffLocationInfo, mEstimateFare, tripTime,
+//                        "2", distanceWithKilo, mCategoryValue, promoCode, "Later");
+//            }
+//        }
     }
 }
