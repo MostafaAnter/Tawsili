@@ -22,6 +22,8 @@ import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.Utils;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -82,6 +84,7 @@ public class GetUserSchedule extends IntentService{
             @Override
             public void onResponse(String response) {
                 Log.d("getUserSchedule", response.toString());
+                response = StringEscapeUtils.unescapeJava(response);
                 // filter schedule to delete
                 checkScheduleListToDeleteFromServerAndAddCreateAlarm(JsonParser
                         .parseScheduleList(response));
