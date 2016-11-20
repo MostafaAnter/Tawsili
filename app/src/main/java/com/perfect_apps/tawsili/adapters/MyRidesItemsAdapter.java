@@ -99,6 +99,8 @@ public class MyRidesItemsAdapter extends RecyclerView.Adapter<MyRidesItemsAdapte
             viewHolder.getDropOffView().setVisibility(View.VISIBLE);
             viewHolder.getDropOffLocation().setText(mDataSet.get(position)
             .getTo_details());
+        }else {
+            viewHolder.getDropOffView().setVisibility(View.GONE);
         }
 
         viewHolder.getCurrentLocation().setText(mDataSet.get(position)

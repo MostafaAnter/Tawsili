@@ -280,6 +280,7 @@ public class MyRidesActivity extends LocalizationActivity
                         .parseUserOrders(response);
                 if (parsingList != null){
                     mDataset.clear();
+                    mAdapter.notifyDataSetChanged();
                     mDataset.addAll(parsingList);
                     mAdapter.notifyItemRangeInserted(0, mDataset.size());
 

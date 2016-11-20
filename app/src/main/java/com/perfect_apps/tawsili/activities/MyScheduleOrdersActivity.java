@@ -35,6 +35,7 @@ import com.perfect_apps.tawsili.adapters.MyRidesItemsAdapter;
 import com.perfect_apps.tawsili.adapters.MyScheduleRidesItemsAdapter;
 import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.models.SchedualObject;
+import com.perfect_apps.tawsili.parser.JsonParser;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
@@ -276,8 +277,16 @@ public class MyScheduleOrdersActivity extends LocalizationActivity
             public void onResponse(String response) {
                 Log.d("getUserSchedule", response.toString());
                 response = StringEscapeUtils.unescapeJava(response);
+                List<SchedualObject> parsingList = JsonParser
+                        .parseUserOrders(response);
+                if (parsingList != null){
+                    mDataset.clear();
+                    mAdapter.notifyDataSetChanged();
+                    mDataset.addAll(parsingList);
+                    mAdapter.notifyItemRangeInserted(0, mDataset.size());
 
-                onRefreshComplete();
+                    onRefreshComplete();
+                }
 
             }
         }, new Response.ErrorListener() {
