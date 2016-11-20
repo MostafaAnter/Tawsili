@@ -180,6 +180,14 @@
         <activity
             android:name=".activities.MyScheduleOrdersActivity"
             android:label="@string/title_activity_my_schedule_orders"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.RateActivity"
+            android:label="@string/title_activity_rate"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.RateCategoriyActivity"
+            android:label="@string/title_activity_rate_categoriy"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
