@@ -514,44 +514,46 @@ public class YourRideActivity extends LocalizationActivity
                         if (status.equalsIgnoreCase("Canceled by Client")
                                 || status.equalsIgnoreCase("Canceled by Admin")
                                 || status.equalsIgnoreCase("Client Didn't Attend")) {
-                            final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(YourRideActivity.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("Order Canceled!")
-                                    .setContentText("this order is missed if you want, create new one")
-                                    .setConfirmText("Ok, i know")
-                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                        @Override
-                                        public void onClick(SweetAlertDialog sDialog) {
-                                            sDialog.dismissWithAnimation();
+                            if (rebeate) {
+                                final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(YourRideActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                        .setTitleText("Order Canceled!")
+                                        .setContentText("this order is missed if you want, create new one")
+                                        .setConfirmText("Ok, i know")
+                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                            @Override
+                                            public void onClick(SweetAlertDialog sDialog) {
+                                                sDialog.dismissWithAnimation();
+                                            }
+                                        });
+                                sweetAlertDialog.show();
+                                new AsyncTask<Void, Void, Void>() {
+
+                                    @Override
+                                    protected Void doInBackground(Void... params) {
+                                        try {
+                                            Thread.sleep(2000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
                                         }
-                                    });
-                            sweetAlertDialog.show();
-                            new AsyncTask<Void, Void, Void>() {
-
-                                @Override
-                                protected Void doInBackground(Void... params) {
-                                    try {
-                                        Thread.sleep(2000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
+                                        return null;
                                     }
-                                    return null;
-                                }
 
-                                @Override
-                                protected void onPostExecute(Void aVoid) {
-                                    super.onPostExecute(aVoid);
-                                    if (rebeate) {
-                                        sweetAlertDialog.dismissWithAnimation();
-                                        rebeate = false;
-                                        mHandler.removeCallbacksAndMessages(null);
-                                        Intent intent = new Intent(YourRideActivity.this,
-                                                PickLocationActivity.class)
-                                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        finish();
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+                                        if (rebeate) {
+                                            sweetAlertDialog.dismissWithAnimation();
+                                            rebeate = false;
+                                            mHandler.removeCallbacksAndMessages(null);
+                                            Intent intent = new Intent(YourRideActivity.this,
+                                                    PickLocationActivity.class)
+                                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        }
                                     }
-                                }
-                            }.execute();
+                                }.execute();
+                            }
 
                         } else if (status.equalsIgnoreCase("On Ride")) {
                             if (rebeate) {
@@ -825,9 +827,18 @@ public class YourRideActivity extends LocalizationActivity
             public void onResponse(String response) {
                 Log.d("checkOrder", response.toString());
                 sweetDialogHelper.dismissDialog();
-                startActivity(new Intent(YourRideActivity.this, PickLocationActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+
+                if (rebeate) {
+                    rebeate = false;
+                    mHandler.removeCallbacksAndMessages(null);
+                    Intent intent = new Intent(YourRideActivity.this,
+                            PickLocationActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                    overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                }
+
 
             }
         }, new Response.ErrorListener() {

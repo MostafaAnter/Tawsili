@@ -29,13 +29,24 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.adapters.MyRidesItemsAdapter;
+import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.models.MyRidesItem;
+import com.perfect_apps.tawsili.parser.JsonParser;
+import com.perfect_apps.tawsili.scheduleing_task.GetUserSchedule;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.DividerItemDecoration;
+
+import org.apache.commons.lang.StringEscapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +56,14 @@ import butterknife.ButterKnife;
 
 public class MyRidesActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
-    @BindView(R.id.swipeRefresh)SwipeRefreshLayout mSwipeRefresh;
-    @BindView(R.id.nav_view)NavigationView navigationView;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout mSwipeRefresh;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
 
 
     private static final String TAG = "ProviderChatsFragment";
@@ -91,7 +105,7 @@ public class MyRidesActivity extends LocalizationActivity
         setmRecyclerView(savedInstanceState);
     }
 
-    private void setmRecyclerView(Bundle savedInstanceState){
+    private void setmRecyclerView(Bundle savedInstanceState) {
         // initiate mDataSet
         mDataset = new ArrayList<>();
 
@@ -130,14 +144,16 @@ public class MyRidesActivity extends LocalizationActivity
             @Override
             public void onRefresh() {
                 Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
-
+                if (mSwipeRefresh != null && !mSwipeRefresh.isRefreshing())
+                    mSwipeRefresh.setRefreshing(true);
                 initiateRefresh();
             }
         });
 
-        initiateRefresh();
-        if (mSwipeRefresh != null &&!mSwipeRefresh.isRefreshing())
+        if (mSwipeRefresh != null && !mSwipeRefresh.isRefreshing()) {
             mSwipeRefresh.setRefreshing(true);
+            initiateRefresh();
+        }
     }
 
     private void setToolbar() {
@@ -180,7 +196,7 @@ public class MyRidesActivity extends LocalizationActivity
 
         } else if (id == R.id.settings) {
             startActivity(new Intent(MyRidesActivity.this, SettingsActivity.class));
-        }else if (id == R.id.english_speaking){
+        } else if (id == R.id.english_speaking) {
             showSingleChoiceListDrivereLangaugeAlertDialog();
         }
 
@@ -190,15 +206,15 @@ public class MyRidesActivity extends LocalizationActivity
     }
 
     //change font of drawer
-    private void changeFontOfNavigation(){
+    private void changeFontOfNavigation() {
         Menu m = navigationView.getMenu();
-        for (int i=0;i<m.size();i++) {
+        for (int i = 0; i < m.size(); i++) {
             MenuItem mi = m.getItem(i);
 
             //for aapplying a font to subMenu ...
             SubMenu subMenu = mi.getSubMenu();
-            if (subMenu!=null && subMenu.size() >0 ) {
-                for (int j=0; j <subMenu.size();j++) {
+            if (subMenu != null && subMenu.size() > 0) {
+                for (int j = 0; j < subMenu.size(); j++) {
                     MenuItem subMenuItem = subMenu.getItem(j);
                     applyFontToMenuItem(subMenuItem);
                 }
@@ -212,7 +228,7 @@ public class MyRidesActivity extends LocalizationActivity
     private void applyFontToMenuItem(MenuItem mi) {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         SpannableString mNewTitle = new SpannableString(mi.getTitle());
-        mNewTitle.setSpan(new CustomTypefaceSpan("" , font), 0 , mNewTitle.length(),  Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        mNewTitle.setSpan(new CustomTypefaceSpan("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         mi.setTitle(mNewTitle);
     }
 
@@ -228,54 +244,56 @@ public class MyRidesActivity extends LocalizationActivity
         switch (layoutManagerType) {
             case GRID_LAYOUT_MANAGER:
                 mLayoutManager = new GridLayoutManager(this, SPAN_COUNT);
-                mCurrentLayoutManagerType =  LayoutManagerType.GRID_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
                 break;
             case LINEAR_LAYOUT_MANAGER:
                 mLayoutManager = new LinearLayoutManager(this);
-                mCurrentLayoutManagerType =  LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
                 break;
             default:
                 mLayoutManager = new LinearLayoutManager(this);
-                mCurrentLayoutManagerType =  LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         }
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
 
-    private void initiateRefresh(){
-        new  FakTask().execute();
+    private void initiateRefresh() {
+        getUserOrders();
     }
 
-    private void onRefreshComplete(){
+    private void onRefreshComplete() {
         if (mSwipeRefresh.isRefreshing()) {
             mSwipeRefresh.setRefreshing(false);
         }
     }
 
-    private class FakTask extends AsyncTask<Void, Void, Void> {
+    private void getUserOrders() {
+        String url = BuildConfig.API_BASE_URL + "userorders.php?id="
+                + new TawsiliPrefStore(MyRidesActivity.this).getPreferenceValue(Constants.userId);
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            @Override
+            public void onResponse(String response) {
+                Log.d("getUserSchedule", response.toString());
+                response = StringEscapeUtils.unescapeJava(response);
+
+                onRefreshComplete();
+
             }
-            return null;
-        }
+        }, new Response.ErrorListener() {
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            MyRidesItem inboxItem = new MyRidesItem();
-            for (int i = 0;  i < 20; i++){
-                mDataset.add(inboxItem);
-                mAdapter.notifyDataSetChanged();
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("checkOrder", "Error: " + error.getMessage());
+                onRefreshComplete();
+
             }
-
-            onRefreshComplete();
-        }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 
     // change driver language
@@ -315,8 +333,8 @@ public class MyRidesActivity extends LocalizationActivity
                 .show();
     }
 
-    private void setDriverLanguage(String langauge){
-        switch (langauge){
+    private void setDriverLanguage(String langauge) {
+        switch (langauge) {
             case "en":
                 new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_DRIVER_LANGUAGE, 2);
                 break;
@@ -327,7 +345,7 @@ public class MyRidesActivity extends LocalizationActivity
 
     }
 
-    private String getDriverLanguage(){
+    private String getDriverLanguage() {
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
     }
