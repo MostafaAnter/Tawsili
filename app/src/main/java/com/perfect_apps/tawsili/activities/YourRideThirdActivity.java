@@ -34,6 +34,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -49,17 +51,22 @@ import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.fragments.RatingDialogFragment;
+import com.perfect_apps.tawsili.models.PickDateEvent;
+import com.perfect_apps.tawsili.models.RateEvent;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -98,6 +105,9 @@ public class YourRideThirdActivity extends LocalizationActivity
     @BindView(R.id.ratingView)
     LinearLayout ratingView;
 
+    private List<Marker> markers;
+    private Marker marker1, marker2;
+
 
     private GoogleMap mMap;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
@@ -115,6 +125,8 @@ public class YourRideThirdActivity extends LocalizationActivity
         if (servicesOK()) {
             initMap();
         }
+
+        markers = new ArrayList<>();
 
         orderId = getIntent().getStringExtra("orderId");
 
@@ -182,7 +194,6 @@ public class YourRideThirdActivity extends LocalizationActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
             startActivity(new Intent(YourRideThirdActivity.this, PickLocationActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
             overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
@@ -288,8 +299,22 @@ public class YourRideThirdActivity extends LocalizationActivity
         }
     }
 
+    @Subscribe
+    public void onMessageEvent(RateEvent event) {
+        startActivity(new Intent(YourRideThirdActivity.this, PickLocationActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+        overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
     @Override
     protected void onStop() {
+        EventBus.getDefault().unregister(this);
         super.onStop();
         if (mMap != null) {
             MapStateManager mgr = new MapStateManager(this);
@@ -344,10 +369,42 @@ public class YourRideThirdActivity extends LocalizationActivity
                         String real_fee = jsonObject.optString("real_fee");
                         double realFee = Double.valueOf(real_fee);
                         String payment_type = jsonObject.optString("payment_type");
+                        String driver_id = jsonObject.optString("driver_id");
+                        if (!driver_id.equalsIgnoreCase("null")&&
+                                !driver_id.isEmpty()){
+                            getDriver(driver_id);
+                        }
+
+                        tripFare.setText(paid_amount + " SR");
+                        totalFair.setText(real_fee + " SR");
+
+                        paidFromPalance.setText("0 SR");
+                        discount.setText("0 SR");
+                        if (realFee - paidAmount < 0){
+                            double discou =1 - (paidAmount - realFee) / paidAmount;
+                            discount.setText(discou + " SR");
+                            paidFromPalance.setText("0 SR");
+                        }else if (realFee - paidAmount > 0){
+                            discount.setText("0 SR");
+                            double discou = realFee - paidAmount;
+                            paidFromPalance.setText(discou + " SR");
+                        }
+
+                        String kms = jsonObject.optString("kms");
+                        distance.setText(kms + " KM");
+                        paidWith.setText(payment_type);
 
                         try {
                             if (from_lat != 0 && from_lng != 0) {
                                 getAddressInfo(new LatLng(from_lat, from_lng), pickUpInfo);
+
+                                if (marker1 != null){
+                                    marker1.remove();
+                                    markers.remove(marker1);
+                                    marker1 = null;
+                                }
+                                setUpMarker(mMap, new LatLng(from_lat,
+                                        from_lng));
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -356,13 +413,14 @@ public class YourRideThirdActivity extends LocalizationActivity
                         try {
                             if (to_lat != 0 && to_lng != 0) {
                                 getAddressInfo(new LatLng(to_lat, to_lng), dropOffInfo);
+                                marker2 = MapHelper.setUpMarkerAndReturnMarker(mMap,
+                                        new LatLng(to_lat,
+                                                to_lng), R.drawable.flag_marker);
+                                markers.add(marker2);
+                                centerAllMarker();
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-                        }
-                        if (to_lat != 0 && to_lng != 0) {
-                            MapHelper.setUpMarker(mMap, new LatLng(to_lat, to_lng), R.drawable.person_marker);
-
                         }
 
                     }
@@ -382,6 +440,45 @@ public class YourRideThirdActivity extends LocalizationActivity
         });
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    private void setUpMarker(GoogleMap mMap, LatLng latLng) {
+
+        marker1 = MapHelper.setUpMarkerAndReturnMarker(mMap, latLng, R.drawable.person_marker);
+        // add to marker list
+        markers.add(marker1);
+
+        //animate camera
+        updateZoom(mMap, latLng);
+
+        centerAllMarker();
+    }
+
+    private void centerAllMarker() {
+        if (markers.size() > 1) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (Marker marker : markers) {
+                builder.include(marker.getPosition());
+            }
+            LatLngBounds bounds = builder.build();
+            mMap.setPadding(200, 150, 200, 500);
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
+            mMap.animateCamera(cu);
+        }else if (markers.size() == 1){
+            // Zoom to the given bounds
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), 14));
+            // set draggable false done
+            mMap.getUiSettings().setScrollGesturesEnabled(false);
+        }
+
+
+    }
+
+    private void updateZoom(GoogleMap mMap, LatLng myLatLng) {
+        // Zoom to the given bounds
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 14));
+        // set draggable false done
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
     }
 
     private void getAddressInfo(LatLng latLng, TextView tv) throws IOException {
@@ -441,5 +538,73 @@ public class YourRideThirdActivity extends LocalizationActivity
         bundle1.putString("orderID", orderId);
         newFragment1.setArguments(bundle1);
         newFragment1.show(ft1, "dialog");
+    }
+
+    private void getDriver(String driverId){
+        String url = BuildConfig.API_BASE_URL + "getdriver.php?id=" + driverId;
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("checkOrder", response.toString());
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject driverObject = jsonArray.getJSONObject(i);
+                        String language_id = driverObject.optString("language_id");
+                        String language = driverObject.optString("language");
+                        String driver_id = driverObject.optString("driver_id");
+                        String ssno = driverObject.optString("ssno");
+                        String name = driverObject.optString("name");
+                        String mobile = driverObject.optString("mobile");
+                        String email = driverObject.optString("email");
+                        String birth_date = driverObject.optString("birth_date");
+                        String nationality = driverObject.optString("nationality");
+                        String hire_date = driverObject.optString("hire_date");
+                        String driving_license_exp = driverObject.optString("driving_license_exp");
+                        String status = driverObject.optString("status");
+                        String enable = driverObject.optString("enable");
+                        String img_name = driverObject.optString("img_name");
+                        String current_location_lat = driverObject.optString("current_location_lat");
+                        String current_location_lng = driverObject.optString("current_location_lng");
+                        String un = driverObject.optString("un");
+                        String car_id = driverObject.optString("car_id");
+                        String car_from = driverObject.optString("car_from");
+                        String car_by_un = driverObject.optString("car_by_un");
+                        String status_by = driverObject.optString("status_by");
+                        String car_type = driverObject.optString("car_type");
+                        String model = driverObject.optString("model");
+                        String category = driverObject.optString("category");
+                        String category2 = driverObject.optString("category2");
+                        String payment_machine = driverObject.optString("payment_machine");
+                        String capacity = driverObject.optString("capacity");
+                        String join_date = driverObject.optString("join_date");
+                        String udid = driverObject.optString("udid");
+                        String license_plate = driverObject.optString("license_plate");
+                        String rate = driverObject.optString("rate");
+
+                        ratingBar.setRating(Float.valueOf(rate));
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("checkOrder", "Error: " + error.getMessage());
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 }

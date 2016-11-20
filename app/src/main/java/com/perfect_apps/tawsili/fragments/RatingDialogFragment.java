@@ -3,6 +3,7 @@ package com.perfect_apps.tawsili.fragments;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -23,14 +24,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.app.AppController;
+import com.perfect_apps.tawsili.models.RateEvent;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -142,7 +138,7 @@ public class RatingDialogFragment extends DialogFragment implements View.OnClick
 
 
         String url = BuildConfig.API_BASE_URL + "updateorderrate.php?order="
-                + orderID + "&note=" + "&rate=" + ratingBar.getRating();
+                + orderID + "&note=" + "&rate=" + (int) ratingBar.getRating();
         StringRequest strReq = new StringRequest(Request.Method.GET,
                 url, new Response.Listener<String>() {
 
@@ -152,10 +148,33 @@ public class RatingDialogFragment extends DialogFragment implements View.OnClick
 
                 pDialog.dismissWithAnimation();
                 dismiss();
-                new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
-                        .setContentText(getString(R.string.done))
-                        .show();
+                final SweetAlertDialog sweetAlertDialog =
+                        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                        .setContentText(getString(R.string.done));
+                sweetAlertDialog.show();
+
+                new AsyncTask<Void, Void, Void>(){
+
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                }.execute();
+
+
                 dismiss();
+                EventBus.getDefault().post(new RateEvent());
 
             }
         }, new Response.ErrorListener() {
