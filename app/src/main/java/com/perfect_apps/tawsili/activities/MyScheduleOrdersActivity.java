@@ -42,6 +42,9 @@ import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.DividerItemDecoration;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -277,14 +280,28 @@ public class MyScheduleOrdersActivity extends LocalizationActivity
             public void onResponse(String response) {
                 Log.d("getUserSchedule", response.toString());
                 response = StringEscapeUtils.unescapeJava(response);
-                List<SchedualObject> parsingList = JsonParser
-                        .parseUserOrders(response);
-                if (parsingList != null){
-                    mDataset.clear();
-                    mAdapter.notifyDataSetChanged();
-                    mDataset.addAll(parsingList);
-                    mAdapter.notifyItemRangeInserted(0, mDataset.size());
+                JSONArray jsonArray = null;
+                String error = "";
+                try {
+                    jsonArray = new JSONArray(response);
+                    JSONObject jsonObject = jsonArray.optJSONObject(0);
+                    error = jsonObject.optString("error");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
+                if (!error.equalsIgnoreCase("Empty Data")) {
+                    List<SchedualObject> parsingList = JsonParser
+                            .parseUserOrders(response);
+                    if (parsingList != null){
+                        mDataset.clear();
+                        mAdapter.notifyDataSetChanged();
+                        mDataset.addAll(parsingList);
+                        mAdapter.notifyItemRangeInserted(0, mDataset.size());
+
+                        onRefreshComplete();
+                    }
+                }else {
                     onRefreshComplete();
                 }
 
