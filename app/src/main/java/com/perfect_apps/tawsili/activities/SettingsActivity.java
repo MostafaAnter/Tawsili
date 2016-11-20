@@ -166,6 +166,9 @@ public class SettingsActivity extends LocalizationActivity
         if (id == R.id.my_rides_history) {
             startActivity(new Intent(SettingsActivity.this, MyRidesActivity.class));
 
+        } else if (id == R.id.my_scheduled_rides) {
+            startActivity(new Intent(this, MyScheduleOrdersActivity.class));
+
         } else if (id == R.id.invite_friends) {
             startActivity(new Intent(SettingsActivity.this, InviteFriendActivity.class));
 

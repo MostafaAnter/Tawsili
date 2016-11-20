@@ -209,7 +209,10 @@ public class YourRideThirdActivity extends LocalizationActivity
         if (id == R.id.my_rides_history) {
             startActivity(new Intent(this, MyRidesActivity.class));
 
-        } else if (id == R.id.invite_friends) {
+        }else if (id == R.id.my_scheduled_rides) {
+            startActivity(new Intent(this, MyScheduleOrdersActivity.class));
+
+        }  else if (id == R.id.invite_friends) {
             startActivity(new Intent(this, InviteFriendActivity.class));
 
         } else if (id == R.id.settings) {

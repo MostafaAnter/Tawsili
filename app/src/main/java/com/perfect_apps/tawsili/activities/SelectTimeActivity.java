@@ -213,7 +213,10 @@ public class SelectTimeActivity extends LocalizationActivity
         if (id == R.id.my_rides_history) {
             startActivity(new Intent(SelectTimeActivity.this, MyRidesActivity.class));
 
-        } else if (id == R.id.invite_friends) {
+        }else if (id == R.id.my_scheduled_rides) {
+            startActivity(new Intent(this, MyScheduleOrdersActivity.class));
+
+        }  else if (id == R.id.invite_friends) {
             startActivity(new Intent(SelectTimeActivity.this, InviteFriendActivity.class));
 
         } else if (id == R.id.settings) {
