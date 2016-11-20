@@ -5,8 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,10 +18,7 @@ import android.widget.TextView;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.activities.FavoritePlacesActivity;
 import com.perfect_apps.tawsili.models.FavoritePlaceItem;
-import com.perfect_apps.tawsili.models.MyRidesItem;
 import com.perfect_apps.tawsili.store.FavoritePlacesStore;
-import com.perfect_apps.tawsili.store.TawsiliPrefStore;
-import com.perfect_apps.tawsili.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,8 +27,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by mostafa_anter on 10/14/16.

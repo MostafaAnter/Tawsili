@@ -277,7 +277,7 @@ public class MyRidesActivity extends LocalizationActivity
                 Log.d("getUserSchedule", response.toString());
                 response = StringEscapeUtils.unescapeJava(response);
                 List<SchedualObject> parsingList = JsonParser
-                        .parseScheduleList(response);
+                        .parseUserOrders(response);
                 if (parsingList != null){
                     mDataset.clear();
                     mDataset.addAll(parsingList);

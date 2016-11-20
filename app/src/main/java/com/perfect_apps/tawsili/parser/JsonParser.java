@@ -288,4 +288,49 @@ public class JsonParser {
             }
         return schedualObjects;
     }
+
+    public static List<SchedualObject> parseUserOrders(String feed){
+        JSONArray scheduleArray = null;
+        try {
+            scheduleArray = new JSONArray(feed);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        List<SchedualObject> schedualObjects = new ArrayList<>();
+
+        for (int i = 0; i < scheduleArray.length(); i++) {
+            JSONObject scheduleObject = null;
+            try {
+                scheduleObject = scheduleArray.getJSONObject(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            if (scheduleObject != null) {
+                String schedual_id = scheduleObject.optString("schedual_id");
+                String client_id = scheduleObject.optString("client_id");
+                String schedual_create_time = scheduleObject.optString("created_at");
+                String order_start_time = scheduleObject.optString("created_at");
+                String from_location_lat = scheduleObject.optString("from_location_lat");
+                String from_location_lng = scheduleObject.optString("from_location_lng");
+                String to_location_lat = scheduleObject.optString("to_location_lat");
+                String to_location_lng = scheduleObject.optString("to_location_lng");
+                String from_details = scheduleObject.optString("from_details");
+                String to_details = scheduleObject.optString("to_details");
+                String schedual_type = scheduleObject.optString("schedual_type");
+                String order_category = scheduleObject.optString("order_category");
+                String promocode = scheduleObject.optString("promocode");
+                String discount = scheduleObject.optString("discount");
+
+                schedualObjects.add(new SchedualObject(schedual_id,
+                        client_id, schedual_create_time, order_start_time,
+                        from_location_lat, from_location_lng, to_location_lat, to_location_lng,
+                        from_details, to_details, schedual_type, order_category, promocode,
+                        discount));
+
+            }
+
+        }
+        return schedualObjects;
+    }
 }
