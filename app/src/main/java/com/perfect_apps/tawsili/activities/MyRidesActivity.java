@@ -4,28 +4,23 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.SubMenu;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
@@ -38,9 +33,8 @@ import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
 import com.perfect_apps.tawsili.adapters.MyRidesItemsAdapter;
 import com.perfect_apps.tawsili.app.AppController;
-import com.perfect_apps.tawsili.models.MyRidesItem;
+import com.perfect_apps.tawsili.models.SchedualObject;
 import com.perfect_apps.tawsili.parser.JsonParser;
-import com.perfect_apps.tawsili.scheduleing_task.GetUserSchedule;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
@@ -80,7 +74,7 @@ public class MyRidesActivity extends LocalizationActivity
 
     protected MyRidesItemsAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected List<MyRidesItem> mDataset;
+    protected List<SchedualObject> mDataset;
 
 
     @Override
@@ -282,8 +276,16 @@ public class MyRidesActivity extends LocalizationActivity
             public void onResponse(String response) {
                 Log.d("getUserSchedule", response.toString());
                 response = StringEscapeUtils.unescapeJava(response);
+                List<SchedualObject> parsingList = JsonParser
+                        .parseScheduleList(response);
+                if (parsingList != null){
+                    mDataset.clear();
+                    mDataset.addAll(parsingList);
+                    mAdapter.notifyItemRangeInserted(0, mDataset.size());
 
-                onRefreshComplete();
+                    onRefreshComplete();
+                }
+
 
             }
         }, new Response.ErrorListener() {

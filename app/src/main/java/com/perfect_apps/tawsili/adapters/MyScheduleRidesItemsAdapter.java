@@ -16,7 +16,7 @@ import java.util.List;
  * Created by mostafa_anter on 10/14/16.
  */
 
-public class MyRidesItemsAdapter extends RecyclerView.Adapter<MyRidesItemsAdapter.ViewHolder> {
+public class MyScheduleRidesItemsAdapter extends RecyclerView.Adapter<MyScheduleRidesItemsAdapter.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
     private List<SchedualObject> mDataSet;
@@ -47,7 +47,7 @@ public class MyRidesItemsAdapter extends RecyclerView.Adapter<MyRidesItemsAdapte
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public MyRidesItemsAdapter(Context mContext, List<SchedualObject> dataSet) {
+    public MyScheduleRidesItemsAdapter(Context mContext, List<SchedualObject> dataSet) {
         this.mContext = mContext;
         mDataSet = dataSet;
     }
