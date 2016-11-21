@@ -59,15 +59,16 @@ public class RateCategoriyActivity extends LocalizationActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rate_categoriy);
         ButterKnife.bind(this);
-        setToolbar();
-        changeFontOfText();
-
         category = getIntent().getStringExtra(Constants.PREFERENCE_ORDER_TYPE);
         if (category != null){
             writeData(category, true);
         }else {
             writeData("1", true);
         }
+        setToolbar();
+        changeFontOfText();
+
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
