@@ -128,4 +128,11 @@
     <string name="you_have_new_trip">You have scheduling order</string>
     <string name="regular_family">Regular Family</string>
     <string name="special_family">Special Family</string>
+    <string name="starting">Starting :</string>
+    <string name="moving">Moving :</string>
+    <string name="waiting">Waiting :</string>
+    <string name="minimum">Minimum :</string>
+    <string name="airport_pickup">Airport Pickup :</string>
+    <string name="now">Now</string>
+    <string name="later">Later</string>
 </resources>

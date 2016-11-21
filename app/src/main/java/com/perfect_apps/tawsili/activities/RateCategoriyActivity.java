@@ -15,6 +15,8 @@ import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
@@ -27,10 +29,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RateCategoriyActivity extends LocalizationActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener{
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.nav_view)NavigationView navigationView;
+
+    @BindView(R.id.button1)Button button1;
+    @BindView(R.id.button2)Button button2;
+
+    @BindView(R.id.text1)TextView textView1;
+    @BindView(R.id.text2)TextView textView2;
+    @BindView(R.id.text3)TextView textView3;
+    @BindView(R.id.text4)TextView textView4;
+    @BindView(R.id.text5)TextView textView5;
+    @BindView(R.id.text6)TextView textView6;
+    @BindView(R.id.text7)TextView textView7;
+    @BindView(R.id.text8)TextView textView8;
+    @BindView(R.id.text9)TextView textView9;
+    @BindView(R.id.text10)TextView textView10;
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +69,9 @@ public class RateCategoriyActivity extends LocalizationActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         changeFontOfNavigation();
+
+        button1.setOnClickListener(this);
+        button2.setOnClickListener(this);
     }
 
     //change font of drawer
@@ -82,6 +105,19 @@ public class RateCategoriyActivity extends LocalizationActivity
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
 
+        button1.setTypeface(fontBold);
+        button2.setTypeface(fontBold);
+
+        textView1.setTypeface(font);
+        textView2.setTypeface(font);
+        textView3.setTypeface(font);
+        textView4.setTypeface(font);
+        textView5.setTypeface(font);
+        textView6.setTypeface(font);
+        textView7.setTypeface(font);
+        textView8.setTypeface(font);
+        textView9.setTypeface(font);
+        textView10.setTypeface(font);
     }
 
 
@@ -190,5 +226,15 @@ public class RateCategoriyActivity extends LocalizationActivity
     private String getDriverLanguage(){
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.button1:
+                break;
+            case R.id.button2:
+                break;
+        }
     }
 }
