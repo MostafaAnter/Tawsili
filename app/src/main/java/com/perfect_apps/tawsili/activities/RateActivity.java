@@ -15,6 +15,8 @@ import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
@@ -27,10 +29,23 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RateActivity extends LocalizationActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener{
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.nav_view)NavigationView navigationView;
+
+    @BindView(R.id.linearLayout1)LinearLayout linearLayout1;
+    @BindView(R.id.linearLayout2)LinearLayout linearLayout2;
+    @BindView(R.id.linearLayout3)LinearLayout linearLayout3;
+    @BindView(R.id.linearLayout4)LinearLayout linearLayout4;
+    @BindView(R.id.linearLayout5)LinearLayout linearLayout5;
+
+    @BindView(R.id.text7)TextView textView7;
+    @BindView(R.id.text8)TextView textView8;
+    @BindView(R.id.text9)TextView textView9;
+    @BindView(R.id.text10)TextView textView10;
+    @BindView(R.id.text11)TextView textView11;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +66,12 @@ public class RateActivity extends LocalizationActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         changeFontOfNavigation();
+
+        linearLayout1.setOnClickListener(this);
+        linearLayout2.setOnClickListener(this);
+        linearLayout3.setOnClickListener(this);
+        linearLayout4.setOnClickListener(this);
+        linearLayout5.setOnClickListener(this);
     }
 
     //change font of drawer
@@ -83,6 +104,11 @@ public class RateActivity extends LocalizationActivity
     private void changeFontOfText(){
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
+        textView7.setTypeface(font);
+        textView8.setTypeface(font);
+        textView9.setTypeface(font);
+        textView10.setTypeface(font);
+        textView11.setTypeface(font);
 
     }
 
@@ -192,5 +218,36 @@ public class RateActivity extends LocalizationActivity
     private String getDriverLanguage(){
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.linearLayout1:
+                Intent intent1 = new Intent(this, RateCategoriyActivity.class);
+                intent1.putExtra(Constants.PREFERENCE_ORDER_TYPE, "1");
+                startActivity(intent1);
+                break;
+            case R.id.linearLayout2:
+                Intent intent2 = new Intent(this, RateCategoriyActivity.class);
+                intent2.putExtra(Constants.PREFERENCE_ORDER_TYPE, "2");
+                startActivity(intent2);
+                break;
+            case R.id.linearLayout3:
+                Intent intent3 = new Intent(this, RateCategoriyActivity.class);
+                intent3.putExtra(Constants.PREFERENCE_ORDER_TYPE, "3");
+                startActivity(intent3);
+                break;
+            case R.id.linearLayout4:
+                Intent intent4 = new Intent(this, RateCategoriyActivity.class);
+                intent4.putExtra(Constants.PREFERENCE_ORDER_TYPE, "4");
+                startActivity(intent4);
+                break;
+            case R.id.linearLayout5:
+                Intent intent5 = new Intent(this, RateCategoriyActivity.class);
+                intent5.putExtra(Constants.PREFERENCE_ORDER_TYPE, "5");
+                startActivity(intent5);
+                break;
+        }
     }
 }

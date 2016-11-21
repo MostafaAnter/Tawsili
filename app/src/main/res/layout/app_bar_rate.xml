@@ -22,7 +22,7 @@
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/rate"
+                android:text="@string/rates"
                 android:textStyle="bold"
                 style="?android:attr/textAppearanceLarge" />
         </android.support.v7.widget.Toolbar>

@@ -119,6 +119,7 @@
                 android:layout_height="1dp"
                 android:background="@color/dark_gray"/>
             <LinearLayout
+                android:id="@+id/rateView"
                 android:layout_width="match_parent"
                 android:layout_height="?listPreferredItemHeightSmall"
                 android:orientation="horizontal"

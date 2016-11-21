@@ -147,4 +147,6 @@
     <string name="title_activity_my_schedule_orders" translatable="false">MyScheduleOrdersActivity</string>
     <string name="title_activity_rate" translatable="false">RateActivity</string>
     <string name="title_activity_rate_categoriy" translatable="false">RateCategoriyActivity</string>
+    <string name="regular_family">Regular Family</string>
+    <string name="special_family">Special Family</string>
 </resources>

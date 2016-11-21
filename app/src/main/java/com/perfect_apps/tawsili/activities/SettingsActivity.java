@@ -39,6 +39,7 @@ public class SettingsActivity extends LocalizationActivity
 , View.OnClickListener{
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.change_language) LinearLayout linearLayout1;
+    @BindView(R.id.rateView)LinearLayout rateView;
     @BindView(R.id.button1)Button button1;
     @BindView(R.id.text1)TextView textView1;
     @BindView(R.id.text2)TextView textView2;
@@ -74,6 +75,7 @@ public class SettingsActivity extends LocalizationActivity
 
         linearLayout1.setOnClickListener(this);
         button1.setOnClickListener(this);
+        rateView.setOnClickListener(this);
     }
 
     //change font of drawer
@@ -194,6 +196,11 @@ public class SettingsActivity extends LocalizationActivity
                 new FavoritePlacesStore(this).clearPreference();
                 new SceduleStore(this).clearPreference();
                 startActivity(new Intent(this, SplashActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
+                break;
+            case R.id.rateView:
+                startActivity(new Intent(this, RateActivity.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
