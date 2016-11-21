@@ -259,7 +259,7 @@ public class YourRideTwoActivity extends LocalizationActivity
         int checkedItemIndex;
 
         switch (getDriverLanguage()) {
-            case "1":
+            case "2":
                 checkedItemIndex = 1;
                 break;
             default:
