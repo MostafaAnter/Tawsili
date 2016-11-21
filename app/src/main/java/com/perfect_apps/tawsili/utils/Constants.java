@@ -58,30 +58,40 @@ public class Constants {
     public static final float runningCostOfEconomy = 1.3f;
     public static final float minimumCostOfEconomyNow = 11;
     public static final float minimumCostOfEconomyLater = 40;
+    public static final float waitingCostOfEconomy = 36;
+    public static final float pickFromAirportCostOfEconomy = 15;
 
     public static final float startCostOfBusinessNow = 8;
     public static final float startCostOfBusinessLater = 15;
     public static final float runningCostOfBusiness = 1.5f;
     public static final float minimumCostOfBusinessNow = 17;
     public static final float minimumCostOfBusinessLater = 40;
+    public static final float waitingCostOfBusiness = 48;
+    public static final float pickFromAirportCostOfBusiness = 15;
 
     public static final float startCostOfVIPNow = 13;
     public static final float startCostOfVIPLater = 25;
     public static final float runningCostOfVIP = 2;
     public static final float minimumCostOfVIPNow = 26;
     public static final float minimumCostOfVIPLater = 65;
+    public static final float waitingCostOfVIP = 75;
+    public static final float pickFromAirportCostOfVIP = 20;
 
     public static final float startCostOfFamilitRegularNow = 15;
     public static final float startCostOfFamilitRegularLater = 30;
     public static final float runningCostOfFamilitRegular = 2.5f;
     public static final float minimumCostOfFamilitRegularNow = 29;
     public static final float minimumCostOfFamilitRegularLater = 70;
+    public static final float waitingCostOfFamilitRegular = 78;
+    public static final float pickFromAirportCostOfFamilitRegular = 25;
 
     public static final float startCostOfFamilitSpecialNow = 20;
     public static final float startCostOfFamilitSpecialLater = 35;
     public static final float runningCostOfFamilitSpecial = 3.5f;
     public static final float minimumCostOfFamilitSpecialNow = 35;
     public static final float minimumCostOfFamilitSpecialLater = 80;
+    public static final float waitingCostOfFamilitSpecial = 84;
+    public static final float pickFromAirportCostOfFamilitSpecial= 35;
 
 
 }

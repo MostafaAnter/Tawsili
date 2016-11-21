@@ -3,6 +3,7 @@ package com.perfect_apps.tawsili.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -50,6 +51,7 @@ public class RateCategoriyActivity extends LocalizationActivity
     @BindView(R.id.text10)TextView textView10;
 
 
+    private static String category = "1";
 
 
     @Override
@@ -59,6 +61,13 @@ public class RateCategoriyActivity extends LocalizationActivity
         ButterKnife.bind(this);
         setToolbar();
         changeFontOfText();
+
+        category = getIntent().getStringExtra(Constants.PREFERENCE_ORDER_TYPE);
+        if (category != null){
+            writeData(category, true);
+        }else {
+            writeData("1", true);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -72,6 +81,98 @@ public class RateCategoriyActivity extends LocalizationActivity
 
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
+    }
+
+    private void writeData(String category, boolean isNow){
+        float startCost = 0;
+        float runningCost = 0;
+        float minimumCost = 0;
+        float waitingCost = 0;
+        float pickFromAir = 0;
+        switch (category){
+            case "1":
+                if (isNow){
+                    startCost = Constants.startCostOfEconomyNow;
+                    runningCost = Constants.runningCostOfEconomy;
+                    minimumCost = Constants.minimumCostOfEconomyNow;
+                    waitingCost = Constants.waitingCostOfEconomy;
+                    pickFromAir = Constants.pickFromAirportCostOfEconomy;
+                }else {
+                    startCost = Constants.startCostOfEconomyLater;
+                    runningCost = Constants.runningCostOfEconomy;
+                    minimumCost = Constants.minimumCostOfEconomyLater;
+                    waitingCost = Constants.waitingCostOfEconomy;
+                    pickFromAir = Constants.pickFromAirportCostOfEconomy;
+                }
+                break;
+            case "2":
+                if (isNow){
+                    startCost = Constants.startCostOfBusinessNow;
+                    runningCost = Constants.runningCostOfBusiness;
+                    minimumCost = Constants.minimumCostOfBusinessNow;
+                    waitingCost = Constants.waitingCostOfBusiness;
+                    pickFromAir = Constants.pickFromAirportCostOfBusiness;
+                }else {
+                    startCost = Constants.startCostOfBusinessLater;
+                    runningCost = Constants.runningCostOfBusiness;
+                    minimumCost = Constants.minimumCostOfBusinessLater;
+                    waitingCost = Constants.waitingCostOfBusiness;
+                    pickFromAir = Constants.pickFromAirportCostOfBusiness;
+                }
+                break;
+            case "3":
+                if (isNow){
+                    startCost = Constants.startCostOfVIPNow;
+                    runningCost = Constants.runningCostOfVIP;
+                    minimumCost = Constants.minimumCostOfVIPNow;
+                    waitingCost = Constants.waitingCostOfVIP;
+                    pickFromAir = Constants.pickFromAirportCostOfVIP;
+                }else {
+                    startCost = Constants.startCostOfVIPLater;
+                    runningCost = Constants.runningCostOfVIP;
+                    minimumCost = Constants.minimumCostOfVIPLater;
+                    waitingCost = Constants.waitingCostOfVIP;
+                    pickFromAir = Constants.pickFromAirportCostOfVIP;
+                }
+                break;
+            case "4":
+                if (isNow){
+                    startCost = Constants.startCostOfFamilitRegularNow;
+                    runningCost = Constants.runningCostOfFamilitRegular;
+                    minimumCost = Constants.minimumCostOfFamilitRegularNow;
+                    waitingCost = Constants.waitingCostOfFamilitRegular;
+                    pickFromAir = Constants.pickFromAirportCostOfFamilitRegular;
+                }else {
+                    startCost = Constants.startCostOfFamilitRegularLater;
+                    runningCost = Constants.runningCostOfFamilitRegular;
+                    minimumCost = Constants.minimumCostOfFamilitRegularLater;
+                    waitingCost = Constants.waitingCostOfFamilitRegular;
+                    pickFromAir = Constants.pickFromAirportCostOfFamilitRegular;
+                }
+                break;
+            case "5":
+                if (isNow){
+                    startCost = Constants.startCostOfFamilitSpecialNow;
+                    runningCost = Constants.runningCostOfFamilitSpecial;
+                    minimumCost = Constants.minimumCostOfFamilitSpecialNow;
+                    waitingCost = Constants.waitingCostOfFamilitSpecial;
+                    pickFromAir = Constants.pickFromAirportCostOfFamilitSpecial;
+                }else {
+                    startCost = Constants.startCostOfFamilitSpecialLater;
+                    runningCost = Constants.runningCostOfFamilitSpecial;
+                    minimumCost = Constants.minimumCostOfFamilitSpecialLater;
+                    waitingCost = Constants.waitingCostOfFamilitSpecial;
+                    pickFromAir = Constants.pickFromAirportCostOfFamilitSpecial;
+                }
+                break;
+        }
+
+        textView2.setText(startCost + "");
+        textView4.setText(runningCost + " per km");
+        textView6.setText(waitingCost + " per hour");
+        textView8.setText(minimumCost + "");
+        textView10.setText(pickFromAir + "");
+
     }
 
     //change font of drawer
@@ -135,6 +236,25 @@ public class RateCategoriyActivity extends LocalizationActivity
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
         TextView tv = (TextView) toolbar.findViewById(R.id.toolbar_title);
         tv.setTypeface(font);
+
+        switch (category){
+            case "1":
+                tv.setText(getString(R.string.economy));
+                break;
+            case "2":
+                tv.setText(getString(R.string.business));
+                break;
+            case "3":
+                tv.setText(getString(R.string.vip));
+                break;
+            case "4":
+                tv.setText(getString(R.string.regular_family));
+                break;
+            case "5":
+                tv.setText(getString(R.string.special_family));
+                break;
+
+        }
 
     }
 
@@ -232,8 +352,18 @@ public class RateCategoriyActivity extends LocalizationActivity
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button1:
+                button1.setBackgroundResource(R.drawable.shape_button);
+                button1.setTextColor(Color.BLACK);
+                button2.setBackgroundResource(R.drawable.shape_button_dark);
+                button2.setTextColor(Color.WHITE);
+                writeData(category, true);
                 break;
             case R.id.button2:
+                button2.setBackgroundResource(R.drawable.shape_button);
+                button2.setTextColor(Color.BLACK);
+                button1.setBackgroundResource(R.drawable.shape_button_dark);
+                button1.setTextColor(Color.WHITE);
+                writeData(category, false);
                 break;
         }
     }

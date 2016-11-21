@@ -125,4 +125,13 @@
     <string name="total_fare">المبلغ الكلى</string>
     <string name="trip_fair">مبلغ الرحلة</string>
     <string name="you_have_new_trip">لديك طلب مجدول!</string>
+    <string name="airport_pickup">التوصيل من المطار :</string>
+    <string name="later">لاحقاً</string>
+    <string name="minimum">الحد الأدنى :</string>
+    <string name="moving">اثناء التحرك :</string>
+    <string name="now">الأن</string>
+    <string name="regular_family">"أسرة عادي "</string>
+    <string name="special_family">أسرة خاص</string>
+    <string name="starting">البدء :</string>
+    <string name="waiting">الأنتظار :</string>
 </resources>
