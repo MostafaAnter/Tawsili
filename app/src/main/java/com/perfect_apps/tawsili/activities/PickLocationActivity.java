@@ -16,7 +16,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -183,6 +185,14 @@ public class PickLocationActivity extends LocalizationActivity
         // start service of getting uer schedule
         Intent getUserSchedule = new Intent(this, GetUserSchedule.class);
         startService(getUserSchedule);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setMapWithCurrentLocation();
+            }
+        });
     }
 
     private void initGoogleApiClient() {

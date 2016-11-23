@@ -8,9 +8,9 @@ import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +19,6 @@ import android.text.SpannableString;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
@@ -38,12 +37,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.perfect_apps.tawsili.R;
-import com.perfect_apps.tawsili.models.PickTimeEvent;
 import com.perfect_apps.tawsili.models.TouchMapEvent;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
-import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -93,6 +90,14 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
         changeFontOfNavigation();
 
         confirmButton.setOnClickListener(this);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                initiateMarker();
+            }
+        });
     }
 
     //change font of drawer
@@ -311,7 +316,11 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
         mMap = googleMap;
 
 
+        initiateMarker();
 
+    }
+
+    private void initiateMarker() {
         if (getIntent().getStringExtra(Constants.comingFrom) != null
                 && getIntent().getStringExtra(Constants.comingFrom).equalsIgnoreCase("pick_current_location")) {
             double lat = Double.valueOf(new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat));
@@ -342,7 +351,6 @@ public class ConfirmPickLocationActivity extends LocalizationActivity
             updateZoom(mMap, new LatLng(lat, lng));
 
         }
-
     }
 
     private void updateZoom(GoogleMap mMap, LatLng myLatLng) {

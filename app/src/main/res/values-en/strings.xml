@@ -135,4 +135,6 @@
     <string name="airport_pickup">Airport Pickup :</string>
     <string name="now">Now</string>
     <string name="later">Later</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_password">Confirm new password</string>
 </resources>

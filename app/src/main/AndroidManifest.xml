@@ -188,6 +188,10 @@
         <activity
             android:name=".activities.RateCategoriyActivity"
             android:label="@string/title_activity_rate_categoriy"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.ChangePasswordActivity"
+            android:label="@string/title_activity_change_password"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

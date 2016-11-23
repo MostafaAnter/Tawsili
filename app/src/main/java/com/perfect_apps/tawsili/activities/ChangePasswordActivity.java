@@ -20,13 +20,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
-import com.perfect_apps.tawsili.store.FavoritePlacesStore;
-import com.perfect_apps.tawsili.store.SceduleStore;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
@@ -34,35 +32,27 @@ import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SettingsActivity extends LocalizationActivity
+public class ChangePasswordActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener
-, View.OnClickListener{
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.change_language) LinearLayout linearLayout1;
-    @BindView(R.id.rateView)LinearLayout rateView;
-    @BindView(R.id.change_password)LinearLayout changePasswordView;
-    @BindView(R.id.button1)Button button1;
-    @BindView(R.id.text1)TextView textView1;
-    @BindView(R.id.text2)TextView textView2;
-    @BindView(R.id.text3)TextView textView3;
-    @BindView(R.id.text4)TextView textView4;
-    @BindView(R.id.text5)TextView textView5;
-    @BindView(R.id.text6)TextView textView6;
-    @BindView(R.id.text7)TextView textView7;
-    @BindView(R.id.text8)TextView textView8;
-    @BindView(R.id.text9)TextView textView9;
-    @BindView(R.id.text10)TextView textView10;
+        , View.OnClickListener {
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.nav_view)NavigationView navigationView;
+
+    @BindView(R.id.editText1)EditText editText1;
+    @BindView(R.id.editText2)EditText editText2;
+    @BindView(R.id.editText3)EditText editText3;
+
+    @BindView(R.id.button1)Button button1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_change_password);
+
         ButterKnife.bind(this);
         setToolbar();
         changeFontOfText();
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -74,10 +64,7 @@ public class SettingsActivity extends LocalizationActivity
         navigationView.setNavigationItemSelectedListener(this);
         changeFontOfNavigation();
 
-        linearLayout1.setOnClickListener(this);
         button1.setOnClickListener(this);
-        rateView.setOnClickListener(this);
-        changePasswordView.setOnClickListener(this);
     }
 
     //change font of drawer
@@ -110,19 +97,9 @@ public class SettingsActivity extends LocalizationActivity
     private void changeFontOfText(){
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/bold.ttf");
-        textView1.setTypeface(fontBold);
-        textView2.setTypeface(font);
-        textView3.setTypeface(fontBold);
-        textView4.setTypeface(font);
-        textView5.setTypeface(fontBold);
-        textView6.setTypeface(font);
-        textView7.setTypeface(font);
-        textView8.setTypeface(font);
-        textView9.setTypeface(font);
-        textView10.setTypeface(font);
-
-        button1.setTypeface(font);
-
+        editText1.setTypeface(font);
+        editText2.setTypeface(font);
+        editText3.setTypeface(font);
     }
 
 
@@ -148,16 +125,8 @@ public class SettingsActivity extends LocalizationActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-
-            startActivity(new Intent(SettingsActivity.this, PickLocationActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-            overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
-
         } else {
             super.onBackPressed();
-            startActivity(new Intent(SettingsActivity.this, PickLocationActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-            overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
         }
     }
 
@@ -168,16 +137,16 @@ public class SettingsActivity extends LocalizationActivity
         int id = item.getItemId();
 
         if (id == R.id.my_rides_history) {
-            startActivity(new Intent(SettingsActivity.this, MyRidesActivity.class));
+            startActivity(new Intent(this, MyRidesActivity.class));
 
         } else if (id == R.id.my_scheduled_rides) {
             startActivity(new Intent(this, MyScheduleOrdersActivity.class));
 
         } else if (id == R.id.invite_friends) {
-            startActivity(new Intent(SettingsActivity.this, InviteFriendActivity.class));
+            startActivity(new Intent(this, InviteFriendActivity.class));
 
         } else if (id == R.id.settings) {
-            startActivity(new Intent(SettingsActivity.this, SettingsActivity.class));
+            startActivity(new Intent(this, SettingsActivity.class));
         }else if (id == R.id.english_speaking){
             showSingleChoiceListDrivereLangaugeAlertDialog();
         }
@@ -185,78 +154,6 @@ public class SettingsActivity extends LocalizationActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.change_language:
-                showSingleChoiceListLangaugeAlertDialog();
-                break;
-            case R.id.button1:
-                new TawsiliPrefStore(this).clearPreference();
-                new FavoritePlacesStore(this).clearPreference();
-                new SceduleStore(this).clearPreference();
-                startActivity(new Intent(this, SplashActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
-                break;
-            case R.id.rateView:
-                startActivity(new Intent(this, RateActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
-                break;
-            case R.id.change_password:
-                startActivity(new Intent(this, ChangePasswordActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
-                break;
-
-        }
-    }
-
-    // change language
-    private String mCheckedItem;
-
-    public void showSingleChoiceListLangaugeAlertDialog() {
-        final String[] list = new String[]{getString(R.string.language_arabic), getString(R.string.language_en)};
-        int checkedItemIndex;
-
-        switch (getLanguage()) {
-            case "en":
-                checkedItemIndex = 1;
-                break;
-            default:
-                checkedItemIndex = 0;
-
-        }
-        mCheckedItem = list[checkedItemIndex];
-
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.language))
-                .setSingleChoiceItems(list,
-                        checkedItemIndex,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mCheckedItem = list[which];
-                                if (which == 0) {
-                                    setLanguage("ar");
-                                    changeFirstTimeOpenAppState(4);
-                                    dialog.dismiss();
-                                } else if (which == 1) {
-                                    setLanguage("en");
-                                    changeFirstTimeOpenAppState(5);
-                                    dialog.dismiss();
-                                }
-                            }
-                        })
-                .show();
-    }
-
-    private void changeFirstTimeOpenAppState(int language) {
-        new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_FIRST_TIME_OPEN_APP_STATE, 1);
-        new TawsiliPrefStore(this).addPreference(Constants.PREFERENCE_LANGUAGE, language);
     }
 
     // change driver language
@@ -313,4 +210,12 @@ public class SettingsActivity extends LocalizationActivity
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button1:
+
+                break;
+        }
+    }
 }
