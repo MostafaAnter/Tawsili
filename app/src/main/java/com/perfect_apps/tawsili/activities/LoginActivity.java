@@ -278,6 +278,8 @@ public class LoginActivity extends LocalizationActivity implements View.OnClickL
                     startActivity(new Intent(LoginActivity.this, AskForEmailActivity.class));
                 } else if (status.equalsIgnoreCase(Constants.statusActive)) {
                     new TawsiliPrefStore(this).addPreference(Constants.userId, userId);
+                    new TawsiliPrefStore(this).addPreference(Constants.userEmail, email);
+                    new TawsiliPrefStore(this).addPreference(Constants.userPhone, mobile);
                     startActivity(new Intent(LoginActivity.this, PickLocationActivity.class)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                     overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);

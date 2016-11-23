@@ -39,7 +39,7 @@
                     android:id="@+id/text2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mostafa Anter Sayd" />
+                    android:text="" />
 
             </LinearLayout>
 
@@ -61,7 +61,7 @@
                     android:id="@+id/text4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="01117833303" />
+                    android:text="" />
 
             </LinearLayout>
 
@@ -83,7 +83,7 @@
                     android:id="@id/text6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="mostafa3nter@gmail.com" />
+                    android:text="" />
 
             </LinearLayout>
 

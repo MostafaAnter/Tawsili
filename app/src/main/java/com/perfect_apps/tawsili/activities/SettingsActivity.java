@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,12 +25,25 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.store.FavoritePlacesStore;
 import com.perfect_apps.tawsili.store.SceduleStore;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
+import com.perfect_apps.tawsili.utils.SweetDialogHelper;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +51,9 @@ import butterknife.ButterKnife;
 public class SettingsActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener
 , View.OnClickListener{
+
+    private static final String TAG = "SettingsActivity";
+
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.change_language) LinearLayout linearLayout1;
     @BindView(R.id.rateView)LinearLayout rateView;
@@ -78,6 +95,55 @@ public class SettingsActivity extends LocalizationActivity
         button1.setOnClickListener(this);
         rateView.setOnClickListener(this);
         changePasswordView.setOnClickListener(this);
+
+        getUserData();
+    }
+
+    private void getUserData(){
+        String url = BuildConfig.API_BASE_URL + "getuser.php?mail=" +
+                new TawsiliPrefStore(this).getPreferenceValue(Constants.userEmail) + "&id="
+                + new TawsiliPrefStore(this).getPreferenceValue(Constants.userId);
+        // here should show dialog
+        final SweetDialogHelper sdh = new SweetDialogHelper(this);
+        sdh.showMaterialProgress(getString(R.string.loading));
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, response.toString());
+                sdh.dismissDialog();
+                response = StringEscapeUtils.unescapeJava(response);
+
+                try {
+                    JSONArray jsonArray = new JSONArray(response);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String name = jsonObject.optString("name");
+                        new TawsiliPrefStore(SettingsActivity.this).addPreference(Constants.userName, name);
+                        bindData();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                sdh.dismissDialog();
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    private void bindData(){
+        textView2.setText(new TawsiliPrefStore(this).getPreferenceValue(Constants.userName));
+        textView4.setText(new TawsiliPrefStore(this).getPreferenceValue(Constants.userPhone));
+        textView6.setText(new TawsiliPrefStore(this).getPreferenceValue(Constants.userEmail));
     }
 
     //change font of drawer
