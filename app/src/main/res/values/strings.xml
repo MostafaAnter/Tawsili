@@ -156,7 +156,9 @@
     <string name="airport_pickup">Airport Pickup :</string>
     <string name="now">Now</string>
     <string name="later">Later</string>
-    <string name="title_activity_change_password">ChangePasswordActivity</string>
+    <string name="title_activity_change_password" translatable="false">ChangePasswordActivity</string>
     <string name="new_password">New password</string>
     <string name="confirm_password">Confirm new password</string>
+    <string name="password_not_equal">Password not equal confirmation password</string>
+    <string name="need_at">Need at least 6 digit</string>
 </resources>

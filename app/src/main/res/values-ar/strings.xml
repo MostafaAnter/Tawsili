@@ -134,4 +134,8 @@
     <string name="special_family">أسرة خاص</string>
     <string name="starting">البدء :</string>
     <string name="waiting">الأنتظار :</string>
+    <string name="confirm_password">أعد ادخال الرمز</string>
+    <string name="new_password">رمز دخول جديد</string>
+    <string name="password_not_equal">الرموز غير متطابقة</string>
+    <string name="need_at">على الأقل 6 خانات</string>
 </resources>

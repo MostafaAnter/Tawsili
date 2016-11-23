@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,10 +25,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.perfect_apps.tawsili.BuildConfig;
 import com.perfect_apps.tawsili.R;
+import com.perfect_apps.tawsili.app.AppController;
 import com.perfect_apps.tawsili.store.TawsiliPrefStore;
 import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
+import com.perfect_apps.tawsili.utils.SweetDialogHelper;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +49,8 @@ import butterknife.ButterKnife;
 public class ChangePasswordActivity extends LocalizationActivity
         implements NavigationView.OnNavigationItemSelectedListener
         , View.OnClickListener {
+
+    private static final String TAG = "ChangePasswordActivity";
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.nav_view)NavigationView navigationView;
@@ -44,6 +60,9 @@ public class ChangePasswordActivity extends LocalizationActivity
     @BindView(R.id.editText3)EditText editText3;
 
     @BindView(R.id.button1)Button button1;
+
+    private String currentPassword;
+    private String password;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -214,8 +233,92 @@ public class ChangePasswordActivity extends LocalizationActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button1:
-
+                    changePassword();
                 break;
         }
+    }
+    
+    private void changePassword(){
+        if (attempToChangePassword()) {
+            String url = BuildConfig.API_BASE_URL + "updateuserpassword.php?mail=" +
+                    new TawsiliPrefStore(this).getPreferenceValue(Constants.userEmail) + "&currentpassword="
+                    + currentPassword + "&password="
+                    + password;
+            // here should show dialog
+            final SweetDialogHelper sdh = new SweetDialogHelper(this);
+            sdh.showMaterialProgress(getString(R.string.loading));
+            StringRequest strReq = new StringRequest(Request.Method.GET,
+                    url, new Response.Listener<String>() {
+
+                @Override
+                public void onResponse(String response) {
+                    Log.d(TAG, response.toString());
+                    sdh.dismissDialog();
+                    response = StringEscapeUtils.unescapeJava(response);
+
+                    try {
+                        JSONArray jsonArray = new JSONArray(response);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String result = jsonObject.optString("result");
+                            if (result.equalsIgnoreCase("this account can't reset password")){
+                                new SweetDialogHelper(ChangePasswordActivity.this)
+                                        .showErrorMessage(getString(R.string.error), result);
+                            }else {
+                                new SweetDialogHelper(ChangePasswordActivity.this)
+                                        .showSuccessfulMessage(getString(R.string.done), result);
+                            }
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    sdh.dismissDialog();
+                }
+            });
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(strReq);
+        }
+    }
+
+    private boolean attempToChangePassword(){
+        currentPassword = editText1.getText().toString().trim();
+        password = editText2.getText().toString().trim();
+        String passwordconf = editText3.getText().toString().trim();
+
+        if (currentPassword.trim().isEmpty()) {
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.password));
+            return false;
+        }
+
+        if (password.trim().isEmpty()) {
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.new_password));
+            return false;
+        }
+
+        if (password.trim().length() < 6) {
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.need_at));
+            return false;
+        }
+
+        if (editText3.getText().toString().trim().isEmpty()) {
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.confirm_password));
+            return false;
+        }
+
+        if (!password.equalsIgnoreCase(passwordconf)) {
+            new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.password_not_equal));
+            return false;
+        }
+
+        return true;
+
     }
 }
