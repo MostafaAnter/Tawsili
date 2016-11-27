@@ -862,6 +862,7 @@ public class PickLocationActivity extends LocalizationActivity
         Log.d("handel touch", "handel touch");
         try {
             getAddressInfo(mMap.getCameraPosition().target);
+            getDriversList(new TawsiliPrefStore(this).getPreferenceValue(Constants.PREFERENCE_ORDER_TYPE));
         } catch (IOException e) {
             e.printStackTrace();
         }
