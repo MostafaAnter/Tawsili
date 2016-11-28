@@ -143,7 +143,7 @@
     <string name="done">Done!</string>
     <string name="you_have_new_trip">You have scheduling order</string>
     <string name="title_activity_schedule_tesult" translatable="false">ScheduleTesultActivity</string>
-    <string name="tawsili_alarm" translatable="false">Tawsili Alarm</string>
+    <string name="tawsili_alarm">Tawsili Alarm</string>
     <string name="title_activity_my_schedule_orders" translatable="false">MyScheduleOrdersActivity</string>
     <string name="title_activity_rate" translatable="false">RateActivity</string>
     <string name="title_activity_rate_categoriy" translatable="false">RateCategoriyActivity</string>

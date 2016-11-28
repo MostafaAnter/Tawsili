@@ -226,6 +226,10 @@ public class YourRideThirdActivity extends LocalizationActivity
             startActivity(callIntent);
         }else if (id == R.id.payment){
             new SweetDialogHelper(this).showTitleWithATextUnder("", "Cash method is available for now");
+        }else if(id == R.id.book_a_ride){
+            startActivity(new Intent(this, PickLocationActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+            overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

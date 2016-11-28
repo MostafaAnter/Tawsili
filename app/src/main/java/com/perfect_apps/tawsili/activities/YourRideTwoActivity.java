@@ -251,6 +251,31 @@ public class YourRideTwoActivity extends LocalizationActivity
             startActivity(callIntent);
         }else if (id == R.id.payment){
             new SweetDialogHelper(this).showTitleWithATextUnder("", "Cash method is available for now");
+        }else if(id == R.id.book_a_ride){
+            new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Cancel order!")
+                    .setContentText("it seem you will cancel this order")
+                    .setCancelText("No")
+                    .setConfirmText("Yes, cancel")
+                    .showCancelButton(true)
+                    .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.cancel();
+
+
+                        }
+                    })
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            new SweetDialogHelper(YourRideTwoActivity.this).showTitleWithATextUnder("",
+                                    "you can't cancel order here");
+                            sDialog.dismissWithAnimation();
+
+                        }
+                    })
+                    .show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
