@@ -2,6 +2,7 @@ package com.perfect_apps.tawsili.fragments;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -62,6 +63,10 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.button1:
+                Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "+966920008819"));
+                startActivity(callIntent);
+                break;
             case R.id.button3:
                 getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
                 break;

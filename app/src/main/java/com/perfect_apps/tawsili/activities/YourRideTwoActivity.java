@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +52,7 @@ import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
+import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -244,6 +246,11 @@ public class YourRideTwoActivity extends LocalizationActivity
             startActivity(new Intent(this, SettingsActivity.class));
         }else if (id == R.id.english_speaking){
             showSingleChoiceListDrivereLangaugeAlertDialog();
+        }else if (id == R.id.call_us){
+            Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "+966920008819"));
+            startActivity(callIntent);
+        }else if (id == R.id.payment){
+            new SweetDialogHelper(this).showTitleWithATextUnder("", "Cash method is available for now");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

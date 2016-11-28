@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="@drawable/border_shape_button"
-        android:text="@string/call_driver" />
+        android:text="@string/call_us" />
 
     <TextView
         android:id="@+id/text1"

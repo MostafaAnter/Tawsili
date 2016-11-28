@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -58,6 +59,7 @@ import com.perfect_apps.tawsili.utils.Constants;
 import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
+import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -219,6 +221,11 @@ public class YourRideThirdActivity extends LocalizationActivity
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.english_speaking) {
             showSingleChoiceListDrivereLangaugeAlertDialog();
+        }else if (id == R.id.call_us){
+            Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "+966920008819"));
+            startActivity(callIntent);
+        }else if (id == R.id.payment){
+            new SweetDialogHelper(this).showTitleWithATextUnder("", "Cash method is available for now");
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
