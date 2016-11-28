@@ -764,15 +764,21 @@ public class PickLocationActivity extends LocalizationActivity
                 .show();
     }
 
+    SweetDialogHelper sweetDialogHelper;
     private void getDriversList(String category) {
         String requestTag = "driversRequest";
         AppController.getInstance().getRequestQueue().cancelAll(requestTag);
+        if (sweetDialogHelper != null){
+            sweetDialogHelper.dismissDialog();
+            sweetDialogHelper = null;
+        }
 
         final String lat = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLat);
         final String lng = new TawsiliPrefStore(this).getPreferenceValue(Constants.userLastLocationLng);
         if (!lat.trim().isEmpty() && !lng.trim().isEmpty()) {
             final SweetDialogHelper sdh = new SweetDialogHelper(this);
             sdh.showMaterialProgress(getString(R.string.loading));
+            sweetDialogHelper = sdh;
             String url = BuildConfig.API_BASE_URL + "drivers.php?category=" + category + "&language=" +
                     String.valueOf(new TawsiliPrefStore(this)
                             .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
@@ -821,12 +827,17 @@ public class PickLocationActivity extends LocalizationActivity
                 if (driverDurationAndDistanceList != null && driverDurationAndDistanceList.size() > 0) {
                     DriverDurationAndDistance mDriverDurationAndDistance = driverDurationAndDistanceList.get(0);
 
-                    if ((Double.valueOf(mDriverDurationAndDistance.getDurationValue()) / 60) > 9) {
+                    if (Integer.valueOf(mDriverDurationAndDistance.getDurationValue()) > 540) {
                         new TawsiliPrefStore(PickLocationActivity.this)
                                 .addPreference(Constants.PREFERENCE_DRIVER_DURATION, "9\nmin");
                         textTime.setText("9\nmin");
                     } else {
-                        int dur = Double.valueOf(mDriverDurationAndDistance.getDurationValue()).intValue();
+                        int dur = Integer.valueOf(mDriverDurationAndDistance.getDurationValue());
+                        if (dur >= 60){
+                            dur = dur / 60;
+                        }else {
+                            dur = 1;
+                        }
                         new TawsiliPrefStore(PickLocationActivity.this)
                                 .addPreference(Constants.PREFERENCE_DRIVER_DURATION, dur + "\nmin");
                         textTime.setText(dur + "\n min");
