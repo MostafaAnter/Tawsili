@@ -104,7 +104,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:layout_weight="1"
-                    android:hint="+20"
+                    android:hint="+966"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:inputType="phone" />
 
                 <EditText

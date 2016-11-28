@@ -343,14 +343,14 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
                     startActivity(intent);
                 } else if (status.equalsIgnoreCase(Constants.statusActive)) {
                     new SweetDialogHelper(SignUpActivity.this)
-                            .showBasicMessage("هذا الهاتف مستخدم من قبل , حاول التسجيل ببيانات مختلفة");
+                            .showTitleWithATextUnder("","هذا الهاتف مستخدم من قبل \n حاول التسجيل ببيانات مختلفة");
                 } else if (status.equalsIgnoreCase(Constants.statusDeactive)) {
                     new SweetDialogHelper(SignUpActivity.this)
-                            .showBasicMessage("هذا الهاتف مستخدم من قبل , حاول التسجيل ببيانات مختلفة");
+                            .showTitleWithATextUnder("","هذا الهاتف مستخدم من قبل \n حاول التسجيل ببيانات مختلفة");
                 } else if (status.equalsIgnoreCase(Constants.statusClosedByClient) ||
                         status.equalsIgnoreCase(Constants.statusClosedBySystem)) {
                     new SweetDialogHelper(SignUpActivity.this)
-                            .showBasicMessage("هذا الهاتف مستخدم من قبل , حاول التسجيل ببيانات مختلفة");
+                            .showTitleWithATextUnder("","هذا الهاتف مستخدم من قبل \n حاول التسجيل ببيانات مختلفة");
                 }
 
             }
@@ -388,8 +388,12 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
     }
 
     private boolean checkUserValidData() {
+        String nationalNumber = editText3.getText().toString().trim();
         fullName = editText1.getText().toString().trim();
-        mobile = editText2.getText().toString().trim() + editText3.getText().toString().trim();
+        if (nationalNumber.startsWith("0"))
+            nationalNumber = nationalNumber.substring(1);
+        mobile = "+966" + nationalNumber;
+
         email = editText4.getText().toString().trim();
         password = editText5.getText().toString().trim();
 
@@ -397,8 +401,7 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
             new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.enter_name));
             return false;
         }
-        if (editText2.getText().toString().trim().isEmpty() ||
-                editText3.getText().toString().trim().isEmpty() ||
+        if (    editText3.getText().toString().trim().isEmpty() ||
                 !PhoneNumberUtils.isGlobalPhoneNumber(mobile)) {
             new SweetDialogHelper(this).showErrorMessage(getString(R.string.error), getString(R.string.phone_not_valid));
             return false;
