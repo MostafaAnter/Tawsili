@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
+                android:id="@+id/linearLayout1"
                 android:layout_width="match_parent"
                 android:layout_height="?listPreferredItemHeightSmall"
                 android:orientation="horizontal"
@@ -54,6 +55,7 @@
                 android:layout_height="1dp"
                 android:background="@color/dark_gray"/>
             <LinearLayout
+                android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="?listPreferredItemHeightSmall"
                 android:orientation="horizontal"
@@ -89,6 +91,7 @@
                 android:layout_height="1dp"
                 android:background="@color/dark_gray"/>
             <LinearLayout
+                android:id="@+id/linearLayout3"
                 android:layout_width="match_parent"
                 android:layout_height="?listPreferredItemHeightSmall"
                 android:orientation="horizontal"
@@ -124,6 +127,7 @@
                 android:layout_height="1dp"
                 android:background="@color/dark_gray"/>
             <LinearLayout
+                android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
                 android:layout_height="?listPreferredItemHeightSmall"
                 android:orientation="horizontal"
@@ -158,6 +162,7 @@
                 android:layout_height="1dp"
                 android:background="@color/dark_gray"/>
             <LinearLayout
+                android:id="@+id/linearLayout5"
                 android:layout_width="match_parent"
                 android:layout_height="?listPreferredItemHeightSmall"
                 android:orientation="horizontal"
@@ -188,44 +193,6 @@
                     android:src="@drawable/ic_keyboard_arrow_left_black"/>
 
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/dark_gray"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:background="?android:attr/selectableItemBackground"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_link_black_24dp"
-                    android:rotation="20"/>
-                <TextView
-                    android:id="@+id/text6"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="@string/your_personal_invite_link"
-                    style="@style/Base.TextAppearance.AppCompat.Medium"
-                    />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="www.personal.link.com"
-                android:padding="3dp"
-                android:background="#ddd"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

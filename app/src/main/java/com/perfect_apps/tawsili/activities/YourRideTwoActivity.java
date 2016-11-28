@@ -53,6 +53,7 @@ import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
+import com.splunk.mint.Mint;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -126,7 +127,7 @@ public class YourRideTwoActivity extends LocalizationActivity
         rebeate = true;
         repeatFunc();
 
-
+        Mint.initAndStartSession(this.getApplication(), "9331c1d6");
     }
 
     private void repeatFunc(){

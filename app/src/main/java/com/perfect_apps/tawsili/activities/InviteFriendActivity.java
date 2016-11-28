@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
@@ -33,14 +34,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class InviteFriendActivity extends LocalizationActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener{
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.text1)TextView textView1;
     @BindView(R.id.text2)TextView textView2;
     @BindView(R.id.text3)TextView textView3;
     @BindView(R.id.text4)TextView textView4;
     @BindView(R.id.text5)TextView textView5;
-    @BindView(R.id.text6)TextView textView6;
+
+    @BindView(R.id.linearLayout1) LinearLayout linearLayout1;
+    @BindView(R.id.linearLayout2) LinearLayout linearLayout2;
+    @BindView(R.id.linearLayout3) LinearLayout linearLayout3;
+    @BindView(R.id.linearLayout4) LinearLayout linearLayout4;
+    @BindView(R.id.linearLayout5) LinearLayout linearLayout5;
 
     @BindView(R.id.nav_view) NavigationView navigationView;
 
@@ -61,6 +68,12 @@ public class InviteFriendActivity extends LocalizationActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         changeFontOfNavigation();
+
+        linearLayout1.setOnClickListener(this);
+        linearLayout2.setOnClickListener(this);
+        linearLayout3.setOnClickListener(this);
+        linearLayout4.setOnClickListener(this);
+        linearLayout5.setOnClickListener(this);
     }
 
     private void setToolbar() {
@@ -86,7 +99,6 @@ public class InviteFriendActivity extends LocalizationActivity
         textView3.setTypeface(font);
         textView4.setTypeface(font);
         textView5.setTypeface(font);
-        textView6.setTypeface(font);
 
     }
     @Override
@@ -213,5 +225,21 @@ public class InviteFriendActivity extends LocalizationActivity
     private String getDriverLanguage(){
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
+    }
+
+    @Override
+    public void onClick(View v) {
+        try {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_SUBJECT, "Tawsili");
+            String sAux = "\nLet me recommend you this application\n\n";
+            sAux = sAux + "https://play.google.com/store/apps/details?id=com.perfect_apps.tawsili \n\n";
+            i.putExtra(Intent.EXTRA_TEXT, sAux);
+            startActivity(Intent.createChooser(i, "choose one"));
+        } catch (Exception e) {
+            //e.toString();
+        }
+
     }
 }

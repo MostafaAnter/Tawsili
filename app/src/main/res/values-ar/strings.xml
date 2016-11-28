@@ -139,4 +139,7 @@
     <string name="password_not_equal">الرموز غير متطابقة</string>
     <string name="need_at">على الأقل 6 خانات</string>
     <string name="tawsili_alarm">منبة توصيلي</string>
+    <string name="complaint">شكوي</string>
+    <string name="other">أخرى</string>
+    <string name="suggestion">أقتراح</string>
 </resources>

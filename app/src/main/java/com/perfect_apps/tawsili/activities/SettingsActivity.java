@@ -56,6 +56,7 @@ public class SettingsActivity extends LocalizationActivity
     @BindView(R.id.change_language) LinearLayout linearLayout1;
     @BindView(R.id.rateView)LinearLayout rateView;
     @BindView(R.id.change_password)LinearLayout changePasswordView;
+    @BindView(R.id.feedbackAction)LinearLayout feedBackAction;
     @BindView(R.id.button1)Button button1;
     @BindView(R.id.text1)TextView textView1;
     @BindView(R.id.text2)TextView textView2;
@@ -93,6 +94,7 @@ public class SettingsActivity extends LocalizationActivity
         button1.setOnClickListener(this);
         rateView.setOnClickListener(this);
         changePasswordView.setOnClickListener(this);
+        feedBackAction.setOnClickListener(this);
 
         getUserData();
     }
@@ -284,7 +286,9 @@ public class SettingsActivity extends LocalizationActivity
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                 overridePendingTransition(R.anim.push_up_enter, R.anim.push_up_exit);
                 break;
-
+            case R.id.feedbackAction:
+                showSingleChoiceListFeedbackAlertDialog();
+                break;
         }
     }
 
@@ -384,6 +388,51 @@ public class SettingsActivity extends LocalizationActivity
     private String getDriverLanguage(){
         return String.valueOf(new TawsiliPrefStore(this)
                 .getIntPreferenceValue(Constants.PREFERENCE_DRIVER_LANGUAGE));
+    }
+
+    // for feedback
+    private String mCheckedFeedItem;
+
+    public void showSingleChoiceListFeedbackAlertDialog() {
+        final String[] list = new String[]{getString(R.string.complaint), getString(R.string.suggestion),
+                getString(R.string.other)};
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.feedback))
+                .setSingleChoiceItems(list,
+                        -1,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mCheckedFeedItem = list[which];
+                                if (which == 0) {
+                                    sendMessage("Complaint");
+                                    dialog.dismiss();
+                                } else if (which == 1) {
+                                    sendMessage("Suggestion");
+                                    dialog.dismiss();
+                                }else if (which == 2) {
+                                    sendMessage("Other");
+                                    dialog.dismiss();
+                                }
+                            }
+                        })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    private void sendMessage(String subject){
+        Intent intent = new Intent(Intent.ACTION_SENDTO); // it's not ACTION_SEND
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, "");
+        intent.setData(Uri.parse("mailto:services@tawsili.com")); // or just "mailto:" for blank
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // this will make such that when user returns to your app, your app is displayed, instead of the email app.
+        startActivity(intent);
     }
 
 }

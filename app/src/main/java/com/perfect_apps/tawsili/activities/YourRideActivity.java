@@ -62,6 +62,7 @@ import com.perfect_apps.tawsili.utils.CustomTypefaceSpan;
 import com.perfect_apps.tawsili.utils.MapHelper;
 import com.perfect_apps.tawsili.utils.MapStateManager;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
+import com.splunk.mint.Mint;
 import com.vipul.hp_hp.library.Layout_to_Image;
 
 import org.json.JSONArray;
@@ -168,6 +169,7 @@ public class YourRideActivity extends LocalizationActivity
 
         repeatFunc();
 
+        Mint.initAndStartSession(this.getApplication(), "9331c1d6");
 
     }
 

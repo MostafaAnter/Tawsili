@@ -72,6 +72,7 @@ import com.perfect_apps.tawsili.utils.OrderDriver;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 import com.perfect_apps.tawsili.utils.TawsiliPublicFunc;
 import com.perfect_apps.tawsili.utils.Utils;
+import com.splunk.mint.Mint;
 import com.vipul.hp_hp.library.Layout_to_Image;
 
 import org.json.JSONArray;
@@ -203,6 +204,8 @@ public class BookABusinessCarActivity extends LocalizationActivity
         dropOffFavImage.setOnClickListener(this);
         // get user to get the penalty
         getUser();
+
+        Mint.initAndStartSession(this.getApplication(), "9331c1d6");
     }
 
     private void animateView(LinearLayout frameLayout) {

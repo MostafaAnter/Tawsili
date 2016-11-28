@@ -37,6 +37,7 @@ android {
 
 repositories {
     mavenCentral()
+    maven { url "https://mint.splunk.com/gradle/" }
 }
 
 dependencies {
@@ -78,4 +79,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     // glid
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    // splunk
+    compile 'com.splunk.mint:mint:5.0.0'
 }
