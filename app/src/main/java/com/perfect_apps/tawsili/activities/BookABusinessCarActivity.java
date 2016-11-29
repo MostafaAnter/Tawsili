@@ -680,7 +680,7 @@ public class BookABusinessCarActivity extends LocalizationActivity
                         markers.get(1).remove();
                         markers.remove(1);
                     }
-
+                    if (markers.size() > 0)
                     updateZoom(mMap, markers.get(0).getPosition());
 
                 }
