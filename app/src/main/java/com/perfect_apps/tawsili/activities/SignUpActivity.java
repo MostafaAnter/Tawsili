@@ -392,7 +392,7 @@ public class SignUpActivity extends LocalizationActivity implements View.OnClick
         fullName = editText1.getText().toString().trim();
         if (nationalNumber.startsWith("0"))
             nationalNumber = nationalNumber.substring(1);
-        mobile = "+966" + nationalNumber;
+        mobile = "00966" + nationalNumber;
 
         email = editText4.getText().toString().trim();
         password = editText5.getText().toString().trim();

@@ -185,7 +185,6 @@ public class MyRidesActivity extends LocalizationActivity
         int id = item.getItemId();
 
         if (id == R.id.my_rides_history) {
-            startActivity(new Intent(MyRidesActivity.this, MyRidesActivity.class));
 
         }else if (id == R.id.my_scheduled_rides) {
             startActivity(new Intent(this, MyScheduleOrdersActivity.class));
@@ -198,7 +197,7 @@ public class MyRidesActivity extends LocalizationActivity
         } else if (id == R.id.english_speaking) {
             showSingleChoiceListDrivereLangaugeAlertDialog();
         }else if (id == R.id.call_us){
-            Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "+966920008819"));
+            Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "00966920008819"));
             startActivity(callIntent);
         }else if (id == R.id.payment){
             new SweetDialogHelper(this).showTitleWithATextUnder("", "Cash method is available for now");

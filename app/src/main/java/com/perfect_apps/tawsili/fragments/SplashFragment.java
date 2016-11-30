@@ -64,7 +64,7 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button1:
-                Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "+966920008819"));
+                Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "00966920008819"));
                 startActivity(callIntent);
                 break;
             case R.id.button3:

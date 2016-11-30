@@ -186,8 +186,10 @@ public class DriverInfoDialog extends DialogFragment implements View.OnClickList
                         driverName.setText(name);
                         carName.setText(car_type);
                         licensePlate.setText(license_plate);
-                        rateValue.setText(rate);
-                        ratingBar.setRating(Float.valueOf(rate));
+                        if (!rate.isEmpty() && !rate.equalsIgnoreCase("null")) {
+                            rateValue.setText(rate);
+                            ratingBar.setRating(Float.valueOf(rate));
+                        }
                         // populate mainImage
                         Glide.with(getActivity())
                                 .load("http://tawsely.com/img/drivers/" + img_name)
