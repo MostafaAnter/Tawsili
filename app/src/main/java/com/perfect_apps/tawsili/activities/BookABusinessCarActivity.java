@@ -593,28 +593,30 @@ public class BookABusinessCarActivity extends LocalizationActivity
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
-        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-        String city = addresses.get(0).getLocality();
-        String state = addresses.get(0).getAdminArea();
-        String country = addresses.get(0).getCountryName();
-        String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+        if (addresses.size() > 0) {
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
 
-        StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-        if (address != null)
-            sb.append(address);
-        if (city != null)
-            sb.append(", " + city);
-        if (state != null)
-            sb.append(", " + state);
-        if (country != null)
-            sb.append(", " + country);
-        if (knownName != null)
-            sb.append(", " + knownName);
+            if (address != null)
+                sb.append(address);
+            if (city != null)
+                sb.append(", " + city);
+            if (state != null)
+                sb.append(", " + state);
+            if (country != null)
+                sb.append(", " + country);
+            if (knownName != null)
+                sb.append(", " + knownName);
 
-        tv.setText(sb);
+            tv.setText(sb);
 
-        Log.e("address info", sb.toString());
+            Log.e("address info", sb.toString());
+        }
 
     }
 
