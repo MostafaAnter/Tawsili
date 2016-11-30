@@ -878,7 +878,10 @@ public class PickLocationActivity extends LocalizationActivity
     public void onMessageEvent(TouchMapEvent event) {
         Log.d("handel touch", "handel touch");
         try {
-            getAddressInfo(mMap.getCameraPosition().target);
+            LatLng latLng = mMap.getCameraPosition().target;
+            getAddressInfo(latLng);
+            new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLat, String.valueOf(latLng.latitude));
+            new TawsiliPrefStore(this).addPreference(Constants.userLastLocationLng, String.valueOf(latLng.longitude));
             getDriversList(new TawsiliPrefStore(this).getPreferenceValue(Constants.PREFERENCE_ORDER_TYPE));
         } catch (IOException e) {
             e.printStackTrace();
