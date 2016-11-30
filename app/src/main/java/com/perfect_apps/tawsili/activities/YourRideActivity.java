@@ -740,6 +740,10 @@ public class YourRideActivity extends LocalizationActivity
             public void onResponse(String response) {
                 Log.d("checkOrder", response.toString());
                 JSONArray jsonArray = null;
+
+                animateView(linearLayout1);
+                new CounterTask().execute();
+
                 try {
                     jsonArray = new JSONArray(response);
 
@@ -794,10 +798,6 @@ public class YourRideActivity extends LocalizationActivity
                                 .dontAnimate()
                                 .thumbnail(0.2f)
                                 .into(avatar);
-
-                        animateView(linearLayout1);
-
-                        new CounterTask().execute();
 
                     }
 
