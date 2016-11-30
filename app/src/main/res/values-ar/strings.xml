@@ -52,8 +52,8 @@
     <string name="sign_out">خروج</string>
     <string name="your_personal_invite_link">رابطك الشخصى</string>
     <string name="location_is_gonna_be_here">المكان سوف يكون هنا</string>
-    <string name="ride_later">فى وقت أخر</string>
-    <string name="ride_now">بدء الرحلة</string>
+    <string name="ride_later">لاحقاً</string>
+    <string name="ride_now">الأن</string>
     <string name="book_a_business_car">أحجز سيارة</string>
     <string-array name="options_array">
         <item>مرة واحدة</item>
