@@ -91,42 +91,6 @@
                 android:layout_height="1dp"
                 android:background="@color/dark_gray"/>
             <LinearLayout
-                android:id="@+id/linearLayout3"
-                android:layout_width="match_parent"
-                android:layout_height="?listPreferredItemHeightSmall"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:background="?android:attr/selectableItemBackground"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="6dp"
-                    android:src="@drawable/google"/>
-
-                <TextView
-                    android:id="@+id/text3"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="@string/google"
-                    style="@style/Base.TextAppearance.AppCompat.Medium"
-                    />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_keyboard_arrow_left_black"/>
-
-            </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/dark_gray"/>
-            <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
                 android:layout_height="?listPreferredItemHeightSmall"

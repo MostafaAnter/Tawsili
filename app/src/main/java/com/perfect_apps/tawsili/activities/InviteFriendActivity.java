@@ -3,9 +3,12 @@ package com.perfect_apps.tawsili.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.Spannable;
@@ -22,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akexorcist.localizationactivity.LocalizationActivity;
 import com.perfect_apps.tawsili.R;
@@ -39,13 +43,11 @@ public class InviteFriendActivity extends LocalizationActivity
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.text1)TextView textView1;
     @BindView(R.id.text2)TextView textView2;
-    @BindView(R.id.text3)TextView textView3;
     @BindView(R.id.text4)TextView textView4;
     @BindView(R.id.text5)TextView textView5;
 
     @BindView(R.id.linearLayout1) LinearLayout linearLayout1;
     @BindView(R.id.linearLayout2) LinearLayout linearLayout2;
-    @BindView(R.id.linearLayout3) LinearLayout linearLayout3;
     @BindView(R.id.linearLayout4) LinearLayout linearLayout4;
     @BindView(R.id.linearLayout5) LinearLayout linearLayout5;
 
@@ -71,7 +73,6 @@ public class InviteFriendActivity extends LocalizationActivity
 
         linearLayout1.setOnClickListener(this);
         linearLayout2.setOnClickListener(this);
-        linearLayout3.setOnClickListener(this);
         linearLayout4.setOnClickListener(this);
         linearLayout5.setOnClickListener(this);
     }
@@ -96,7 +97,6 @@ public class InviteFriendActivity extends LocalizationActivity
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/normal.ttf");
         textView1.setTypeface(font);
         textView2.setTypeface(font);
-        textView3.setTypeface(font);
         textView4.setTypeface(font);
         textView5.setTypeface(font);
 
@@ -229,17 +229,95 @@ public class InviteFriendActivity extends LocalizationActivity
 
     @Override
     public void onClick(View v) {
-        try {
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.setType("text/plain");
-            i.putExtra(Intent.EXTRA_SUBJECT, "Tawsili");
-            String sAux = "\nLet me recommend you this application\n\n";
-            sAux = sAux + "https://play.google.com/store/apps/details?id=com.perfect_apps.tawsili \n\n";
-            i.putExtra(Intent.EXTRA_TEXT, sAux);
-            startActivity(Intent.createChooser(i, "choose one"));
-        } catch (Exception e) {
-            //e.toString();
+        switch (v.getId()){
+            case R.id.linearLayout1:
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                String sAux = "\nLet me recommend you this application\n\n";
+                sAux = sAux + "https://play.google.com/store/apps/details?id=com.perfect_apps.tawsili \n\n";
+                sendIntent
+                        .putExtra(Intent.EXTRA_TEXT,
+                                sAux);
+                sendIntent.setType("text/plain");
+                sendIntent.setPackage("com.facebook.orca");
+                try {
+                    startActivity(sendIntent);
+                }
+                catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(this, "Please Install Facebook Messenger", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.linearLayout2:
+                try
+                {
+                    // Check if the Twitter app is installed on the phone.
+                    getPackageManager().getPackageInfo("com.twitter.android", 0);
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setClassName("com.twitter.android", "com.twitter.android.composer.ComposerActivity");
+                    intent.setType("text/plain");
+                    String sAux1 = "\nLet me recommend you this application\n\n";
+                    sAux1 = sAux1 + "https://play.google.com/store/apps/details?id=com.perfect_apps.tawsili \n\n";
+
+                    intent.putExtra(Intent.EXTRA_TEXT, sAux1);
+                    startActivity(intent);
+
+                }
+                catch (Exception e)
+                {
+                    Toast.makeText(this,"Twitter is not installed on this device",Toast.LENGTH_LONG).show();
+
+                }
+
+                break;
+            case R.id.linearLayout4:
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    Intent sendingIntent = new Intent();
+                    sendingIntent.setAction(Intent.ACTION_SEND);
+                    String sAux2 = "\nLet me recommend you this application\n\n";
+                    sAux2 = sAux2 + "https://play.google.com/store/apps/details?id=com.perfect_apps.tawsili \n\n";
+                    sendingIntent
+                            .putExtra(Intent.EXTRA_TEXT,
+                                    sAux2);
+                    sendingIntent.setType("text/plain");
+                    sendingIntent.setPackage(Telephony.Sms.getDefaultSmsPackage(this));
+                    try {
+                        startActivity(sendingIntent);
+                    }
+                    catch (android.content.ActivityNotFoundException ex) {
+                        Toast.makeText(this, "Please Install SMS Messenger", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
+                    smsIntent.setType("vnd.android-dir/mms-sms");
+                    smsIntent.putExtra("address","");
+                    String sAux2 = "\nLet me recommend you this application\n\n";
+                    sAux2 = sAux2 + "https://play.google.com/store/apps/details?id=com.perfect_apps.tawsili \n\n";
+                    smsIntent.putExtra("sms_body",sAux2);
+                    startActivity(smsIntent);
+                }
+                break;
+            case R.id.linearLayout5:
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                emailIntent.setData(Uri.parse("mailto:"));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Recommendation");
+                String sAux2 = "\nLet me recommend you this application\n\n";
+                sAux2 = sAux2 + "https://play.google.com/store/apps/details?id=com.perfect_apps.tawsili \n\n";
+
+                emailIntent.putExtra(Intent.EXTRA_TEXT, sAux2);
+                startActivity(emailIntent);
+                break;
         }
+
+//        try {
+//            Intent i = new Intent(Intent.ACTION_SEND);
+//            i.setType("text/plain");
+//            i.putExtra(Intent.EXTRA_SUBJECT, "Tawsili");
+//            i.putExtra(Intent.EXTRA_TEXT, sAux);
+//            startActivity(Intent.createChooser(i, "choose one"));
+//        } catch (Exception e) {
+//            //e.toString();
+//        }
 
     }
 }
