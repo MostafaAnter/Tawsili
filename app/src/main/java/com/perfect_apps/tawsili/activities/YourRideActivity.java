@@ -594,7 +594,7 @@ public class YourRideActivity extends LocalizationActivity
                             if (rebeate) {
                                 final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(YourRideActivity.this, SweetAlertDialog.WARNING_TYPE)
                                         .setTitleText("Client Didn't Attend!")
-                                        .setContentText("this order is missed if you want, create new one")
+                                        .setContentText("this order is canceled du to client isn't attend")
                                         .setConfirmText("Ok, i know")
                                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                             @Override
@@ -608,7 +608,7 @@ public class YourRideActivity extends LocalizationActivity
                                     @Override
                                     protected Void doInBackground(Void... params) {
                                         try {
-                                            Thread.sleep(2000);
+                                            Thread.sleep(4000);
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
