@@ -76,6 +76,7 @@ import com.perfect_apps.tawsili.utils.MapStateManager;
 import com.perfect_apps.tawsili.utils.SweetDialogHelper;
 import com.perfect_apps.tawsili.utils.TawsiliPublicFunc;
 import com.perfect_apps.tawsili.utils.Utils;
+import com.splunk.mint.Mint;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -114,6 +115,8 @@ public class PickLocationActivity extends LocalizationActivity
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
+
+    @BindView(R.id.fab)FloatingActionButton fab;
 
 
     private GoogleMap mMap;
@@ -187,13 +190,14 @@ public class PickLocationActivity extends LocalizationActivity
         Intent getUserSchedule = new Intent(this, GetUserSchedule.class);
         startService(getUserSchedule);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setMapWithCurrentLocation();
             }
         });
+
+        Mint.initAndStartSession(this.getApplication(), "9331c1d6");
     }
 
     private void initGoogleApiClient() {
@@ -204,7 +208,7 @@ public class PickLocationActivity extends LocalizationActivity
                     .addApi(LocationServices.API)
                     .build();
         }
-
+        mGoogleApiClient.connect();
         // download priceList
         TawsiliPublicFunc.getPriceList(this);
     }
@@ -428,6 +432,8 @@ public class PickLocationActivity extends LocalizationActivity
         } else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(isAvailable, this, GPS_ERRORDIALOG_REQUEST);
             dialog.show();
+            fab.setVisibility(View.GONE);
+
         } else {
             Toast.makeText(this, "Can't connect to Google Play services", Toast.LENGTH_SHORT).show();
         }
@@ -460,8 +466,6 @@ public class PickLocationActivity extends LocalizationActivity
     @Subscribe
     public void onMessageEvent(NetworkEvent event) {
         initGoogleApiClient();
-        new ReconnectTask().execute();
-
     }
 
     @Override
@@ -474,14 +478,12 @@ public class PickLocationActivity extends LocalizationActivity
             mMap.moveCamera(update);
             mMap.setMapType(mgr.getSavedMapType());
         }
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-
         // if user is offline show message to active network
         if (!Utils.isOnline(this)) {
             new SweetDialogHelper(this).showErrorMessage(getString(R.string.error),
                     getString(R.string.check_network_connection));
+        }else {
+           initGoogleApiClient();
         }
     }
 
@@ -546,27 +548,6 @@ public class PickLocationActivity extends LocalizationActivity
         }
     }
 
-    private class ReconnectTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (mGoogleApiClient != null) {
-                mGoogleApiClient.connect();
-            }
-        }
-    }
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -623,13 +604,12 @@ public class PickLocationActivity extends LocalizationActivity
 
     @Override
     public void onConnectionSuspended(int i) {
-        new ReconnectTask().execute();
 
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        new ReconnectTask().execute();
+
     }
 
     private void buildAlertMessageNoGps() {

@@ -89,7 +89,7 @@ public class YourRideActivity extends LocalizationActivity
 
     @BindView(R.id.secondCounter)
     TextView secondCounter;
-    private static int counter = 60;
+    private int counter = 60;
     @BindView(R.id.avatar)
     CircleImageView avatar;
     @BindView(R.id.driverName)
@@ -246,6 +246,7 @@ public class YourRideActivity extends LocalizationActivity
             super.onPostExecute(aVoid);
             secondCounter.setText(getString(R.string.pay_penalty));
             secondCounter.setTextColor(Color.RED);
+            counter = 60;
         }
 
         @Override

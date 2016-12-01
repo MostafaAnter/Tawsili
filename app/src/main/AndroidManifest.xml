@@ -67,30 +67,37 @@
         <activity
             android:name=".activities.PickLocationActivity"
             android:label="@string/title_activity_pick_location"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.MyRidesActivity"
             android:label="@string/title_activity_my_rides"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.InviteFriendActivity"
             android:label="@string/title_activity_invite_friend"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.BookABusinessCarActivity"
             android:label="@string/title_activity_book_abusiness_car"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.YourRideActivity"
             android:label="@string/title_activity_your_ride"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.FavoritePlacesActivity"
             android:label="@string/title_activity_favorite_places"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.searchable"
@@ -99,10 +106,12 @@
         <activity
             android:name=".activities.SelectTimeActivity"
             android:label="@string/title_activity_select_time"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SearchResultsActivity"
             android:label="@string/title_activity_search_results"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -147,18 +156,22 @@
         <activity
             android:name=".activities.ConfirmPickLocationActivity"
             android:label="@string/title_activity_confirm_pick_location"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.AskForPromoCodeActivity"
             android:label="@string/title_activity_ask_for_promo_code"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.YourRideTwoActivity"
             android:label="@string/title_activity_your_ride_two"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.YourRideThirdActivity"
             android:label="@string/title_activity_your_ride_third"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
@@ -173,25 +186,29 @@
         <service android:name=".scheduleing_task.GetUserSchedule" />
 
         <activity
+            android:configChanges="screenSize|orientation"
             android:name=".activities.ScheduleTesultActivity"
             android:label="@string/title_activity_schedule_tesult"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:configChanges="screenSize|orientation"
             android:name=".activities.MyScheduleOrdersActivity"
             android:label="@string/title_activity_my_schedule_orders"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:configChanges="screenSize|orientation"
             android:name=".activities.RateActivity"
             android:label="@string/title_activity_rate"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:configChanges="screenSize|orientation"
             android:name=".activities.RateCategoriyActivity"
             android:label="@string/title_activity_rate_categoriy"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ChangePasswordActivity"
             android:label="@string/title_activity_change_password"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

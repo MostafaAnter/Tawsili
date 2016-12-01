@@ -217,6 +217,7 @@ public class OrderDriver {
                                         @Override
                                         public void onClick(SweetAlertDialog sDialog) {
                                             getDriversList();
+                                            sDialog.dismissWithAnimation();
                                         }
                                     })
                                     .show();

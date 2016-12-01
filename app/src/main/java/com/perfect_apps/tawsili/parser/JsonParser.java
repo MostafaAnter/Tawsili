@@ -41,9 +41,12 @@ public class JsonParser {
                     JSONObject obj11 = obj1.optJSONObject("distance");
                     JSONObject obj12 = obj1.optJSONObject("duration");
                     DriverDurationAndDistance driverDurationAndDistance =
-                            new DriverDurationAndDistance(obj11.optString("text"),
-                                    obj11.optString("value"), obj12.optString("text"),
-                                    obj12.optString("value"));
+                            null;
+                    if (obj11 != null && obj12 != null) {
+                        driverDurationAndDistance = new DriverDurationAndDistance(obj11.optString("text"),
+                                obj11.optString("value"), obj12.optString("text"),
+                                obj12.optString("value"));
+                    }
 
                     driverDurationAndDistanceList.add(driverDurationAndDistance);
 

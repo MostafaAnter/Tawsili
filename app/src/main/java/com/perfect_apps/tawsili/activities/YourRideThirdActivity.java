@@ -603,7 +603,9 @@ public class YourRideThirdActivity extends LocalizationActivity
                         String license_plate = driverObject.optString("license_plate");
                         String rate = driverObject.optString("rate");
 
-                        ratingBar.setRating(Float.valueOf(rate));
+                        if (!rate.isEmpty() && !rate.equalsIgnoreCase("null")) {
+                            ratingBar.setRating(Float.valueOf(rate));
+                        }
 
                     }
 

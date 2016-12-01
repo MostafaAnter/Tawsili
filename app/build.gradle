@@ -10,7 +10,7 @@ android {
             storePassword '3nterrr@'
         }
     }
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "com.perfect_apps.tawsili"
@@ -48,8 +48,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:design:25.0.1'
     testCompile 'junit:junit:4.12'
     // butter knife
     compile 'com.jakewharton:butterknife:8.4.0'
@@ -61,9 +61,9 @@ dependencies {
     // circle image view
     compile 'de.hdodenhof:circleimageview:2.1.0'
     // recyclerView
-    compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.android.support:recyclerview-v7:25.0.1'
     // map service
-    compile 'com.google.android.gms:play-services-maps:9.8.0'
+    compile 'com.google.android.gms:play-services-maps:10.0.1'
     // glid
     compile 'com.github.bumptech.glide:glide:3.7.0'
     // layout to image
@@ -75,7 +75,7 @@ dependencies {
     //facebook
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     // for get current location
-    compile 'com.google.android.gms:play-services-location:9.8.0'
+    compile 'com.google.android.gms:play-services-location:10.0.1'
     // nine
     compile 'com.nineoldandroids:library:2.4.0'
     // circle image view
